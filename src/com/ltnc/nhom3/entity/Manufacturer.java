@@ -10,5 +10,7 @@ package com.ltnc.nhom3.entity;
  * @author admin
  */
 public class Manufacturer {
-    
+    private int id;
+    private String name;
+    private String country;
 }
