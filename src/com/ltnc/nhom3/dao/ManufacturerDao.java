@@ -1,0 +1,147 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.ltnc.nhom3.dao;
+
+import com.ltnc.nhom3.connect.DatabaseConnect;
+import com.ltnc.nhom3.entity.Customer;
+import com.ltnc.nhom3.entity.Manufacturer;
+import com.ltnc.nhom3.utility.DBQuery;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author PhungSyLinh
+ */
+public class ManufacturerDao implements CrudDao<Manufacturer> {
+
+    @Override
+    public boolean create(Manufacturer t) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_MANUFACTURER);
+
+            preparedStatement.setString(1, Manufacturer.getName());
+            preparedStatement.setString(2, Manufacturer.getCountry());
+
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
+
+    }
+
+    @Override
+    public List<Manufacturer> findAll() throws SQLException {
+        List<Manufacturer> manufacturers = null;
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_MANUFACTURERS);
+            Manufacturer manufacturer = null;
+            manufacturers = new ArrayList<Manufacturer>();
+
+            while (resultSet.next()) {
+                    manufacturer = extractFromResultSet(resultSet);
+                    manufacturers.add(manufacturer);
+            }
+        } finally {            
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return manufacturers;
+    }
+
+    @Override
+    public Manufacturer findById(int id) throws SQLException {
+        Manufacturer manufacturer  = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+                connection = DatabaseConnect.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(DBQuery.FIND_MANUFACTURER_BY_ID);
+
+                preparedStatement.setInt(1, id);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) { 
+                    manufacturer = extractFromResultSet(resultSet);
+                    
+                    break;
+                }
+        } finally {
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return manufacturer;
+    }
+
+    @Override
+    public boolean update(Manufacturer t) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.UPDATE_MANUFACTUER);
+
+            preparedStatement.setString(1, Manufacturer.getName());
+            preparedStatement.setString(2, Manufacturer.getCountry());
+            preparedStatement.setInt(4, Manufacturer.getId());
+
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return count > 0;
+    }
+
+    @Override
+    public boolean deleteById(int id) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.DELETE_CUSTOMER_BY_ID);
+
+            preparedStatement.setInt(1, id);
+
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return count > 0; 
+    }
+
+    @Override
+    public Manufacturer extractFromResultSet(ResultSet resultSet) throws SQLException {
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setId(resultSet.getInt(1));
+        manufacturer.setName(resultSet.getString(2));
+        manufacturer.setCountry(resultSet.getString(3));
+        return manufacturer;
+      
+    }
+
+}
