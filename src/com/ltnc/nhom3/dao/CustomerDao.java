@@ -53,7 +53,7 @@ public class CustomerDao implements CrudDao<Customer> {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_CUSTOMERS);
             Customer customer = null;
-            customers = new ArrayList<Customer>();
+            customers = new ArrayList<>();
 
             while (resultSet.next()) {
                     customer = extractFromResultSet(resultSet);
