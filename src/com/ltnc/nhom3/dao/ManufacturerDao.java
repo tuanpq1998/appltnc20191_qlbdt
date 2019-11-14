@@ -21,7 +21,7 @@ import java.util.List;
  * @author PhungSyLinh
  */
 public class ManufacturerDao implements CrudDao<Manufacturer> {
-
+ 
     @Override
     public boolean create(Manufacturer manufacturer) throws SQLException {
         int count = 0;
