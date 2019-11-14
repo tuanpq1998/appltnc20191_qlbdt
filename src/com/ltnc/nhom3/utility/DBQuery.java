@@ -21,15 +21,23 @@ public class DBQuery {
                 + " WHERE customer_id = ?";
     public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
             + " SET fullname = ? , address = ?, phone = ? WHERE customer_id = ?";
-    
     /* ============================ */
     
     /* =========== Bill =========== */
     private static final String BILL_TABLE = "customer";
     
     public static String FIND_ALL_BILLS = "";
-    
     /* ============================ */
-   
     
+    /* =========== Manufacturer =========== */
+    private static final String MANUFACTURER_TABLE = "manufacturer";
+    
+    public static final String FIND_ALL_MANUFACTURERS = "SELECT * FROM " + MANUFACTURER_TABLE;
+    public static final String CREATE_NEW_MANUFACTURER = "INSERT INTO " + MANUFACTURER_TABLE + " VALUES(?,?)";
+    public static final String FIND_MANUFACTURER_BY_ID = FIND_ALL_MANUFACTURERS + " WHERE manufacturer_id = ?";
+    public static final String UPDATE_MANUFACTUER = "UPDATE " + MANUFACTURER_TABLE 
+            + " SET name = ? , country = ? WHERE manufacturer_id = ?";
+    public static final String DELETE_MANUFACTUER_BY_ID = "DELETE FROM " + MANUFACTURER_TABLE 
+                + " WHERE manufacturer_id = ?";
+    /* ============================ */
 }
