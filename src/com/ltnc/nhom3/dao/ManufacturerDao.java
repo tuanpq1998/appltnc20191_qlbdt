@@ -6,7 +6,6 @@
 package com.ltnc.nhom3.dao;
 
 import com.ltnc.nhom3.connect.DatabaseConnect;
-import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.entity.Manufacturer;
 import com.ltnc.nhom3.utility.DBQuery;
 import java.sql.Connection;
@@ -24,7 +23,7 @@ import java.util.List;
 public class ManufacturerDao implements CrudDao<Manufacturer> {
 
     @Override
-    public boolean create(Manufacturer t) throws SQLException {
+    public boolean create(Manufacturer manufacturer) throws SQLException {
         int count = 0;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -32,8 +31,8 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_MANUFACTURER);
 
-            preparedStatement.setString(1, Manufacturer.getName());
-            preparedStatement.setString(2, Manufacturer.getCountry());
+            preparedStatement.setString(1, manufacturer.getName());
+            preparedStatement.setString(2, manufacturer.getCountry());
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -58,7 +57,7 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_MANUFACTURERS);
             Manufacturer manufacturer = null;
-            manufacturers = new ArrayList<Manufacturer>();
+            manufacturers = new ArrayList<>();
 
             while (resultSet.next()) {
                     manufacturer = extractFromResultSet(resultSet);
@@ -95,7 +94,7 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
     }
 
     @Override
-    public boolean update(Manufacturer t) throws SQLException {
+    public boolean update(Manufacturer manufacturer) throws SQLException {
         int count = 0;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -103,9 +102,9 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.UPDATE_MANUFACTUER);
 
-            preparedStatement.setString(1, Manufacturer.getName());
-            preparedStatement.setString(2, Manufacturer.getCountry());
-            preparedStatement.setInt(4, Manufacturer.getId());
+            preparedStatement.setString(1, manufacturer.getName());
+            preparedStatement.setString(2, manufacturer.getCountry());
+            preparedStatement.setInt(3, manufacturer.getId());
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -122,7 +121,7 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.DELETE_CUSTOMER_BY_ID);
+            preparedStatement = connection.prepareStatement(DBQuery.DELETE_MANUFACTUER_BY_ID);
 
             preparedStatement.setInt(1, id);
 
