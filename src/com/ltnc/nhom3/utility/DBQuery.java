@@ -26,7 +26,7 @@ public class DBQuery {
     /* =========== Bill =========== */
     private static final String BILL_TABLE = "Bill";
     
-    public static String FIND_ALL_BILLS = "";
+    public static final String FIND_ALL_BILLS = "";
     /* ============================ */
     
     /* =========== Manufacturer =========== */
@@ -62,11 +62,25 @@ public class DBQuery {
         query.append(")");
         return query.toString();
     }
-    /* =========== Price =========== */
+    /* ============ Price ============ */
     private static final String PRICE_TABLE = "Price";
     public static final String FIND_ALL_PRICE = "SELECT * FROM " + PRICE_TABLE;
     public static final String FIND_PRICE_BY_PRODUCT_ID = FIND_ALL_PRICE + " WHERE product_id=? "
             + "AND current=1";
+    
+    /* =============================== */
+    
+    /* =========== Employee =========== */
+    private static final String EMPLOYEE_TABLE = "Employee";
+    
+    public static final String FIND_ALL_EMPLOYEE = "SELECT * FROM " + EMPLOYEE_TABLE;
+    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(?,?,?,?,?,?,?)";
+    public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEE + " WHERE employee_id = ?";
+    public static final String UPDATE_EMPLOYEE = "UPDATE " + EMPLOYEE_TABLE
+            + " SET fullname = ?,  address =?, phone=? , indentityCard=? , username=?,"
+            + " password = ?, role=?, active=? WHERE employee_id = ?";
+    public static final String DELETE_EMPLOYEE_BY_ID = "DELETE FROM " + EMPLOYEE_TABLE
+            + " WHERE employee_id = ?";
     
     /* ============================ */
 }
