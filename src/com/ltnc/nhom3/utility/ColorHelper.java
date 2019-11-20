@@ -12,15 +12,14 @@ import java.awt.Color;
  * @author admin
  */
 public class ColorHelper {
+    private static Color getColorFromInt(int colorHex) {
+        return new Color(colorHex);
+    }
+    
     public static final Color MENU_PANEL_BG = getColorFromInt(0x333333);
     public static final Color MENU_PANEL_LINE = getColorFromInt(0x838383);
     public static final Color MENU_BTN_BG_HOVER = getColorFromInt(0x19478a);
     public static final Color MENU_BTN_BG_SELECTED = getColorFromInt(0x3e6db5);
-    
-    public static final int STT_BTN_HOVER = 1;
-    public static final int STT_BTN_NORMAL = 0;
-    public static final int STT_BTN_SELECTED = 2;
-    
     
     public static final Color SECTION_PANEL_BG = getColorFromInt(0xffffff);
     public static final Color SECTION_PANEL_LINE = getColorFromInt(0xa0a0a0);
@@ -33,7 +32,4 @@ public class ColorHelper {
     public static final Color SECTION_BTN_BG_NORMAL = SECTION_PANEL_BG;
     public static final Color SECTION_BTN_BG_HOVER = getColorFromInt(0xd5e1f2);
     
-    public static Color getColorFromInt(int colorHex) {
-        return new Color(colorHex);
-    }
 }
