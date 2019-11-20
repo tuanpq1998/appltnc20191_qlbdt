@@ -11,7 +11,7 @@ package com.ltnc.nhom3.entity;
  */
 public class BillDetail {
     private int id, billId, productId, quantity;
-    private float subTotal;
+    private double subTotal;
     private String note;
 
     public int getId() {
@@ -46,11 +46,11 @@ public class BillDetail {
         this.quantity = quantity;
     }
 
-    public float getSubTotal() {
+    public double getSubTotal() {
         return subTotal;
     }
 
-    public void setSubTotal(float subTotal) {
+    public void setSubTotal(double subTotal) {
         this.subTotal = subTotal;
     }
 
@@ -65,7 +65,7 @@ public class BillDetail {
     public BillDetail() {
     }
 
-    public BillDetail(int id, int billId, int productId, int quantity, float subTotal, String note) {
+    public BillDetail(int id, int billId, int productId, int quantity, double subTotal, String note) {
         this.id = id;
         this.billId = billId;
         this.productId = productId;

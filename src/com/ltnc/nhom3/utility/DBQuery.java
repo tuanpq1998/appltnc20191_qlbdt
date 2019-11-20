@@ -45,10 +45,14 @@ public class DBQuery {
     private static final String PRODUCT_TABLE = "Product";
     
     public static final String FIND_ALL_PRODUCTS = "SELECT * FROM " + PRODUCT_TABLE;
+    public static final String FIND_ALL_PRODUCTS_BY_NAME = FIND_ALL_PRODUCTS + " WHERE name LIKE ?";
     public static final String DELETE_PRODUCT_BY_ID = "DELETE FROM " + PRODUCT_TABLE 
                 + " WHERE product_id = ?";
     public static final String DELETE_MANY_PRODUCT_BY_IDS = "DELETE FROM " + PRODUCT_TABLE 
                 + " WHERE product_id IN (";
+    public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS 
+            + " WHERE product_id = ?";
+    
     public static String getQueryDeleteManyProductIds(int numberIds) {
         StringBuilder query = new StringBuilder(DELETE_MANY_PRODUCT_BY_IDS);
         for (int i = 1; i <= numberIds; i++ ) {
@@ -58,4 +62,11 @@ public class DBQuery {
         query.append(")");
         return query.toString();
     }
+    /* =========== Price =========== */
+    private static final String PRICE_TABLE = "Price";
+    public static final String FIND_ALL_PRICE = "SELECT * FROM " + PRICE_TABLE;
+    public static final String FIND_PRICE_BY_PRODUCT_ID = FIND_ALL_PRICE + " WHERE product_id=? "
+            + "AND current=1";
+    
+    /* ============================ */
 }

@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
  * @author admin
  */
 public class ProductDao implements CrudDao<Product> {
-
+    
     @Override
     public boolean create(Product t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -53,7 +52,25 @@ public class ProductDao implements CrudDao<Product> {
 
     @Override
     public Product findById(int id) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Product product  = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+                connection = DatabaseConnect.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(DBQuery.FIND_PRODUCT_BY_ID);
+
+                preparedStatement.setInt(1, id);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) { 
+                    product = extractFromResultSet(resultSet);
+                    
+                    break;
+                }
+        } finally {
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return product;
     }
 
     @Override
@@ -110,6 +127,29 @@ public class ProductDao implements CrudDao<Product> {
             if (connection != null) connection.close();
         }
         return count == listIds.length; 
+    }
+
+    public List<Product> findAllByName(String name) throws SQLException {
+        List<Product> products = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_PRODUCTS_BY_NAME);
+            preparedStatement.setString(1, "%"+name+"%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Product product = null;
+            products = new ArrayList<>();
+
+            while (resultSet.next()) {
+                    product = extractFromResultSet(resultSet);
+                    products.add(product);
+            }
+        } finally {            
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return products;
     }
     
     
