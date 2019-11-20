@@ -31,7 +31,7 @@ CREATE TABLE Bill(
     `customer_id` INT default NULL,
     `create_date` DATETIME,
     `employee_id` INT NOT NULL,
-    `total` DECIMAL(10,4) default NULL,
+    `total` DECIMAL(19,4) default NULL,
     
     PRIMARY KEY (`bill_id`),
     constraint `FK_bill_customer` foreign key (`customer_id`) references `Customer`(`customer_id`),
@@ -64,7 +64,7 @@ CREATE TABLE Bill_detail (
     `bill_id` INT NOT null,
     `product_id` INT NOT null,
     `quantity` SMALLINT Default 1,
-    `sub_total` DECIMAL(10,4),
+    `sub_total` DECIMAL(19,4),
     `note` NVARCHAR(50),
     
     UNIQUE (`bill_id`, `product_id`),
@@ -76,7 +76,7 @@ CREATE TABLE Bill_detail (
 CREATE TABLE Price (
 	`price_id` INT(11) NOT NULL AUTO_INCREMENT,
     `product_id` INT NOT null,
-    `value` DECIMAL(10,4),
+    `value` DECIMAL(19,4),
     `start_date` DATETIME NOT NULL,
     `end_date` DATETIME default NULL,
     PRIMARY KEY (`price_id`),
