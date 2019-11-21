@@ -16,7 +16,6 @@ import com.ltnc.nhom3.utility.DisplayHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.view.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
-import java.awt.Color;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +25,7 @@ import javax.swing.JOptionPane;
  *
  * @author admin
  */
-public class pnlDetail extends javax.swing.JPanel {
+public class pnlEdit extends javax.swing.JPanel {
 
     private int productId;
     private ProductService productService;
@@ -38,45 +37,21 @@ public class pnlDetail extends javax.swing.JPanel {
      * @param id
      * @param productService
      */   
-    public pnlDetail(int id, ProductService productService) {
+    public pnlEdit(int id, ProductService productService) {
         productId = id;
         this.productService = productService;
         manufacturerService = new ManufacturerService();
         priceService =  new PriceService();
         initComponents();
-        displayProductInfo();
+        loadProductInfo();
     }
     
-    private void displayProductInfo() {
-        try {
-            Product product = productService.findById(productId);
-            Price price = priceService.findPriceByProductId(product.getId());
-            int manufacturerId = product.getManufacturerId();
-            if (manufacturerId != 0){
-                Manufacturer manufacturer = manufacturerService.findById(manufacturerId);
-                lblManufacturer.setText(manufacturer != null ? DisplayHandler.convertToDisplayManufacturerString(manufacturer) 
-                        : LabelHelper.NO_INFORMATION_MESSAGE);
-            }
-            lblHeading.setText(product.getName());
-            lblName.setText(product.getName());
-            
-            if (product.isAvailable()) 
-                lblAvailable.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
-            else {
-                lblAvailable.setText(LabelHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
-                lblAvailable.setForeground(Color.red);
-            }
-            
-            lblReleaseDate.setText(DisplayHandler.convertToDisplayDate(product.getReleaseDate()));
-            
-            lblPrice.setText(price==null ? LabelHelper.NO_INFORMATION_MESSAGE 
-                            : DisplayHandler.convertToDisplayPriceString(price.getValue()));
-            
-            txtSpecifications1.setText(product.getDecription());
-            txtSpecifications.setText(product.getSpecifications());
-        } catch (SQLException ex) {
-            Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void loadProductInfo() {
+//        try {
+//            
+//        } catch (SQLException ex) {
+//            Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     /**
@@ -102,25 +77,25 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
-        lblName = new javax.swing.JLabel();
-        lblPrice = new javax.swing.JLabel();
-        lblManufacturer = new javax.swing.JLabel();
-        lblReleaseDate = new javax.swing.JLabel();
-        lblAvailable = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSpecifications = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtSpecifications1 = new javax.swing.JTextPane();
+        jTextField1 = new javax.swing.JTextField();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        jTextField5 = new javax.swing.JTextField();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnDelete = SectionTemplate.getStyledButton();
-        btnEdit = SectionTemplate.getStyledButton();
+        btnReset = SectionTemplate.getStyledButton();
+        btnSubmit = SectionTemplate.getStyledButton();
 
         setBackground(ColorHelper.SECTION_PANEL_BG);
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(null);
+        lblHeading.setText("Sửa sản phẩm");
 
         btnGoBack.setText("Quay lại");
         btnGoBack.addActionListener(new java.awt.event.ActionListener() {
@@ -207,35 +182,28 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(70, 70, 70))
         );
 
-        lblName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblName.setText("Info");
-
-        lblPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblPrice.setText("Info");
-
-        lblManufacturer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblManufacturer.setText("Info");
-
-        lblReleaseDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblReleaseDate.setText("Info");
-
-        lblAvailable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblAvailable.setText("Info");
-
         jScrollPane1.setBackground(getBackground());
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jScrollPane1.setEnabled(false);
 
-        txtSpecifications.setEditable(false);
         txtSpecifications.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSpecifications.setOpaque(false);
         jScrollPane1.setViewportView(txtSpecifications);
 
         jScrollPane2.setBackground(getBackground());
-        jScrollPane2.setEnabled(false);
 
-        txtSpecifications1.setEditable(false);
         txtSpecifications1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSpecifications1.setOpaque(false);
         jScrollPane2.setViewportView(txtSpecifications1);
+
+        jTextField1.setText("jTextField1");
+
+        jTextField2.setText("jTextField2");
+
+        jTextField3.setText("jTextField2");
+
+        jTextField4.setText("jTextField2");
+
+        jTextField5.setText("jTextField2");
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
@@ -244,31 +212,33 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblName)
-                    .addComponent(lblPrice)
-                    .addComponent(lblManufacturer)
-                    .addComponent(lblReleaseDate)
-                    .addComponent(lblAvailable)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(76, Short.MAX_VALUE))
+                    .addGroup(pnlRightLayout.createSequentialGroup()
+                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                            .addComponent(jTextField1)
+                            .addComponent(jTextField2))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jTextField3)
+                    .addComponent(jTextField4)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(lblName)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(lblPrice)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(lblManufacturer)
+                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(lblReleaseDate)
+                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(lblAvailable)
-                .addGap(16, 16, 16)
+                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
+                .addGap(20, 20, 20)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -327,14 +297,14 @@ public class pnlDetail extends javax.swing.JPanel {
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnGoBack, lblHeading});
 
-        btnDelete.setText("Xóa");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnReset.setText("Đặt lại");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnResetActionPerformed(evt);
             }
         });
 
-        btnEdit.setText("Sửa");
+        btnSubmit.setText("Gửi");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -342,9 +312,9 @@ public class pnlDetail extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDelete)
+                .addComponent(btnReset)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEdit)
+                .addComponent(btnSubmit)
                 .addGap(2, 2, 2))
         );
         jPanel2Layout.setVerticalGroup(
@@ -352,8 +322,8 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnEdit)
-                    .addComponent(btnDelete))
+                    .addComponent(btnSubmit)
+                    .addComponent(btnReset))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -385,24 +355,15 @@ public class pnlDetail extends javax.swing.JPanel {
         frmMainWindow.rootFrame.loadInSection(new pnlList());
     }//GEN-LAST:event_btnGoBackActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame, 
-                    LabelHelper.CONFIRM_DIALOG_MESSAGE, LabelHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
-            if (option == JOptionPane.YES_OPTION){
-                try {
-                    if (productService.deleteById(productId))
-                        btnGoBackActionPerformed(evt);
-                } catch (SQLException ex) {
-                    Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        
+    }//GEN-LAST:event_btnResetActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnGoBack;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -416,12 +377,12 @@ public class pnlDetail extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JLabel lblAvailable;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JLabel lblHeading;
-    private javax.swing.JLabel lblManufacturer;
-    private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblPrice;
-    private javax.swing.JLabel lblReleaseDate;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;

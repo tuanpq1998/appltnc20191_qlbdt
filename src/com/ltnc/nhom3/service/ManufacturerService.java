@@ -8,6 +8,7 @@ package com.ltnc.nhom3.service;
 import com.ltnc.nhom3.dao.ManufacturerDao;
 import com.ltnc.nhom3.entity.Manufacturer;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -23,4 +24,9 @@ public class ManufacturerService {
     public Manufacturer findById(int id) throws SQLException {
         return manufacturerDao.findById(id);
     }
+
+    public List<Manufacturer> findAll() throws SQLException {
+        return manufacturerDao.findAll();
+    }
+    
 }

@@ -71,7 +71,7 @@ public class pnlList extends javax.swing.JPanel {
                     
                     price = priceService.findPriceByProductId(product.getId());
                     row[2] = price==null ? LabelHelper.NO_INFORMATION_MESSAGE 
-                            : DisplayHandler.getPriceToDisplay(price.getValue());
+                            : DisplayHandler.convertToDisplayPriceString(price.getValue());
                     
                     row[3] = DisplayHandler.convertToDisplayDate(product.getReleaseDate());
                     row[4] = product.isAvailable() ? LabelHelper.PRODUCT_AVAILABEL_MESSAGE 
@@ -213,6 +213,11 @@ public class pnlList extends javax.swing.JPanel {
         });
 
         btnEdit.setText("Sửa");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Xóa");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -222,6 +227,11 @@ public class pnlList extends javax.swing.JPanel {
         });
 
         btnAdd.setText("Thêm");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -340,6 +350,14 @@ public class pnlList extends javax.swing.JPanel {
                     productService));
         }
     }//GEN-LAST:event_btnDetailActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        frmMainWindow.rootFrame.loadInSection(new pnlAdd(productService));
+    }//GEN-LAST:event_btnAddActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
