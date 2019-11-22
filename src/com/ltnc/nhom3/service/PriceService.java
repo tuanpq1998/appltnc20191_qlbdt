@@ -24,4 +24,11 @@ public class PriceService {
         return priceDao.findByProductId(productId);
     }
     
+    public boolean create(Price price) throws SQLException {
+        return priceDao.create(price);
+    }
+
+    public boolean update(Price price) throws SQLException {
+        return priceDao.update(price);
+    }
 }

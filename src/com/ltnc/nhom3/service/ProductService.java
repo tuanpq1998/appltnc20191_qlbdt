@@ -41,4 +41,12 @@ public class ProductService {
     public boolean deleteById(int id) throws SQLException {
         return productDao.deleteById(id);
     }
+
+    public int create(Product product) throws SQLException {
+        return productDao.create(product, true);
+    }
+
+    public boolean update(Product newProduct) throws SQLException {
+        return productDao.update(newProduct);
+    }
 }

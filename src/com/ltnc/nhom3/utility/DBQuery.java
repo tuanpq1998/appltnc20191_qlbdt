@@ -16,7 +16,7 @@ public class DBQuery {
     
     public static final String FIND_ALL_CUSTOMERS = "SELECT * FROM " + CUSTOMER_TABLE;
     public static final String FIND_CUSTOMER_BY_ID = FIND_ALL_CUSTOMERS + " WHERE customer_id = ?";
-    public static final String CREATE_NEW_CUSTOMER = "INSERT INTO " + CUSTOMER_TABLE + " VALUES(?,?,?)";
+    public static final String CREATE_NEW_CUSTOMER = "INSERT INTO " + CUSTOMER_TABLE + " VALUES(NULL,?,?,?)";
     public static final String DELETE_CUSTOMER_BY_ID = "DELETE FROM " + CUSTOMER_TABLE 
                 + " WHERE customer_id = ?";
     public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
@@ -33,7 +33,7 @@ public class DBQuery {
     private static final String MANUFACTURER_TABLE = "Manufacturer";
     
     public static final String FIND_ALL_MANUFACTURERS = "SELECT * FROM " + MANUFACTURER_TABLE;
-    public static final String CREATE_NEW_MANUFACTURER = "INSERT INTO " + MANUFACTURER_TABLE + " VALUES(?,?)";
+    public static final String CREATE_NEW_MANUFACTURER = "INSERT INTO " + MANUFACTURER_TABLE + " VALUES(NULL,?,?)";
     public static final String FIND_MANUFACTURER_BY_ID = FIND_ALL_MANUFACTURERS + " WHERE manufacturer_id = ?";
     public static final String UPDATE_MANUFACTUER = "UPDATE " + MANUFACTURER_TABLE 
             + " SET name = ? , country = ? WHERE manufacturer_id = ?";
@@ -52,6 +52,11 @@ public class DBQuery {
                 + " WHERE product_id IN (";
     public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS 
             + " WHERE product_id = ?";
+    public static final String CREATE_NEW_PRODUCT = "INSERT INTO " + PRODUCT_TABLE 
+            + " VALUES(NULL,?,?,?,?,?,?)";
+    public static final String UPDATE_PRODUCT = "UPDATE " + PRODUCT_TABLE 
+            + " SET name = ? , manufacturer_id = ?, specifications = ?,"
+            + "description = ?, release_date =?, available = ? WHERE product_id = ?";
     
     public static String getQueryDeleteManyProductIds(int numberIds) {
         StringBuilder query = new StringBuilder(DELETE_MANY_PRODUCT_BY_IDS);
@@ -67,6 +72,10 @@ public class DBQuery {
     public static final String FIND_ALL_PRICE = "SELECT * FROM " + PRICE_TABLE;
     public static final String FIND_PRICE_BY_PRODUCT_ID = FIND_ALL_PRICE + " WHERE product_id=? "
             + "AND current=1";
+    public static final String CREATE_NEW_PRICE = "INSERT INTO " + PRICE_TABLE 
+            + " VALUES(NULL,?,?,?,NULL,DEFAULT)";
+    public static final String UPDATE_PRICE = "UPDATE " + PRICE_TABLE
+            + " SET end_date = ?,  current = ? WHERE price_id = ?";
     
     /* =============================== */
     
@@ -74,10 +83,10 @@ public class DBQuery {
     private static final String EMPLOYEE_TABLE = "Employee";
     
     public static final String FIND_ALL_EMPLOYEE = "SELECT * FROM " + EMPLOYEE_TABLE;
-    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(?,?,?,?,?,?,?)";
+    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?)";
     public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEE + " WHERE employee_id = ?";
     public static final String UPDATE_EMPLOYEE = "UPDATE " + EMPLOYEE_TABLE
-            + " SET fullname = ?,  address =?, phone=? , indentityCard=? , username=?,"
+            + " SET fullname = ?,  address =?, phone=? , indentity_card=? , username=?,"
             + " password = ?, role=?, active=? WHERE employee_id = ?";
     public static final String DELETE_EMPLOYEE_BY_ID = "DELETE FROM " + EMPLOYEE_TABLE
             + " WHERE employee_id = ?";

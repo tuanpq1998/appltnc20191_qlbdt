@@ -21,8 +21,27 @@ import java.util.List;
 public class PriceDao implements CrudDao<Price> {
 
     @Override
-    public boolean create(Price t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean create(Price price) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_PRICE);
+            
+            preparedStatement.setInt(1, price.getProductId());
+            preparedStatement.setDouble(2, price.getValue());
+            preparedStatement.setString(3, price.getStartDate());
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
     }
 
     @Override
@@ -36,8 +55,27 @@ public class PriceDao implements CrudDao<Price> {
     }
 
     @Override
-    public boolean update(Price t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean update(Price price) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.UPDATE_PRICE);
+            
+            preparedStatement.setString(1, price.getEndDate());
+            preparedStatement.setBoolean(2, price.isCurrent());
+
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.DisplayHandler;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.utility.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
@@ -71,9 +71,9 @@ public class pnlList extends javax.swing.JPanel {
                     
                     price = priceService.findPriceByProductId(product.getId());
                     row[2] = price==null ? LabelHelper.NO_INFORMATION_MESSAGE 
-                            : DisplayHandler.convertToDisplayPriceString(price.getValue());
+                            : IOHandler.convertToDisplayPriceString(price.getValue());
                     
-                    row[3] = DisplayHandler.convertToDisplayDate(product.getReleaseDate());
+                    row[3] = IOHandler.convertToDisplayDate(product.getReleaseDate());
                     row[4] = product.isAvailable() ? LabelHelper.PRODUCT_AVAILABEL_MESSAGE 
                             : LabelHelper.PRODUCT_NOT_AVAILABEL_MESSAGE;
                     dtm.addRow(row);
@@ -133,7 +133,6 @@ public class pnlList extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tblList.setFocusable(false);
         tblList.setRowHeight(25);
         jScrollPane1.setViewportView(tblList);
 
@@ -352,7 +351,10 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDetailActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        
+        if (tblList.getSelectedRowCount() == 1){
+            frmMainWindow.rootFrame.loadInSection(new pnlEdit(TableHelper.extractSelectedId(tblList), 
+                    productService));
+        }
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed

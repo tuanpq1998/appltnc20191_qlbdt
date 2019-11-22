@@ -12,7 +12,7 @@ import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.DisplayHandler;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.view.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
@@ -54,7 +54,7 @@ public class pnlDetail extends javax.swing.JPanel {
             int manufacturerId = product.getManufacturerId();
             if (manufacturerId != 0){
                 Manufacturer manufacturer = manufacturerService.findById(manufacturerId);
-                lblManufacturer.setText(manufacturer != null ? DisplayHandler.convertToDisplayManufacturerString(manufacturer) 
+                lblManufacturer.setText(manufacturer != null ? IOHandler.convertToDisplayManufacturerString(manufacturer) 
                         : LabelHelper.NO_INFORMATION_MESSAGE);
             }
             lblHeading.setText(product.getName());
@@ -67,10 +67,10 @@ public class pnlDetail extends javax.swing.JPanel {
                 lblAvailable.setForeground(Color.red);
             }
             
-            lblReleaseDate.setText(DisplayHandler.convertToDisplayDate(product.getReleaseDate()));
+            lblReleaseDate.setText(IOHandler.convertToDisplayDate(product.getReleaseDate()));
             
             lblPrice.setText(price==null ? LabelHelper.NO_INFORMATION_MESSAGE 
-                            : DisplayHandler.convertToDisplayPriceString(price.getValue()));
+                            : IOHandler.convertToDisplayPriceString(price.getValue())+IOHandler.displayStartDate(price.getStartDate()));
             
             txtSpecifications1.setText(product.getDecription());
             txtSpecifications.setText(product.getSpecifications());

@@ -6,21 +6,27 @@
 package com.ltnc.nhom3.view.panel.product;
 
 import com.ltnc.nhom3.entity.Manufacturer;
+import com.ltnc.nhom3.entity.Price;
+import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.DisplayHandler;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.view.SectionTemplate;
+import com.ltnc.nhom3.view.SectionTemplate.CustomComboBoxModel;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Component;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
@@ -35,26 +41,29 @@ public class pnlAdd extends javax.swing.JPanel {
     
     /**
      * Creates new form pnlDetail
-     */   
+     */
     public pnlAdd(ProductService productService) {
         this.productService = productService;
         manufacturerService = new ManufacturerService();
-        priceService =  new PriceService();
-        initComponents();  
+        priceService = new PriceService();
+        initComponents();
         displayManufacturerInComboBox();
+        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
+        frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
     }
-    
+
     private void displayManufacturerInComboBox() {
         try {
             List<Manufacturer> list = manufacturerService.findAll();
-            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+            model.addElement(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);
             }
             cbbManufacturer.setModel(model);
         } catch (SQLException ex) {
             Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
     }
 
     /**
@@ -80,16 +89,21 @@ public class pnlAdd extends javax.swing.JPanel {
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtSpecifications = new javax.swing.JTextPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtSpecifications1 = new javax.swing.JTextPane();
         txtName = new javax.swing.JTextField();
         txtPrice = new javax.swing.JFormattedTextField();
         cbbManufacturer = new javax.swing.JComboBox<>();
-        jFormattedTextField2 = new javax.swing.JFormattedTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        chbAvailabel = new javax.swing.JCheckBox();
         btnCreateManufacturer = SectionTemplate.getStyledButton();
+        txtReleaseDate = new com.toedter.calendar.JDateChooser();
+        txtReleaseDate.setLocale(new Locale("vi", "VI"));
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextArea();
+        txtDescription.setLineWrap(true);
+        txtDescription.setWrapStyleWord(true);
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtSpecifications = new javax.swing.JTextArea();
+        txtSpecifications.setLineWrap(true);
+        txtSpecifications.setWrapStyleWord(true);
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnReset = SectionTemplate.getStyledButton();
@@ -183,19 +197,8 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addComponent(jLabel25)
                 .addGap(91, 91, 91)
                 .addComponent(jLabel26)
-                .addGap(70, 70, 70))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jScrollPane1.setBackground(getBackground());
-        jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        txtSpecifications.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jScrollPane1.setViewportView(txtSpecifications);
-
-        jScrollPane2.setBackground(getBackground());
-
-        txtSpecifications1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jScrollPane2.setViewportView(txtSpecifications1);
 
         txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtName.setName(""); // NOI18N
@@ -205,6 +208,7 @@ public class pnlAdd extends javax.swing.JPanel {
         txtPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         cbbManufacturer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbbManufacturer.setMaximumRowCount(5);
         cbbManufacturer.setMinimumSize(new java.awt.Dimension(56, 25));
         cbbManufacturer.setRenderer(new BasicComboBoxRenderer() {
             @Override
@@ -213,25 +217,40 @@ public class pnlAdd extends javax.swing.JPanel {
                 boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index,
                     isSelected, cellHasFocus);
-                if (value != null) {
+                if (value != null && !LabelHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
                     Manufacturer item = (Manufacturer) value;
-                    setText(DisplayHandler.convertToDisplayManufacturerString(item));
+                    setText(com.ltnc.nhom3.utility.IOHandler.convertToDisplayManufacturerString(item));
                 }
 
                 return this;
             }
         });
 
-        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("d/M/yy"))));
-        jFormattedTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
-        jCheckBox1.setBorder(null);
-        jCheckBox1.setOpaque(false);
+        chbAvailabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        chbAvailabel.setSelected(true);
+        chbAvailabel.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
+        chbAvailabel.setBorder(null);
+        chbAvailabel.setName(""); // NOI18N
+        chbAvailabel.setOpaque(false);
 
         btnCreateManufacturer.setText("Tạo mới");
+
+        txtReleaseDate.setDoubleBuffered(false);
+        txtReleaseDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtReleaseDate.setMaximumSize(new java.awt.Dimension(91, 20));
+        txtReleaseDate.setMinimumSize(new java.awt.Dimension(91, 20));
+
+        txtDescription.setColumns(20);
+        txtDescription.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtDescription.setRows(4);
+        txtDescription.setTabSize(3);
+        jScrollPane3.setViewportView(txtDescription);
+
+        txtSpecifications.setColumns(20);
+        txtSpecifications.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSpecifications.setRows(4);
+        txtSpecifications.setTabSize(3);
+        jScrollPane4.setViewportView(txtSpecifications);
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
@@ -240,18 +259,20 @@ public class pnlAdd extends javax.swing.JPanel {
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1)
-                    .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2)
-                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtPrice)
-                        .addGroup(pnlRightLayout.createSequentialGroup()
-                            .addComponent(cbbManufacturer, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCreateManufacturer))
-                        .addComponent(jFormattedTextField2)))
-                .addContainerGap(70, Short.MAX_VALUE))
+                    .addComponent(chbAvailabel)
+                    .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtPrice)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRightLayout.createSequentialGroup()
+                                .addComponent(cbbManufacturer, 0, 196, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnCreateManufacturer)))
+                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addComponent(txtReleaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,18 +284,17 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cbbManufacturer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCreateManufacturer))
-                .addGap(20, 20, 20)
-                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23)
-                .addComponent(jCheckBox1)
-                .addGap(21, 21, 21)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtReleaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(chbAvailabel)
+                .addGap(23, 23, 23)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCreateManufacturer, cbbManufacturer, jFormattedTextField2, txtName, txtPrice});
+        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCreateManufacturer, cbbManufacturer, txtName, txtPrice, txtReleaseDate});
 
         javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
         pnlForm.setLayout(pnlFormLayout);
@@ -291,10 +311,10 @@ public class pnlAdd extends javax.swing.JPanel {
             pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(21, 21, 21))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -325,7 +345,7 @@ public class pnlAdd extends javax.swing.JPanel {
                     .addComponent(lblHeading))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnGoBack, lblHeading});
@@ -338,6 +358,11 @@ public class pnlAdd extends javax.swing.JPanel {
         });
 
         btnSubmit.setText("Gửi");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -389,8 +414,44 @@ public class pnlAdd extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        
+        txtName.setText("");
+        txtPrice.setText("");
+        txtDescription.setText("");
+        txtSpecifications.setText("");
+        txtReleaseDate.setDate(null);
+        chbAvailabel.setSelected(true);
+        CustomComboBoxModel model = (CustomComboBoxModel) cbbManufacturer.getModel();
+        model.setSelectionAllowed(true);
+        cbbManufacturer.getModel().setSelectedItem(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
     }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO : check required
+        Product product = new Product();
+        product.setName(txtName.getText());
+        product.setAvailable(chbAvailabel.isSelected());
+        product.setDecription(txtDescription.getText());
+        product.setSpecifications(txtSpecifications.getText());
+        product.setReleaseDate(IOHandler.convertToStringSQLDate(txtReleaseDate.getDate()));
+        product.setManufacturerId(((Manufacturer)cbbManufacturer.getSelectedItem()).getId());
+        
+        Price price = new Price();
+        try {
+            int productId = productService.create(product);
+            if (productId > 0) {
+                if (txtPrice.getValue() != null){
+                    price.setProductId(productId);
+                    price.setValue(((Number)txtPrice.getValue()).doubleValue());
+                    price.setStartDate(IOHandler.convertToStringSQLDateTime(new Date()));
+                    priceService.create(price);
+                }
+                JOptionPane.showMessageDialog(frmMainWindow.rootFrame, LabelHelper.ADD_DONE_DIALOG_MESSAGE);
+                frmMainWindow.rootFrame.loadInSection(new pnlList());
+            };
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnSubmitActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -399,8 +460,7 @@ public class pnlAdd extends javax.swing.JPanel {
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JComboBox<String> cbbManufacturer;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JFormattedTextField jFormattedTextField2;
+    private javax.swing.JCheckBox chbAvailabel;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -410,17 +470,18 @@ public class pnlAdd extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lblHeading;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
+    private javax.swing.JTextArea txtDescription;
     private javax.swing.JTextField txtName;
     private javax.swing.JFormattedTextField txtPrice;
-    private javax.swing.JTextPane txtSpecifications;
-    private javax.swing.JTextPane txtSpecifications1;
+    private com.toedter.calendar.JDateChooser txtReleaseDate;
+    private javax.swing.JTextArea txtSpecifications;
     // End of variables declaration//GEN-END:variables
 }
