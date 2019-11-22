@@ -6,8 +6,6 @@
 package com.ltnc.nhom3.view.panel.product;
 
 import com.ltnc.nhom3.entity.Manufacturer;
-import com.ltnc.nhom3.entity.Price;
-import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
@@ -16,42 +14,47 @@ import com.ltnc.nhom3.utility.DisplayHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.view.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
+import java.awt.Component;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JList;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
  *
  * @author admin
  */
-public class pnlEdit extends javax.swing.JPanel {
+public class pnlAdd extends javax.swing.JPanel {
 
-    private int productId;
     private ProductService productService;
     private ManufacturerService manufacturerService;
     private PriceService priceService;
     
     /**
      * Creates new form pnlDetail
-     * @param id
-     * @param productService
      */   
-    public pnlEdit(int id, ProductService productService) {
-        productId = id;
+    public pnlAdd(ProductService productService) {
         this.productService = productService;
         manufacturerService = new ManufacturerService();
         priceService =  new PriceService();
-        initComponents();
-        loadProductInfo();
+        initComponents();  
+        displayManufacturerInComboBox();
     }
     
-    private void loadProductInfo() {
-//        try {
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+    private void displayManufacturerInComboBox() {
+        try {
+            List<Manufacturer> list = manufacturerService.findAll();
+            DefaultComboBoxModel model = new DefaultComboBoxModel();
+            for (Manufacturer manufacturer : list) {
+                model.addElement(manufacturer);
+            }
+            cbbManufacturer.setModel(model);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }        
     }
 
     /**
@@ -81,11 +84,12 @@ public class pnlEdit extends javax.swing.JPanel {
         txtSpecifications = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtSpecifications1 = new javax.swing.JTextPane();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
+        txtPrice = new javax.swing.JFormattedTextField();
+        cbbManufacturer = new javax.swing.JComboBox<>();
+        jFormattedTextField2 = new javax.swing.JFormattedTextField();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        btnCreateManufacturer = SectionTemplate.getStyledButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnReset = SectionTemplate.getStyledButton();
@@ -95,7 +99,7 @@ public class pnlEdit extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText("Sửa sản phẩm");
+        lblHeading.setText("Thêm sản phẩm");
 
         btnGoBack.setText("Quay lại");
         btnGoBack.addActionListener(new java.awt.event.ActionListener() {
@@ -117,7 +121,7 @@ public class pnlEdit extends javax.swing.JPanel {
         jLabel23.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel24.setText("Xuất xứ:");
+        jLabel24.setText("Hãng sản xuất:");
         jLabel24.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel24.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel24.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
@@ -165,19 +169,19 @@ public class pnlEdit extends javax.swing.JPanel {
         pnlLeftLayout.setVerticalGroup(
             pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLeftLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
+                .addGap(3, 3, 3)
                 .addComponent(jLabel22)
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel23)
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel24)
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel27)
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel28)
-                .addGap(20, 20, 20)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel25)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addGap(91, 91, 91)
                 .addComponent(jLabel26)
                 .addGap(70, 70, 70))
         );
@@ -186,24 +190,48 @@ public class pnlEdit extends javax.swing.JPanel {
         jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         txtSpecifications.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtSpecifications.setOpaque(false);
         jScrollPane1.setViewportView(txtSpecifications);
 
         jScrollPane2.setBackground(getBackground());
 
         txtSpecifications1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtSpecifications1.setOpaque(false);
         jScrollPane2.setViewportView(txtSpecifications1);
 
-        jTextField1.setText("jTextField1");
+        txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtName.setName(""); // NOI18N
+        txtName.setPreferredSize(new java.awt.Dimension(6, 25));
 
-        jTextField2.setText("jTextField2");
+        txtPrice.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        txtPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jTextField3.setText("jTextField2");
+        cbbManufacturer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbbManufacturer.setMinimumSize(new java.awt.Dimension(56, 25));
+        cbbManufacturer.setRenderer(new BasicComboBoxRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                JList list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index,
+                    isSelected, cellHasFocus);
+                if (value != null) {
+                    Manufacturer item = (Manufacturer) value;
+                    setText(DisplayHandler.convertToDisplayManufacturerString(item));
+                }
 
-        jTextField4.setText("jTextField2");
+                return this;
+            }
+        });
 
-        jTextField5.setText("jTextField2");
+        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("d/M/yy"))));
+        jFormattedTextField2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jCheckBox1.setSelected(true);
+        jCheckBox1.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
+        jCheckBox1.setBorder(null);
+        jCheckBox1.setOpaque(false);
+
+        btnCreateManufacturer.setText("Tạo mới");
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
@@ -212,36 +240,41 @@ public class pnlEdit extends javax.swing.JPanel {
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlRightLayout.createSequentialGroup()
-                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                    .addComponent(jCheckBox1)
+                    .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2)
+                        .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtPrice)
+                        .addGroup(pnlRightLayout.createSequentialGroup()
+                            .addComponent(cbbManufacturer, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCreateManufacturer))
+                        .addComponent(jFormattedTextField2)))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbbManufacturer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCreateManufacturer))
                 .addGap(20, 20, 20)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
+                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addComponent(jCheckBox1)
+                .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCreateManufacturer, cbbManufacturer, jFormattedTextField2, txtName, txtPrice});
 
         javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
         pnlForm.setLayout(pnlFormLayout);
@@ -250,18 +283,18 @@ public class pnlEdit extends javax.swing.JPanel {
             .addGroup(pnlFormLayout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addComponent(pnlLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlFormLayout.setVerticalGroup(
             pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, 402, Short.MAX_VALUE)
-                    .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, 0))
+                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -273,11 +306,11 @@ public class pnlEdit extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblHeading, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addComponent(btnGoBack))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -361,9 +394,13 @@ public class pnlEdit extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCreateManufacturer;
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSubmit;
+    private javax.swing.JComboBox<String> cbbManufacturer;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -377,15 +414,12 @@ public class pnlEdit extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JLabel lblHeading;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JFormattedTextField txtPrice;
     private javax.swing.JTextPane txtSpecifications;
     private javax.swing.JTextPane txtSpecifications1;
     // End of variables declaration//GEN-END:variables
