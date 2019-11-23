@@ -19,6 +19,7 @@ import com.ltnc.nhom3.view.SectionTemplate.CustomComboBoxModel;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Component;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -427,6 +428,13 @@ public class pnlAdd extends javax.swing.JPanel {
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         // TODO : check required
+        try {    
+            txtPrice.commitEdit();
+        } catch (ParseException ex) {
+            txtPrice.requestFocus();
+            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         Product product = new Product();
         product.setName(txtName.getText());
         product.setAvailable(chbAvailabel.isSelected());
