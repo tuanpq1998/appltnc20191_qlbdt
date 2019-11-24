@@ -11,8 +11,9 @@ package com.ltnc.nhom3.entity;
  */
 public class Price {
     private int id, productId;
-    private float value;
+    private double value;
     private String startDate, endDate;
+    private boolean current;
 
     public int getId() {
         return id;
@@ -30,11 +31,11 @@ public class Price {
         this.productId = productId;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -54,21 +55,29 @@ public class Price {
         this.endDate = endDate;
     }
 
+    public boolean isCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
+    }
+    
     public Price() {
     }
 
-    public Price(int id, int productId, float value, String startDate, String endDate) {
+    public Price(int id, int productId, double value, String startDate, String endDate, boolean current) {
         this.id = id;
         this.productId = productId;
         this.value = value;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.current = current;
     }
 
     @Override
     public String toString() {
-        return "Price{" + "id=" + id + ", productId=" + productId + ", value=" + value + ", startDate=" + startDate + ", endDate=" + endDate + '}';
-    }
-    
+        return "Price{" + "id=" + id + ", productId=" + productId + ", value=" + value + ", startDate=" + startDate + ", endDate=" + endDate + ", current=" + current + '}';
+    }  
     
 }

@@ -12,16 +12,8 @@ package com.ltnc.nhom3.entity;
 public class Employee {
 
     private int id;
-    private String fullname, address, phone, indentityCard, username,password, role;
+    private String fullname, address, phone, indentityCard, username, password, role;
     private boolean active;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public int getId() {
         return id;
@@ -87,15 +79,23 @@ public class Employee {
         this.active = active;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
-        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ",password = " + password + ", role=" + role + ", active=" + active + '}';
+        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ", password=" + password + ", role=" + role + ", active=" + active + '}';
     }
 
     public Employee() {
     }
 
-    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username,String password , String role, boolean active) {
+    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username, String password, String role, boolean active) {
         this.id = id;
         this.fullname = fullname;
         this.address = address;
@@ -106,5 +106,4 @@ public class Employee {
         this.role = role;
         this.active = active;
     }
-    
 }

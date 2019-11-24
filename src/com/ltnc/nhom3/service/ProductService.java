@@ -29,4 +29,24 @@ public class ProductService {
     public boolean deleteByIds(int[] listIds) throws SQLException {
         return productDao.deleteManyByIds(listIds);
     }
+
+    public List<Product> findAllByName(String searchKey) throws SQLException {
+        return productDao.findAllByName(searchKey);
+    }
+
+    public Product findById(int id) throws SQLException {
+        return productDao.findById(id);
+    }
+
+    public boolean deleteById(int id) throws SQLException {
+        return productDao.deleteById(id);
+    }
+
+    public int create(Product product) throws SQLException {
+        return productDao.create(product, true);
+    }
+
+    public boolean update(Product newProduct) throws SQLException {
+        return productDao.update(newProduct);
+    }
 }

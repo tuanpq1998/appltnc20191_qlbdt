@@ -12,9 +12,9 @@ package com.ltnc.nhom3.entity;
 public class Bill {
     private int id, customerId, employeeId;
     private String createDate;
-    private float totalMoney;
+    private double totalMoney;
 
-    public Bill(int id, int customerId, int employeeId, String createDate, float totalMoney) {
+    public Bill(int id, int customerId, int employeeId, String createDate, double totalMoney) {
         this.id = id;
         this.customerId = customerId;
         this.employeeId = employeeId;
@@ -41,7 +41,7 @@ public class Bill {
         return createDate;
     }
 
-    public float getTotalMoney() {
+    public double getTotalMoney() {
         return totalMoney;
     }
 
@@ -61,7 +61,7 @@ public class Bill {
         this.createDate = createDate;
     }
 
-    public void setTotalMoney(float totalMoney) {
+    public void setTotalMoney(double totalMoney) {
         this.totalMoney = totalMoney;
     }
 
