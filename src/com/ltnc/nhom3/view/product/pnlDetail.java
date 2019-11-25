@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.panel.product;
+package com.ltnc.nhom3.view.product;
 
 import com.ltnc.nhom3.entity.Manufacturer;
 import com.ltnc.nhom3.entity.Price;
@@ -14,7 +14,7 @@ import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ColorHelper;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
-import com.ltnc.nhom3.view.SectionTemplate;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Color;
 import java.sql.SQLException;
@@ -289,7 +289,7 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, 402, Short.MAX_VALUE)
+                    .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
                     .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, 0))
         );

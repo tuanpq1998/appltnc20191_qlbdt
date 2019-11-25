@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.panel.product;
+package com.ltnc.nhom3.view.product;
 
 import com.ltnc.nhom3.entity.Manufacturer;
 import com.ltnc.nhom3.entity.Price;
@@ -14,9 +14,10 @@ import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ColorHelper;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
-import com.ltnc.nhom3.view.SectionTemplate;
-import com.ltnc.nhom3.view.SectionTemplate.CustomComboBoxModel;
+import com.ltnc.nhom3.view.template.SectionTemplate;
+import com.ltnc.nhom3.view.template.SectionTemplate.CustomComboBoxModel;
 import com.ltnc.nhom3.view.frmMainWindow;
+import com.ltnc.nhom3.view.manufacturer.DialogHelper;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -48,23 +49,33 @@ public class pnlAdd extends javax.swing.JPanel {
         manufacturerService = new ManufacturerService();
         priceService = new PriceService();
         initComponents();
-        displayManufacturerInComboBox();
+        loadManufacturersToComboBox(-1);
         cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
     }
 
-    private void displayManufacturerInComboBox() {
+    private void loadManufacturersToComboBox(int selectManufacturerId) {
         try {
+            Manufacturer selectManufacturer = null;
             List<Manufacturer> list = manufacturerService.findAll();
             DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
             model.addElement(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);
+                 if (manufacturer.getId() == selectManufacturerId)
+                    selectManufacturer = manufacturer;
             }
             cbbManufacturer.setModel(model);
+            if (selectManufacturer != null) cbbManufacturer.setSelectedItem(selectManufacturer);
         } catch (SQLException ex) {
             Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private void resetComboBox() {
+        CustomComboBoxModel model = (CustomComboBoxModel) cbbManufacturer.getModel();
+        model.setSelectionAllowed(true);
+        model.setSelectedItem(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
     }
 
     /**
@@ -105,6 +116,7 @@ public class pnlAdd extends javax.swing.JPanel {
         txtSpecifications = new javax.swing.JTextArea();
         txtSpecifications.setLineWrap(true);
         txtSpecifications.setWrapStyleWord(true);
+        btnEditManufacturer = SectionTemplate.getStyledButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnReset = SectionTemplate.getStyledButton();
@@ -220,7 +232,9 @@ public class pnlAdd extends javax.swing.JPanel {
                     isSelected, cellHasFocus);
                 if (value != null && !LabelHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
                     Manufacturer item = (Manufacturer) value;
-                    setText(com.ltnc.nhom3.utility.IOHandler.convertToDisplayManufacturerString(item));
+                    String manufacturerStr = IOHandler.convertToDisplayManufacturerString(item);
+                    setText(manufacturerStr);
+                    setToolTipText(manufacturerStr);
                 }
 
                 return this;
@@ -235,6 +249,11 @@ public class pnlAdd extends javax.swing.JPanel {
         chbAvailabel.setOpaque(false);
 
         btnCreateManufacturer.setText("Tạo mới");
+        btnCreateManufacturer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateManufacturerActionPerformed(evt);
+            }
+        });
 
         txtReleaseDate.setDoubleBuffered(false);
         txtReleaseDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -253,27 +272,34 @@ public class pnlAdd extends javax.swing.JPanel {
         txtSpecifications.setTabSize(3);
         jScrollPane4.setViewportView(txtSpecifications);
 
+        btnEditManufacturer.setText("Sửa");
+        btnEditManufacturer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditManufacturerActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
         pnlRightLayout.setHorizontalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(chbAvailabel)
-                    .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtPrice)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlRightLayout.createSequentialGroup()
-                                .addComponent(cbbManufacturer, 0, 196, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnCreateManufacturer)))
-                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(txtReleaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPrice)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3)
+                    .addGroup(pnlRightLayout.createSequentialGroup()
+                        .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cbbManufacturer, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtReleaseDate, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                        .addGap(7, 7, 7)
+                        .addComponent(btnEditManufacturer)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCreateManufacturer)))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,7 +310,9 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cbbManufacturer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCreateManufacturer))
+                    .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnCreateManufacturer)
+                        .addComponent(btnEditManufacturer)))
                 .addGap(23, 23, 23)
                 .addComponent(txtReleaseDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
@@ -295,7 +323,7 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCreateManufacturer, cbbManufacturer, txtName, txtPrice, txtReleaseDate});
+        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnCreateManufacturer, btnEditManufacturer, cbbManufacturer, txtName, txtPrice, txtReleaseDate});
 
         javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
         pnlForm.setLayout(pnlFormLayout);
@@ -421,9 +449,7 @@ public class pnlAdd extends javax.swing.JPanel {
         txtSpecifications.setText("");
         txtReleaseDate.setDate(null);
         chbAvailabel.setSelected(true);
-        CustomComboBoxModel model = (CustomComboBoxModel) cbbManufacturer.getModel();
-        model.setSelectionAllowed(true);
-        cbbManufacturer.getModel().setSelectedItem(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
+        resetComboBox();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
@@ -445,7 +471,7 @@ public class pnlAdd extends javax.swing.JPanel {
         
         Price price = new Price();
         try {
-            int productId = productService.create(product);
+            int productId = productService.createAndReturnId(product);
             if (productId > 0) {
                 if (txtPrice.getValue() != null){
                     price.setProductId(productId);
@@ -461,9 +487,26 @@ public class pnlAdd extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
+    private void btnCreateManufacturerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateManufacturerActionPerformed
+        int returnedId = DialogHelper.showAddManufacturerForm(frmMainWindow.rootFrame, manufacturerService);
+        if (returnedId != -1)
+            loadManufacturersToComboBox(returnedId);
+    }//GEN-LAST:event_btnCreateManufacturerActionPerformed
+
+    private void btnEditManufacturerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditManufacturerActionPerformed
+        if(!LabelHelper.COMBOBOX_SELECT_MANUFACTURER.equals(cbbManufacturer.getSelectedItem())) {
+            int manufacturerId = ((Manufacturer)cbbManufacturer.getSelectedItem()).getId();
+            if(DialogHelper.showEditManufacturerForm(frmMainWindow.rootFrame, manufacturerService,
+                    manufacturerId) == 0)
+                resetComboBox();
+            loadManufacturersToComboBox(manufacturerId);
+        }
+    }//GEN-LAST:event_btnEditManufacturerActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateManufacturer;
+    private javax.swing.JButton btnEditManufacturer;
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSubmit;

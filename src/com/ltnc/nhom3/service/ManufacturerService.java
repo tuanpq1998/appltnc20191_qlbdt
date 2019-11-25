@@ -29,4 +29,25 @@ public class ManufacturerService {
         return manufacturerDao.findAll();
     }
     
+    public Manufacturer findByName(String name) throws SQLException {
+        return manufacturerDao.findByName(name);
+    }
+    
+    public int createAndReturnId(Manufacturer manufacturer) throws SQLException {
+        return manufacturerDao.createAndReturnId(manufacturer);
+    }
+    
+    public int isNameExisted(String name) throws SQLException {
+        Manufacturer m = findByName(name);
+        return m == null ? -1 : m.getId();
+    }
+
+    public void update(Manufacturer manufacturer) throws SQLException {
+        manufacturerDao.update(manufacturer);
+    }
+
+    public void deleteById(int id) throws SQLException {
+        manufacturerDao.deleteById(id);
+    }
+    
 }

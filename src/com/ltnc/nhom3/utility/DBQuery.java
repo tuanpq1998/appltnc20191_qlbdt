@@ -39,6 +39,8 @@ public class DBQuery {
             + " SET name = ? , country = ? WHERE manufacturer_id = ?";
     public static final String DELETE_MANUFACTUER_BY_ID = "DELETE FROM " + MANUFACTURER_TABLE 
                 + " WHERE manufacturer_id = ?";
+    public static final String FIND_MANUFACTURER_BY_NAME = FIND_ALL_MANUFACTURERS + " WHERE name = ?";
+
     /* ============================ */
     
     /* =========== Product =========== */
@@ -90,6 +92,6 @@ public class DBQuery {
             + " password = ?, role=?, active=? WHERE employee_id = ?";
     public static final String DELETE_EMPLOYEE_BY_ID = "DELETE FROM " + EMPLOYEE_TABLE
             + " WHERE employee_id = ?";
-    
+    public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEE + " WHERE username=? AND active=1";
     /* ============================ */
 }

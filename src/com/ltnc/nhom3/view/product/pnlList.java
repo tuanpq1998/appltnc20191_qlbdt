@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.panel.product;
+package com.ltnc.nhom3.view.product;
 
 import com.ltnc.nhom3.entity.Price;
 import com.ltnc.nhom3.entity.Product;
@@ -14,7 +14,7 @@ import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.utility.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
-import com.ltnc.nhom3.view.SectionTemplate;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -321,13 +321,10 @@ public class pnlList extends javax.swing.JPanel {
             try {
                 listResultProduct = productService.findAllByName(searchKey);
                 loadTable(listResultProduct);
-                
-                String searchKeyHeading = searchKey;
-                if (searchKey.length() > 20) 
-                    searchKeyHeading = searchKeyHeading.substring(0,15) + " ...";
-                    
-                lblHeading.setText(LabelHelper.PRODUCT_LIST_SEARCH_HEADING+" '"+searchKeyHeading+"'");
-                lblHeading.setToolTipText(LabelHelper.PRODUCT_LIST_SEARCH_HEADING+" '"+searchKey+"'");
+                if (searchKey.length() > 15)
+                    lblHeading.setText(String.format(LabelHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
+                else lblHeading.setText(String.format(LabelHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey));
+                lblHeading.setToolTipText(String.format(LabelHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey));
                 btnClearSearch.setVisible(true);
             } catch (SQLException ex) {
                 Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);

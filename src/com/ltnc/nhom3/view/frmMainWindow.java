@@ -6,13 +6,20 @@
 
 package com.ltnc.nhom3.view;
 
+import com.ltnc.nhom3.entity.Employee;
+import com.ltnc.nhom3.service.EmployeeService;
+import com.ltnc.nhom3.view.template.MenuTemplate;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.utility.ColorHelper;
+import com.ltnc.nhom3.utility.LabelHelper;
 import com.ltnc.nhom3.utility.Status;
-import com.ltnc.nhom3.view.panel.product.pnlList;
+import com.ltnc.nhom3.view.product.pnlList;
 import java.awt.Color;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.GroupLayout;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
@@ -22,8 +29,10 @@ import javax.swing.UIManager;
  * @author admin
  */
 public class frmMainWindow extends javax.swing.JFrame {
-    
+
     private int mode;
+    private EmployeeService employeeService;
+    private Employee loggedInEmployee;
     public static frmMainWindow rootFrame;
     
     /** Creates new form frmMainWindow */
@@ -33,6 +42,9 @@ public class frmMainWindow extends javax.swing.JFrame {
         UIManager.put("OptionPane.background", ColorHelper.SECTION_PANEL_BG);
         UIManager.put("Panel.background", ColorHelper.SECTION_PANEL_BG);
         mode = Status.MAIN_FRAME_INIT_MODE;
+        employeeService = new EmployeeService();
+        showLoginDialog();
+        btnLogOut.setText(String.format(LabelHelper.LOGOUT_BTN_TEXT, loggedInEmployee.getUsername()));
     }
 
     /** This method is called from within the constructor to
@@ -54,10 +66,19 @@ public class frmMainWindow extends javax.swing.JFrame {
         btnProduct = MenuTemplate.getStyledButton();
         btnCustomer = MenuTemplate.getStyledButton();
         btnBill = MenuTemplate.getStyledButton();
+        jSeparator2 = MenuTemplate.getStyledSeparator();
+        btnLogOut = MenuTemplate.getStyledButton();
         jLabel2 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("App nhom 3");
+        setMinimumSize(new java.awt.Dimension(990, 768));
+        setPreferredSize(new java.awt.Dimension(990, 768));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlInSectionLayout = new javax.swing.GroupLayout(pnlInSection);
         pnlInSection.setLayout(pnlInSectionLayout);
@@ -135,6 +156,22 @@ public class frmMainWindow extends javax.swing.JFrame {
             }
         });
 
+        groupBtnMenu.add(btnLogOut);
+        btnLogOut.setText("Đăng xuất, ");
+        btnLogOut.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnMenuSelectMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnMenuSelectMouseExited(evt);
+            }
+        });
+        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogOutActionPerformed(evt);
+            }
+        });
+
         jLabel2.setBackground(pnlMenu.getBackground());
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -148,16 +185,19 @@ public class frmMainWindow extends javax.swing.JFrame {
             .addComponent(btnProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(btnBill, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jSeparator2)
             .addGroup(pnlMenuContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(pnlMenuContainerLayout.createSequentialGroup()
-                        .addGroup(pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(0, 82, Short.MAX_VALUE)))
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(pnlMenuContainerLayout.createSequentialGroup()
+                .addComponent(jLabel2)
+                .addGap(0, 104, Short.MAX_VALUE))
         );
         pnlMenuContainerLayout.setVerticalGroup(
             pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,9 +212,12 @@ public class frmMainWindow extends javax.swing.JFrame {
                 .addComponent(btnCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btnBill, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 421, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(111, 111, 111))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 335, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
@@ -182,16 +225,16 @@ public class frmMainWindow extends javax.swing.JFrame {
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(20, Short.MAX_VALUE)
                 .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGap(20, 20, 20))
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(32, 32, 32))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -237,6 +280,7 @@ public class frmMainWindow extends javax.swing.JFrame {
         if (mode != Status.MAIN_FRAME_CUSTOMER_MODE){
             mode = Status.MAIN_FRAME_CUSTOMER_MODE;
             reloadGroupButtons();
+            loadInSection(new com.ltnc.nhom3.view.customer.pnlList());
         }
     }//GEN-LAST:event_btnCustomerActionPerformed
 
@@ -248,6 +292,19 @@ public class frmMainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBillActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (JOptionPane.showConfirmDialog(rootFrame, LabelHelper.CONFIRM_LOGOUT_DIALOG_MESSAGE,
+                LabelHelper.CONFIRM_LOGOUT_DIALOG_TITLE, JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION) {
+            this.dispose();
+            new frmMainWindow().setVisible(true);
+        } else setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+        formWindowClosing(null);
+    }//GEN-LAST:event_btnLogOutActionPerformed
+    
     private void setStyleForButton(JToggleButton button, int status) {
         Color color = null;
         switch(status) {
@@ -287,6 +344,13 @@ public class frmMainWindow extends javax.swing.JFrame {
                                 .addComponent(jPanel, 0, GroupLayout.PREFERRED_SIZE, Integer.MAX_VALUE)
                                 )
         );
+    }
+    
+    private void showLoginDialog() {
+        loggedInEmployee = null;
+        dloLogin loginForm = new dloLogin(frmMainWindow.rootFrame, true, employeeService);
+        loginForm.setVisible(true);
+        loggedInEmployee = loginForm.getLoggedInEmployee();
     }
     
     public void loadInSection(JPanel panel){
@@ -336,11 +400,13 @@ public class frmMainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnBill;
     private javax.swing.JToggleButton btnCustomer;
+    private javax.swing.JToggleButton btnLogOut;
     private javax.swing.JToggleButton btnProduct;
     private javax.swing.ButtonGroup groupBtnMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel pnlInSection;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlMenuContainer;

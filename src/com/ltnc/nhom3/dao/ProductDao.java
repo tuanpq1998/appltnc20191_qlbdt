@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ProductDao implements CrudDao<Product> {
     
-    public int create(Product product, boolean isReturnNewId) throws SQLException {
+    public int createAndReturnId(Product product, boolean isReturnNewId) throws SQLException {
         int newId = 0;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -176,7 +176,7 @@ public class ProductDao implements CrudDao<Product> {
         return count == listIds.length; 
     }
 
-    public List<Product> findAllByName(String name) throws SQLException {
+    public List<Product> findAllLikeName(String name) throws SQLException {
         List<Product> products = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;

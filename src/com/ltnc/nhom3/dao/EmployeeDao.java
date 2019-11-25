@@ -177,4 +177,31 @@ public class EmployeeDao implements CrudDao<Employee> {
         return employee;
     }
 
+    public Employee findByUsername(String username) throws SQLException {
+        Employee employee = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_EMPLYEE_BY_USERNAME);
+
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                employee = extractFromResultSet(resultSet);
+
+                break;
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+
+        return employee;
+    }
+
 }

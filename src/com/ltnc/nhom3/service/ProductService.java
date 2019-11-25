@@ -31,7 +31,7 @@ public class ProductService {
     }
 
     public List<Product> findAllByName(String searchKey) throws SQLException {
-        return productDao.findAllByName(searchKey);
+        return productDao.findAllLikeName(searchKey);
     }
 
     public Product findById(int id) throws SQLException {
@@ -42,8 +42,8 @@ public class ProductService {
         return productDao.deleteById(id);
     }
 
-    public int create(Product product) throws SQLException {
-        return productDao.create(product, true);
+    public int createAndReturnId(Product product) throws SQLException {
+        return productDao.createAndReturnId(product, true);
     }
 
     public boolean update(Product newProduct) throws SQLException {

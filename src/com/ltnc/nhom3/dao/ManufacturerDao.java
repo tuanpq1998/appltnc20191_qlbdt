@@ -24,17 +24,24 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
  
     @Override
     public boolean create(Manufacturer manufacturer) throws SQLException {
-        int count = 0;
+        return false;
+    }
+    
+    public int createAndReturnId(Manufacturer manufacturer) throws SQLException {
+        int newId = 0;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_MANUFACTURER);
+            preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_MANUFACTURER,
+                    PreparedStatement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setString(1, manufacturer.getName());
             preparedStatement.setString(2, manufacturer.getCountry());
 
-            count = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) newId=rs.getInt(1);
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();
@@ -43,7 +50,7 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
                 connection.close();
             }
         }
-        return count > 0;
+        return newId;
 
     }
 
@@ -141,6 +148,28 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         manufacturer.setCountry(resultSet.getString(3));
         return manufacturer;
       
+    }
+    
+    public Manufacturer findByName(String name) throws SQLException {
+        Manufacturer manufacturer  = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+                connection = DatabaseConnect.getInstance().getConnection();
+                preparedStatement = connection.prepareStatement(DBQuery.FIND_MANUFACTURER_BY_NAME);
+
+                preparedStatement.setString(1, name);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) { 
+                    manufacturer = extractFromResultSet(resultSet);
+                    
+                    break;
+                }
+        } finally {
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return manufacturer;
     }
 
 }

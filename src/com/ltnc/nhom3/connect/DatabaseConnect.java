@@ -38,9 +38,7 @@ public class DatabaseConnect {
 	}
 
 	public static DatabaseConnect getInstance() throws SQLException {
-		if (instance == null) {
-			instance = new DatabaseConnect();
-		} else if (instance.getConnection().isClosed()) {
+		if (instance == null || instance.getConnection().isClosed()) {
 			instance = new DatabaseConnect();
 		}
 		return instance;
