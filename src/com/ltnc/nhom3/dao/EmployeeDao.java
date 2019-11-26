@@ -20,9 +20,8 @@ import java.util.List;
  *
  * @author PhungSyLinh
  */
-public class EmployeeDao implements CrudDao<Employee> {
+public class EmployeeDao {
 
-    @Override
     public boolean create(Employee employee) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -51,7 +50,6 @@ public class EmployeeDao implements CrudDao<Employee> {
         return count > 0;
     }
 
-    @Override
     public List<Employee> findAll() throws SQLException {
         List<Employee> employees = null;
         Connection connection = null;
@@ -78,7 +76,6 @@ public class EmployeeDao implements CrudDao<Employee> {
         return employees;
     }
 
-    @Override
     public Employee findById(int id) throws SQLException {
         Employee employee = null;
         Connection connection = null;
@@ -106,7 +103,6 @@ public class EmployeeDao implements CrudDao<Employee> {
         return employee;
     }
 
-    @Override
     public boolean update(Employee employee) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -137,7 +133,6 @@ public class EmployeeDao implements CrudDao<Employee> {
         return count > 0;
     }
 
-    @Override
     public boolean deleteById(int id) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -162,8 +157,7 @@ public class EmployeeDao implements CrudDao<Employee> {
         return count > 0;
     }
 
-    @Override
-    public Employee extractFromResultSet(ResultSet resultSet) throws SQLException {
+    private Employee extractFromResultSet(ResultSet resultSet) throws SQLException {
         Employee employee = new Employee();
         employee.setId(resultSet.getInt(1));
         employee.setFullname(resultSet.getString(2));

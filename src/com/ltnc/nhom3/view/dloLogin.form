@@ -184,7 +184,7 @@
             <Component class="javax.swing.JCheckBox" name="choHidePasword">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="ColorHelper.SECTION_PANEL_BG" type="code"/>
+                  <Connection code="ConstantHelper.SECTION_PANEL_BG" type="code"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="11" style="0"/>

@@ -11,9 +11,8 @@ import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
-import com.ltnc.nhom3.utility.ColorHelper;
 import com.ltnc.nhom3.utility.IOHandler;
-import com.ltnc.nhom3.utility.LabelHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.manufacturer.DialogHelper;
@@ -46,11 +45,11 @@ public class pnlEdit extends javax.swing.JPanel {
     /**
      * Creates new form pnlDetail
      */
-    public pnlEdit(int productId, ProductService productService) {
+    public pnlEdit(int productId, ProductService productService, PriceService priceService, ManufacturerService manufacturerService) {
         this.productId = productId;
         this.productService = productService;
-        manufacturerService = new ManufacturerService();
-        priceService = new PriceService();
+        this.manufacturerService = manufacturerService;
+        this.priceService = priceService;
         initComponents();
         
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
@@ -66,7 +65,7 @@ public class pnlEdit extends javax.swing.JPanel {
             Manufacturer selectManufacturer = null;
             List<Manufacturer> list = manufacturerService.findAll();
             DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
-            model.addElement(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
+            model.addElement(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);
                 if (manufacturer.getId() == selectManufacturerId)
@@ -83,7 +82,7 @@ public class pnlEdit extends javax.swing.JPanel {
         SectionTemplate.CustomComboBoxModel model = 
                 (SectionTemplate.CustomComboBoxModel) cbbManufacturer.getModel();
         model.setSelectionAllowed(true);
-        model.setSelectedItem(LabelHelper.COMBOBOX_SELECT_MANUFACTURER);
+        model.setSelectedItem(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
     }
     
     private void loadProductFromId() {
@@ -155,7 +154,7 @@ public class pnlEdit extends javax.swing.JPanel {
         btnReset = SectionTemplate.getStyledButton();
         btnSubmit = SectionTemplate.getStyledButton();
 
-        setBackground(ColorHelper.SECTION_PANEL_BG);
+        setBackground(ConstantHelper.SECTION_PANEL_BG);
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -263,7 +262,7 @@ public class pnlEdit extends javax.swing.JPanel {
                 boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index,
                     isSelected, cellHasFocus);
-                if (value != null && !LabelHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
+                if (value != null && !ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
                     Manufacturer item = (Manufacturer) value;
                     String manufacturerStr = IOHandler.convertToDisplayManufacturerString(item);
                     setText(manufacturerStr);
@@ -276,7 +275,7 @@ public class pnlEdit extends javax.swing.JPanel {
 
         chbAvailabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         chbAvailabel.setSelected(true);
-        chbAvailabel.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
+        chbAvailabel.setText(ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
         chbAvailabel.setBorder(null);
         chbAvailabel.setName(""); // NOI18N
         chbAvailabel.setOpaque(false);
@@ -472,7 +471,7 @@ public class pnlEdit extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlList());
+        frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -518,12 +517,12 @@ public class pnlEdit extends javax.swing.JPanel {
                         priceService.update(price);
                     }
                 if (priceService.create(newPrice)) {
-                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, LabelHelper.UPDATE_INFO_PRICE_DONE_DIALOG_MESSAGE);
-                    frmMainWindow.rootFrame.loadInSection(new pnlList());
+                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.UPDATE_INFO_PRICE_DONE_DIALOG_MESSAGE);
+                    frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
                 }
                 } else {
-                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, LabelHelper.UPDATE_INFO_DONE_DIALOG_MESSAGE);
-                    frmMainWindow.rootFrame.loadInSection(new pnlList());
+                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.UPDATE_INFO_DONE_DIALOG_MESSAGE);
+                    frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
                 }
             }
         } catch (SQLException ex) {
@@ -538,7 +537,7 @@ public class pnlEdit extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCreateManufacturerActionPerformed
 
     private void btnEditManufacturerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditManufacturerActionPerformed
-        if(!LabelHelper.COMBOBOX_SELECT_MANUFACTURER.equals(cbbManufacturer.getSelectedItem())) {
+        if(!ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(cbbManufacturer.getSelectedItem())) {
             int manufacturerId = ((Manufacturer)cbbManufacturer.getSelectedItem()).getId();
             if(DialogHelper.showEditManufacturerForm(frmMainWindow.rootFrame, manufacturerService,
                     manufacturerId) == 0) 

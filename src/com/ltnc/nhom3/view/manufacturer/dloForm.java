@@ -7,8 +7,8 @@ package com.ltnc.nhom3.view.manufacturer;
 
 import com.ltnc.nhom3.entity.Manufacturer;
 import com.ltnc.nhom3.service.ManufacturerService;
-import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.LabelHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Frame;
@@ -46,7 +46,7 @@ public class dloForm extends javax.swing.JDialog {
         edittingId = manufacturerId;
         displayInfo();
         btnDelete.setVisible(true);
-        setTitle(LabelHelper.EDIT_MANUFACTURER_DIALOG_TITLE);
+        setTitle(ConstantHelper.EDIT_MANUFACTURER_DIALOG_TITLE);
     }
 
     /**
@@ -69,7 +69,7 @@ public class dloForm extends javax.swing.JDialog {
         btnDelete = SectionTemplate.getStyledButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(LabelHelper.ADD_MANUFACTURER_DIALOG_TITLE);
+        setTitle(ConstantHelper.ADD_MANUFACTURER_DIALOG_TITLE);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nhập thông tin", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14))); // NOI18N
@@ -177,7 +177,7 @@ public class dloForm extends javax.swing.JDialog {
         String name = txtName.getText();
         String country = txtCountry.getText();
         if (name.equals("") || country.equals(""))
-            lblError.setText(LabelHelper.MANUFACTURER_FIELD_REQUIRED_MESSAGE);
+            lblError.setText(ConstantHelper.MANUFACTURER_FIELD_REQUIRED_MESSAGE);
         else {
             try {
                 //edit mode
@@ -190,7 +190,7 @@ public class dloForm extends javax.swing.JDialog {
                 //add mode
                 int oldId = manufacturerService.isNameExisted(name);
                 if (oldId != -1) {
-                    lblError.setText(LabelHelper.MANUFACTURER_NAME_HAS_EXISTED_MESSAGE);
+                    lblError.setText(ConstantHelper.MANUFACTURER_NAME_HAS_EXISTED_MESSAGE);
                     returnedId = oldId;
                 } else {
                     Manufacturer manufacturer = new Manufacturer(0, name, country);
@@ -210,7 +210,7 @@ public class dloForm extends javax.swing.JDialog {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame, 
-                LabelHelper.CONFIRM_DIALOG_MESSAGE, LabelHelper.CONFIRM_DIALOG_TITLE, 
+                ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, 
                 JOptionPane.YES_NO_OPTION);
         if (option == JOptionPane.YES_OPTION) {
             try {

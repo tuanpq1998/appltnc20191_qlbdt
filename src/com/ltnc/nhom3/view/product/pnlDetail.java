@@ -11,9 +11,8 @@ import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
-import com.ltnc.nhom3.utility.ColorHelper;
 import com.ltnc.nhom3.utility.IOHandler;
-import com.ltnc.nhom3.utility.LabelHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Color;
@@ -38,11 +37,11 @@ public class pnlDetail extends javax.swing.JPanel {
      * @param id
      * @param productService
      */   
-    public pnlDetail(int id, ProductService productService) {
+    public pnlDetail(int id, ProductService productService, PriceService priceService, ManufacturerService manufacturerService) {
         productId = id;
         this.productService = productService;
-        manufacturerService = new ManufacturerService();
-        priceService =  new PriceService();
+        this.priceService = priceService;
+        this.manufacturerService = manufacturerService;
         initComponents();
         displayProductInfo();
     }
@@ -55,21 +54,21 @@ public class pnlDetail extends javax.swing.JPanel {
             if (manufacturerId != 0){
                 Manufacturer manufacturer = manufacturerService.findById(manufacturerId);
                 lblManufacturer.setText(manufacturer != null ? IOHandler.convertToDisplayManufacturerString(manufacturer) 
-                        : LabelHelper.NO_INFORMATION_MESSAGE);
+                        : ConstantHelper.NO_INFORMATION_MESSAGE);
             }
             lblHeading.setText(product.getName());
             lblName.setText(product.getName());
             
             if (product.isAvailable()) 
-                lblAvailable.setText(LabelHelper.PRODUCT_AVAILABEL_MESSAGE);
+                lblAvailable.setText(ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
             else {
-                lblAvailable.setText(LabelHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
+                lblAvailable.setText(ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
                 lblAvailable.setForeground(Color.red);
             }
             
             lblReleaseDate.setText(IOHandler.convertToDisplayDate(product.getReleaseDate()));
             
-            lblPrice.setText(price==null ? LabelHelper.NO_INFORMATION_MESSAGE 
+            lblPrice.setText(price==null ? ConstantHelper.NO_INFORMATION_MESSAGE 
                             : IOHandler.convertToDisplayPriceString(price.getValue())+IOHandler.displayStartDate(price.getStartDate()));
             
             txtSpecifications1.setText(product.getDecription());
@@ -116,7 +115,7 @@ public class pnlDetail extends javax.swing.JPanel {
         btnDelete = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
 
-        setBackground(ColorHelper.SECTION_PANEL_BG);
+        setBackground(ConstantHelper.SECTION_PANEL_BG);
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -387,12 +386,12 @@ public class pnlDetail extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlList());
+        frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame, 
-                    LabelHelper.CONFIRM_DIALOG_MESSAGE, LabelHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
+                    ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION){
                 try {
                     if (productService.deleteById(productId))
@@ -404,7 +403,7 @@ public class pnlDetail extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlEdit(productId, productService));
+        frmMainWindow.rootFrame.loadInSection(new pnlEdit(productId, productService, priceService, manufacturerService));
     }//GEN-LAST:event_btnEditActionPerformed
 
 

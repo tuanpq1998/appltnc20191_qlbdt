@@ -7,14 +7,13 @@ package com.ltnc.nhom3.view;
 
 import com.ltnc.nhom3.entity.Employee;
 import com.ltnc.nhom3.service.EmployeeService;
-import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.LabelHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -35,8 +34,8 @@ public class dloLogin extends javax.swing.JDialog {
     /**
      * Creates new form dloLogin
      */
-    public dloLogin(java.awt.Frame parent, boolean modal, EmployeeService employeeService) {
-        super(parent, modal);
+    public dloLogin(Frame parent, boolean modal, EmployeeService employeeService) {
+        super((Dialog)null, true);
         initComponents();
         setLocationRelativeTo(parent);
         getRootPane().setDefaultButton(btnLogin);
@@ -90,7 +89,7 @@ public class dloLogin extends javax.swing.JDialog {
 
         txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        choHidePasword.setBackground(ColorHelper.SECTION_PANEL_BG);
+        choHidePasword.setBackground(ConstantHelper.SECTION_PANEL_BG);
         choHidePasword.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         choHidePasword.setSelected(true);
         choHidePasword.setText("Ẩn mật khẩu");
@@ -240,7 +239,7 @@ public class dloLogin extends javax.swing.JDialog {
         String username = txtUsername.getText().trim();
         String password = String.valueOf(txtPassword.getPassword());
         if (username.equals("") || password.equals("")) {
-            lblError.setText(LabelHelper.LOGIN_FIELD_REQUIRED_MESSAGE);
+            lblError.setText(ConstantHelper.LOGIN_FIELD_REQUIRED_MESSAGE);
         } else {
             try {
                 loggedInEmployee = employeeService.authenticated(username, password);
@@ -248,7 +247,7 @@ public class dloLogin extends javax.swing.JDialog {
                 Logger.getLogger(dloLogin.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (loggedInEmployee == null) {
-                lblError.setText(LabelHelper.LOGIN_WRONG_INFO_MESSAGE);
+                lblError.setText(ConstantHelper.LOGIN_WRONG_INFO_MESSAGE);
             } else {
                 dispose();
                 return;

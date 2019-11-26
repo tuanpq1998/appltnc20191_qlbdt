@@ -20,8 +20,7 @@ import java.util.List;
  *
  * @author admin
  */
-public class ProductDao implements CrudDao<Product> {
-    
+public class ProductDao {
     public int createAndReturnId(Product product, boolean isReturnNewId) throws SQLException {
         int newId = 0;
         Connection connection = null;
@@ -50,15 +49,16 @@ public class ProductDao implements CrudDao<Product> {
         return newId;
     }
 
-    @Override
-    public List<Product> findAll() throws SQLException {
+    public List<Product> findAll(int offset, int limit) throws SQLException {
         List<Product> products = null;
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_PRODUCTS);
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_PRODUCTS_OFFSET_LIMIT);
+            preparedStatement.setInt(1, offset);
+            preparedStatement.setInt(2, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
             Product product = null;
             products = new ArrayList<>();
 
@@ -67,13 +67,12 @@ public class ProductDao implements CrudDao<Product> {
                     products.add(product);
             }
         } finally {            
-            if (statement != null) statement.close();
+            if (preparedStatement != null) preparedStatement.close();
             if (connection != null) connection.close();
         }
         return products;
     }
 
-    @Override
     public Product findById(int id) throws SQLException {
         Product product  = null;
         Connection connection = null;
@@ -96,7 +95,6 @@ public class ProductDao implements CrudDao<Product> {
         return product;
     }
 
-    @Override
     public boolean update(Product product) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -125,7 +123,6 @@ public class ProductDao implements CrudDao<Product> {
         return count > 0;
     }
 
-    @Override
     public boolean deleteById(int id) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -144,8 +141,7 @@ public class ProductDao implements CrudDao<Product> {
         return count > 0; 
     }
 
-    @Override
-    public Product extractFromResultSet(ResultSet resultSet) throws SQLException {
+    private Product extractFromResultSet(ResultSet resultSet) throws SQLException {
         Product product = new Product();
         product.setId(resultSet.getInt(1));
         product.setName(resultSet.getString(2));
@@ -169,6 +165,9 @@ public class ProductDao implements CrudDao<Product> {
                 preparedStatement.setInt(i+1, listIds[i]);
 
             count = preparedStatement.executeUpdate();
+            System.out.println(""+preparedStatement);
+                        System.out.println(""+count);
+
         } finally {
             if (preparedStatement != null) preparedStatement.close();
             if (connection != null) connection.close();
@@ -176,7 +175,7 @@ public class ProductDao implements CrudDao<Product> {
         return count == listIds.length; 
     }
 
-    public List<Product> findAllLikeName(String name) throws SQLException {
+    public List<Product> findAllLikeName(String name, int offset, int limit) throws SQLException {
         List<Product> products = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -184,6 +183,8 @@ public class ProductDao implements CrudDao<Product> {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_PRODUCTS_BY_NAME);
             preparedStatement.setString(1, "%"+name+"%");
+            preparedStatement.setInt(2, offset);
+            preparedStatement.setInt(3, limit);
             ResultSet resultSet = preparedStatement.executeQuery();
             Product product = null;
             products = new ArrayList<>();
@@ -199,9 +200,50 @@ public class ProductDao implements CrudDao<Product> {
         return products;
     }
 
-    @Override
     public boolean create(Product t) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public int countAll() throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(DBQuery.COUNT_ALL_PRODUCTS);
+            if (resultSet.next()) count = resultSet.getInt(1);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
+    }
+
+    public int countAllLikeName(String name) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_PRODUCTS_BY_NAME);
+            preparedStatement.setString(1, "%"+name+"%");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Product product = null;
+
+            if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+            }
+        } finally {            
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return count;
     }
     
     

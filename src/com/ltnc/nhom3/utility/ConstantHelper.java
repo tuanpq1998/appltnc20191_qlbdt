@@ -5,11 +5,41 @@
  */
 package com.ltnc.nhom3.utility;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+
 /**
  *
  * @author admin
  */
-public class LabelHelper {
+public class ConstantHelper {
+    
+    private static Color getColorFromInt(int colorHex) {
+        return new Color(colorHex);
+    }
+    
+    public static final Color MENU_PANEL_BG = getColorFromInt(0x333333);
+    public static final Color MENU_PANEL_LINE = getColorFromInt(0x838383);
+    public static final Color MENU_BTN_BG_HOVER = getColorFromInt(0x19478a);
+    public static final Color MENU_BTN_BG_SELECTED = getColorFromInt(0x3e6db5);
+    
+    public static final Color SECTION_PANEL_BG = getColorFromInt(0xffffff);
+    public static final Color SECTION_PANEL_LINE = getColorFromInt(0xa0a0a0);
+    
+    public static final Color SEARCH_SECTION_TEXT_NON_FOCUS = getColorFromInt(0x808080);
+    public static final Color SEARCH_SECTION_TEXT_FOCUS = getColorFromInt(0x000000);
+    
+    public static final Color SECTION_BTN_BODER_NORMAL = getColorFromInt(0xababab);
+    public static final Color SECTION_BTN_BODER_HOVER = getColorFromInt(0xa3bde3);
+    public static final Color SECTION_BTN_BG_NORMAL = SECTION_PANEL_BG;
+    public static final Color SECTION_BTN_BG_HOVER = getColorFromInt(0xd5e1f2);
+    
+    public static final String PAGINATION_TEXT = "%d/%d";
+    
     public static final String CONFIRM_DIALOG_TITLE = "Xác nhận";
     public static final String CONFIRM_DIALOG_MESSAGE = "Bạn có chắc chắn?";
     public static final String CONFIRM_LOGOUT_DIALOG_TITLE = CONFIRM_DIALOG_TITLE;
@@ -39,8 +69,18 @@ public class LabelHelper {
     public static final String COMBOBOX_SELECT_MANUFACTURER = "-- Chọn --";
     
     public static final String[] TBL_PRODUCT_TITLES
-            = new String[]{"STT", "Tên", "Đơn giá", "Ngày ra mắt", "Trạng thái"};
+            = new String[]{"ID", "Tên", "Đơn giá", "Ngày ra mắt", "Trạng thái"};
     public static final int[] TBL_PRODUCT_TITLES_WIDTHS
             = {40, 400, 165, 115, 125};
+    
+    public static final int ITEM_PER_PAGE = 15;
+    public static final int STT_BTN_HOVER = 1;
+    public static final int STT_BTN_NORMAL = 0;
+    public static final int STT_BTN_SELECTED = 2;
+    
+    public static final int MAIN_FRAME_INIT_MODE = 0;
+    public static final int MAIN_FRAME_PRODUCT_MODE = 1;
+    public static final int MAIN_FRAME_CUSTOMER_MODE = 2;
+    public static final int MAIN_FRAME_BILL_MODE = 3;
     
 }

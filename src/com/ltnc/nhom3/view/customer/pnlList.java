@@ -7,9 +7,9 @@ package com.ltnc.nhom3.view.customer;
 
 import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.service.CustomerService;
-import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.LabelHelper;
-import com.ltnc.nhom3.utility.TableHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Color;
@@ -60,7 +60,7 @@ public class pnlList extends javax.swing.JPanel {
         btnDelete = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
 
-        jPanel1.setBackground(ColorHelper.SECTION_PANEL_BG);
+        jPanel1.setBackground(ConstantHelper.SECTION_PANEL_BG);
 
         jScrollPane1.setBorder(null);
 
@@ -85,7 +85,7 @@ public class pnlList extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(com.ltnc.nhom3.utility.LabelHelper.PRODUCT_LIST_HEADING);
+        lblHeading.setText(com.ltnc.nhom3.utility.ConstantHelper.PRODUCT_LIST_HEADING);
 
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSearch.setForeground(Color.GRAY);
@@ -295,7 +295,7 @@ public class pnlList extends javax.swing.JPanel {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if(tblList.getSelectedRowCount()>0){
-            int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,LabelHelper.CONFIRM_DIALOG_MESSAGE,LabelHelper.CONFIRM_DIALOG_TITLE,JOptionPane.YES_NO_CANCEL_OPTION );
+            int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,ConstantHelper.CONFIRM_DIALOG_MESSAGE,ConstantHelper.CONFIRM_DIALOG_TITLE,JOptionPane.YES_NO_CANCEL_OPTION );
             if(option== JOptionPane.YES_OPTION)
             { 
 

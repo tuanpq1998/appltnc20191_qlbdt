@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.panel.customer;
+package com.ltnc.nhom3.view.customer;
 
 import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.service.CustomerService;
-import com.ltnc.nhom3.utility.LabelHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.customer.pnlList;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.sql.SQLException;
@@ -244,7 +244,7 @@ public class pnlEdit extends javax.swing.JPanel {
         } catch (SQLException ex) {
             Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
         }
-        JOptionPane.showMessageDialog(frmMainWindow.rootFrame, LabelHelper.UPDATE_INFO_PRICE_DONE_DIALOG_MESSAGE);
+        JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.UPDATE_INFO_PRICE_DONE_DIALOG_MESSAGE);
         frmMainWindow.rootFrame.loadInSection(new pnlList());
     }//GEN-LAST:event_btnSubmitActionPerformed
 
