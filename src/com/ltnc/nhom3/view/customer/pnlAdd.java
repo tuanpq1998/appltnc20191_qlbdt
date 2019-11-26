@@ -7,7 +7,7 @@ package com.ltnc.nhom3.view.customer;
 
 import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.service.CustomerService;
-import com.ltnc.nhom3.utility.TableHelper;
+import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.sql.SQLException;
 import java.util.logging.Level;

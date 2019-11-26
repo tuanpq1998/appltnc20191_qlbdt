@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.utility;
+package com.ltnc.nhom3.view.template;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;

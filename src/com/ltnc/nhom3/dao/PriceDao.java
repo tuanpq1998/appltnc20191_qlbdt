@@ -18,9 +18,7 @@ import java.util.List;
  *
  * @author admin
  */
-public class PriceDao implements CrudDao<Price> {
-
-    @Override
+public class PriceDao {
     public boolean create(Price price) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -44,17 +42,14 @@ public class PriceDao implements CrudDao<Price> {
         return count > 0;
     }
 
-    @Override
     public List<Price> findAll() throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Price findById(int id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean update(Price price) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -78,13 +73,11 @@ public class PriceDao implements CrudDao<Price> {
         return count > 0;
     }
 
-    @Override
     public boolean deleteById(int id) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Price extractFromResultSet(ResultSet resultSet) throws SQLException {
+    private Price extractFromResultSet(ResultSet resultSet) throws SQLException {
         Price price = new Price();
         price.setId(resultSet.getInt(1));
         price.setProductId(resultSet.getInt(2));

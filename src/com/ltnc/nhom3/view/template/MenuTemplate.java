@@ -5,7 +5,7 @@
  */
 package com.ltnc.nhom3.view.template;
 
-import com.ltnc.nhom3.utility.ColorHelper;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
@@ -18,7 +18,7 @@ public class MenuTemplate {
 
     public static JToggleButton getStyledButton() {
         JToggleButton button = new JToggleButton();
-        button.setBackground(ColorHelper.MENU_PANEL_BG);
+        button.setBackground(ConstantHelper.MENU_PANEL_BG);
         button.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         button.setForeground(new java.awt.Color(255, 255, 255));
         button.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
@@ -33,14 +33,14 @@ public class MenuTemplate {
     
     public static JPanel getStyledPanel() {
         JPanel panel = new JPanel();
-        panel.setBackground(ColorHelper.MENU_PANEL_BG);
+        panel.setBackground(ConstantHelper.MENU_PANEL_BG);
         return panel;
     }
     
     public static JSeparator getStyledSeparator() {
         JSeparator separator = new JSeparator();
-        separator.setBackground(ColorHelper.MENU_PANEL_LINE);
-        separator.setForeground(ColorHelper.MENU_PANEL_LINE);
+        separator.setBackground(ConstantHelper.MENU_PANEL_LINE);
+        separator.setForeground(ConstantHelper.MENU_PANEL_LINE);
         return separator;
     }
 }

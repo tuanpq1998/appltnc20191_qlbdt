@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="LabelHelper.ADD_MANUFACTURER_DIALOG_TITLE" type="code"/>
+      <Connection code="com.ltnc.nhom3.utility.ConstantHelper.ADD_MANUFACTURER_DIALOG_TITLE" type="code"/>
     </Property>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>

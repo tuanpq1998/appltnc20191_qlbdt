@@ -7,15 +7,24 @@
 package com.ltnc.nhom3.view;
 
 import com.ltnc.nhom3.entity.Employee;
+import com.ltnc.nhom3.service.BillDetailService;
+import com.ltnc.nhom3.service.BillService;
+import com.ltnc.nhom3.service.CustomerService;
 import com.ltnc.nhom3.service.EmployeeService;
+import com.ltnc.nhom3.service.ManufacturerService;
+import com.ltnc.nhom3.service.PriceService;
+import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.view.template.MenuTemplate;
 import com.ltnc.nhom3.view.template.SectionTemplate;
-import com.ltnc.nhom3.utility.ColorHelper;
-import com.ltnc.nhom3.utility.LabelHelper;
-import com.ltnc.nhom3.utility.Status;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.product.pnlList;
 import java.awt.Color;
+import java.awt.Image;
+import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -31,7 +40,15 @@ import javax.swing.UIManager;
 public class frmMainWindow extends javax.swing.JFrame {
 
     private int mode;
+    
     private EmployeeService employeeService;
+    private BillDetailService billDetailService;
+    private BillService billService;
+    private CustomerService customerService;
+    private ManufacturerService manufacturerService;
+    private PriceService priceService;
+    private ProductService productService;
+            
     private Employee loggedInEmployee;
     public static frmMainWindow rootFrame;
     
@@ -39,12 +56,20 @@ public class frmMainWindow extends javax.swing.JFrame {
     public frmMainWindow() {
         rootFrame = this;
         initComponents();
-        UIManager.put("OptionPane.background", ColorHelper.SECTION_PANEL_BG);
-        UIManager.put("Panel.background", ColorHelper.SECTION_PANEL_BG);
-        mode = Status.MAIN_FRAME_INIT_MODE;
+        
         employeeService = new EmployeeService();
+        billDetailService = new BillDetailService();
+        billService = new BillService();
+        customerService = new CustomerService();
+        manufacturerService = new ManufacturerService();
+        priceService = new PriceService();
+        productService = new ProductService();
+        
+        UIManager.put("OptionPane.background", ConstantHelper.SECTION_PANEL_BG);
+        UIManager.put("Panel.background", ConstantHelper.SECTION_PANEL_BG);
         showLoginDialog();
-        btnLogOut.setText(String.format(LabelHelper.LOGOUT_BTN_TEXT, loggedInEmployee.getUsername()));
+        mode = ConstantHelper.MAIN_FRAME_INIT_MODE;
+        displayUserInLogoutButton();
     }
 
     /** This method is called from within the constructor to
@@ -57,8 +82,6 @@ public class frmMainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         groupBtnMenu = new javax.swing.ButtonGroup();
-        pnlSection = SectionTemplate.getStyledPanel();
-        pnlInSection = SectionTemplate.getStyledPanel();
         pnlMenu = MenuTemplate.getStyledPanel();
         pnlMenuContainer = MenuTemplate.getStyledPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -69,9 +92,12 @@ public class frmMainWindow extends javax.swing.JFrame {
         jSeparator2 = MenuTemplate.getStyledSeparator();
         btnLogOut = MenuTemplate.getStyledButton();
         jLabel2 = new javax.swing.JLabel();
+        pnlSection = SectionTemplate.getStyledPanel();
+        pnlInSection = SectionTemplate.getStyledPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("App nhom 3");
+        setIconImage(getMainIcon());
         setMinimumSize(new java.awt.Dimension(990, 768));
         setPreferredSize(new java.awt.Dimension(990, 768));
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -79,28 +105,6 @@ public class frmMainWindow extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-
-        javax.swing.GroupLayout pnlInSectionLayout = new javax.swing.GroupLayout(pnlInSection);
-        pnlInSection.setLayout(pnlInSectionLayout);
-        pnlInSectionLayout.setHorizontalGroup(
-            pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 705, Short.MAX_VALUE)
-        );
-        pnlInSectionLayout.setVerticalGroup(
-            pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout pnlSectionLayout = new javax.swing.GroupLayout(pnlSection);
-        pnlSection.setLayout(pnlSectionLayout);
-        pnlSectionLayout.setHorizontalGroup(
-            pnlSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlInSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        pnlSectionLayout.setVerticalGroup(
-            pnlSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlInSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
 
         jLabel1.setBackground(pnlMenu.getBackground());
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
@@ -232,9 +236,31 @@ public class frmMainWindow extends javax.swing.JFrame {
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
                 .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
+        );
+
+        javax.swing.GroupLayout pnlInSectionLayout = new javax.swing.GroupLayout(pnlInSection);
+        pnlInSection.setLayout(pnlInSectionLayout);
+        pnlInSectionLayout.setHorizontalGroup(
+            pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 705, Short.MAX_VALUE)
+        );
+        pnlInSectionLayout.setVerticalGroup(
+            pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout pnlSectionLayout = new javax.swing.GroupLayout(pnlSection);
+        pnlSection.setLayout(pnlSectionLayout);
+        pnlSectionLayout.setHorizontalGroup(
+            pnlSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlInSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        pnlSectionLayout.setVerticalGroup(
+            pnlSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlInSection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -258,43 +284,43 @@ public class frmMainWindow extends javax.swing.JFrame {
 
     private void btnMenuSelectMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMenuSelectMouseEntered
         JToggleButton button = (JToggleButton) evt.getComponent();
-        setStyleForButton(button, Status.STT_BTN_HOVER);
+        setStyleForButton(button, ConstantHelper.STT_BTN_HOVER);
     }//GEN-LAST:event_btnMenuSelectMouseEntered
 
     private void btnMenuSelectMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMenuSelectMouseExited
         JToggleButton button = (JToggleButton) evt.getComponent();
         if (button.isSelected())
-            setStyleForButton(button, Status.STT_BTN_SELECTED);
-        else setStyleForButton(button, Status.STT_BTN_NORMAL);
+            setStyleForButton(button, ConstantHelper.STT_BTN_SELECTED);
+        else setStyleForButton(button, ConstantHelper.STT_BTN_NORMAL);
     }//GEN-LAST:event_btnMenuSelectMouseExited
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
-        if (mode != Status.MAIN_FRAME_PRODUCT_MODE){
-            loadInSection(new pnlList());
-            mode = Status.MAIN_FRAME_PRODUCT_MODE;
+        if (mode != ConstantHelper.MAIN_FRAME_PRODUCT_MODE){
+            loadInSection(new pnlList(priceService, productService, manufacturerService));
+            mode = ConstantHelper.MAIN_FRAME_PRODUCT_MODE;
             reloadGroupButtons();
         }    
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
-        if (mode != Status.MAIN_FRAME_CUSTOMER_MODE){
-            mode = Status.MAIN_FRAME_CUSTOMER_MODE;
+        if (mode != ConstantHelper.MAIN_FRAME_CUSTOMER_MODE){
+            mode = ConstantHelper.MAIN_FRAME_CUSTOMER_MODE;
             reloadGroupButtons();
             loadInSection(new com.ltnc.nhom3.view.customer.pnlList());
         }
     }//GEN-LAST:event_btnCustomerActionPerformed
 
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
-        if (mode != Status.MAIN_FRAME_BILL_MODE){
-            
-            mode = Status.MAIN_FRAME_BILL_MODE;
+        if (mode != ConstantHelper.MAIN_FRAME_BILL_MODE){
+            loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
+            mode = ConstantHelper.MAIN_FRAME_BILL_MODE;
             reloadGroupButtons();
         }
     }//GEN-LAST:event_btnBillActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (JOptionPane.showConfirmDialog(rootFrame, LabelHelper.CONFIRM_LOGOUT_DIALOG_MESSAGE,
-                LabelHelper.CONFIRM_LOGOUT_DIALOG_TITLE, JOptionPane.YES_NO_OPTION)
+        if (JOptionPane.showConfirmDialog(rootFrame, ConstantHelper.CONFIRM_LOGOUT_DIALOG_MESSAGE,
+                ConstantHelper.CONFIRM_LOGOUT_DIALOG_TITLE, JOptionPane.YES_NO_OPTION)
                 == JOptionPane.YES_OPTION) {
             this.dispose();
             new frmMainWindow().setVisible(true);
@@ -308,14 +334,14 @@ public class frmMainWindow extends javax.swing.JFrame {
     private void setStyleForButton(JToggleButton button, int status) {
         Color color = null;
         switch(status) {
-            case Status.STT_BTN_SELECTED:
-                color = ColorHelper.MENU_BTN_BG_SELECTED;
+            case ConstantHelper.STT_BTN_SELECTED:
+                color = ConstantHelper.MENU_BTN_BG_SELECTED;
                 break;
-            case Status.STT_BTN_HOVER:
-                color = ColorHelper.MENU_BTN_BG_HOVER;
+            case ConstantHelper.STT_BTN_HOVER:
+                color = ConstantHelper.MENU_BTN_BG_HOVER;
                 break;
-            case Status.STT_BTN_NORMAL:
-                color = ColorHelper.MENU_PANEL_BG;
+            case ConstantHelper.STT_BTN_NORMAL:
+                color = ConstantHelper.MENU_PANEL_BG;
                 break;
         }
         button.setBackground(color);
@@ -325,8 +351,8 @@ public class frmMainWindow extends javax.swing.JFrame {
         for (Enumeration<AbstractButton> buttons = groupBtnMenu.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
             if (button.isSelected()) 
-                setStyleForButton((JToggleButton) button, Status.STT_BTN_SELECTED);
-            else setStyleForButton((JToggleButton) button, Status.STT_BTN_NORMAL);
+                setStyleForButton((JToggleButton) button, ConstantHelper.STT_BTN_SELECTED);
+            else setStyleForButton((JToggleButton) button, ConstantHelper.STT_BTN_NORMAL);
         }
     }
     
@@ -358,43 +384,15 @@ public class frmMainWindow extends javax.swing.JFrame {
         pnlInSection = panel;
         displayInContainer(pnlInSection, pnlSection);
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Windows look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(frmMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(frmMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(frmMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(frmMainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new frmMainWindow().setVisible(true);
-            }
-        });
+    
+    private void displayUserInLogoutButton() {
+        if (loggedInEmployee.getUsername().length() > 6)
+            btnLogOut.setText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
+                    loggedInEmployee.getUsername().substring(0, 5)+ "..."));
+        else btnLogOut.setText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
+                loggedInEmployee.getUsername()));
+        btnLogOut.setToolTipText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
+                loggedInEmployee.getUsername()));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -413,4 +411,12 @@ public class frmMainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSection;
     // End of variables declaration//GEN-END:variables
 
+    private Image getMainIcon() {
+        try {
+            return ImageIO.read(ConstantHelper.class.getResourceAsStream("/icon.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(ConstantHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }

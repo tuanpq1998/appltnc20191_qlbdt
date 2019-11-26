@@ -47,18 +47,22 @@ public class DBQuery {
     private static final String PRODUCT_TABLE = "Product";
     
     public static final String FIND_ALL_PRODUCTS = "SELECT * FROM " + PRODUCT_TABLE;
-    public static final String FIND_ALL_PRODUCTS_BY_NAME = FIND_ALL_PRODUCTS + " WHERE name LIKE ?";
+    public static final String FIND_ALL_PRODUCTS_OFFSET_LIMIT = FIND_ALL_PRODUCTS + " LIMIT ?,?";
+    public static final String FIND_ALL_PRODUCTS_BY_NAME = FIND_ALL_PRODUCTS + " WHERE name LIKE ? LIMIT ?,?";
     public static final String DELETE_PRODUCT_BY_ID = "DELETE FROM " + PRODUCT_TABLE 
                 + " WHERE product_id = ?";
     public static final String DELETE_MANY_PRODUCT_BY_IDS = "DELETE FROM " + PRODUCT_TABLE 
                 + " WHERE product_id IN (";
-    public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS 
+    public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS
             + " WHERE product_id = ?";
     public static final String CREATE_NEW_PRODUCT = "INSERT INTO " + PRODUCT_TABLE 
             + " VALUES(NULL,?,?,?,?,?,?)";
     public static final String UPDATE_PRODUCT = "UPDATE " + PRODUCT_TABLE 
             + " SET name = ? , manufacturer_id = ?, specifications = ?,"
             + "description = ?, release_date =?, available = ? WHERE product_id = ?";
+    public static final String COUNT_ALL_PRODUCTS = "SELECT COUNT(*) FROM " + PRODUCT_TABLE;
+    public static final String COUNT_ALL_PRODUCTS_BY_NAME = "SELECT COUNT(*) FROM " + PRODUCT_TABLE
+            + " WHERE name LIKE ?";
     
     public static String getQueryDeleteManyProductIds(int numberIds) {
         StringBuilder query = new StringBuilder(DELETE_MANY_PRODUCT_BY_IDS);

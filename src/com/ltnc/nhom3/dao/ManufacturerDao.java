@@ -20,13 +20,7 @@ import java.util.List;
  *
  * @author PhungSyLinh
  */
-public class ManufacturerDao implements CrudDao<Manufacturer> {
- 
-    @Override
-    public boolean create(Manufacturer manufacturer) throws SQLException {
-        return false;
-    }
-    
+public class ManufacturerDao { 
     public int createAndReturnId(Manufacturer manufacturer) throws SQLException {
         int newId = 0;
         Connection connection = null;
@@ -54,7 +48,6 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
 
     }
 
-    @Override
     public List<Manufacturer> findAll() throws SQLException {
         List<Manufacturer> manufacturers = null;
         Connection connection = null;
@@ -77,7 +70,6 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         return manufacturers;
     }
 
-    @Override
     public Manufacturer findById(int id) throws SQLException {
         Manufacturer manufacturer  = null;
         Connection connection = null;
@@ -100,7 +92,6 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         return manufacturer;
     }
 
-    @Override
     public boolean update(Manufacturer manufacturer) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -121,7 +112,6 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         return count > 0;
     }
 
-    @Override
     public boolean deleteById(int id) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -140,8 +130,7 @@ public class ManufacturerDao implements CrudDao<Manufacturer> {
         return count > 0; 
     }
 
-    @Override
-    public Manufacturer extractFromResultSet(ResultSet resultSet) throws SQLException {
+    private Manufacturer extractFromResultSet(ResultSet resultSet) throws SQLException {
         Manufacturer manufacturer = new Manufacturer();
         manufacturer.setId(resultSet.getInt(1));
         manufacturer.setName(resultSet.getString(2));
