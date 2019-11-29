@@ -36,7 +36,7 @@ public class EmployeeDao {
             preparedStatement.setString(4, employee.getIndentityCard());
             preparedStatement.setString(5, employee.getUsername());
             preparedStatement.setString(6, employee.getPassword());
-            preparedStatement.setString(7, employee.getRole());
+            preparedStatement.setBoolean(7, employee.isAdmin());
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -117,7 +117,7 @@ public class EmployeeDao {
             preparedStatement.setString(4, employee.getIndentityCard());
             preparedStatement.setString(5, employee.getUsername());
             preparedStatement.setString(6, employee.getPassword());
-            preparedStatement.setString(7, employee.getRole());
+            preparedStatement.setBoolean(7, employee.isAdmin());
             preparedStatement.setBoolean(8, employee.isActive());
             preparedStatement.setInt(9, employee.getId());
 
@@ -166,7 +166,7 @@ public class EmployeeDao {
         employee.setIndentityCard(resultSet.getString(5));
         employee.setUsername(resultSet.getString(6));
         employee.setPassword(resultSet.getString(7));
-        employee.setRole(resultSet.getString(8));
+        employee.setAdmin(resultSet.getBoolean(8));
         employee.setActive(resultSet.getBoolean(9));
         return employee;
     }
@@ -198,4 +198,24 @@ public class EmployeeDao {
         return employee;
     }
 
+    public boolean updatePassword(int id, String password) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.UPDATE_EMPLOYEE_PASSWORD_BY_ID);
+            preparedStatement.setInt(2, id);
+            preparedStatement.setString(1, password);
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
+    }
 }

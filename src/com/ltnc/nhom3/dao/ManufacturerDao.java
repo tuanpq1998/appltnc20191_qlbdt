@@ -118,9 +118,11 @@ public class ManufacturerDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.DELETE_MANUFACTUER_BY_ID);
+            preparedStatement = connection.prepareStatement(DBQuery.UPDATE_PRODUCT_MANUFACTURER_ID_NULL+";"
+                    + DBQuery.DELETE_MANUFACTUER_BY_ID);
 
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, id);
 
             count = preparedStatement.executeUpdate();
         } finally {

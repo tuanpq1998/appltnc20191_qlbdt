@@ -32,5 +32,14 @@ public class EmployeeService {
             return employee;
         return null;
     }
+
+    public boolean isPasswordOfEmployee(int id, String currentPassword) throws SQLException {
+        Employee employee = employeeDao.findById(id);
+        return BCrypt.checkpw(currentPassword, employee.getPassword());
+    }
+
+    public void updatePassword(int id, String newPassword) throws SQLException {
+        employeeDao.updatePassword(id, BCrypt.hashpw(newPassword, BCrypt.gensalt(12)));
+    }
     
 }

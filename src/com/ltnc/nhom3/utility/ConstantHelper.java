@@ -6,11 +6,6 @@
 package com.ltnc.nhom3.utility;
 
 import java.awt.Color;
-import java.awt.Image;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -26,6 +21,8 @@ public class ConstantHelper {
     public static final Color MENU_PANEL_LINE = getColorFromInt(0x838383);
     public static final Color MENU_BTN_BG_HOVER = getColorFromInt(0x19478a);
     public static final Color MENU_BTN_BG_SELECTED = getColorFromInt(0x3e6db5);
+    public static final Color MENU_BTN_DISABLED = getColorFromInt(0x666666);
+
     
     public static final Color SECTION_PANEL_BG = getColorFromInt(0xffffff);
     public static final Color SECTION_PANEL_LINE = getColorFromInt(0xa0a0a0);
@@ -49,13 +46,24 @@ public class ConstantHelper {
     public static final String UPDATE_INFO_PRICE_DONE_DIALOG_MESSAGE = "Cập nhật thông tin & đơn giá thành công!";
     public static final String ADD_MANUFACTURER_DIALOG_TITLE = "Thêm hãng sản xuất";
     public static final String EDIT_MANUFACTURER_DIALOG_TITLE = "Sửa hãng sản xuất";
+    public static final String EDIT_PRODUCT_HEADING = "Sửa sản phẩm";
     
     public static final String LOGOUT_BTN_TEXT = "Đăng xuất (%s)";
     
     public static final String PRODUCT_LIST_HEADING = "Danh sách sản phẩm";
     public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";
     
-    public static final String CUSTOMER_LIST_HEADING = "Danh sách khách hàng";    
+    public static final String CUSTOMER_LIST_HEADING = "Danh sách khách hàng";
+
+    public static final String LOADING_TEXT ="Đang tải ...";
+    public static final String EXPAND_MENU_TEXT = "Mở rộng";
+    public static final String COLLAPSE_MENU_TEXT = "Thu gọn";
+    
+    public static final String ACCOUNT_INFO_HEADING = "Thông tin tài khoản";
+    public static final String ROLE_ADMIN_TEXT = "Quản trị viên";
+    public static final String ROLE_NON_ADMIN_TEXT = "Nhân viên";
+    public static final String ACCOUNT_ACTIVE_TEXT = "Đang hoạt động";
+    public static final String ACCOUNT_DEACTIVE_TEXT = "Bị khóa";
     
     public static final String NO_RESULT_MESSAGE = "Danh sách trống";
     public static final String NO_INFORMATION_MESSAGE = "Không có thông tin";
@@ -63,9 +71,19 @@ public class ConstantHelper {
     public static final String PRODUCT_NOT_AVAILABEL_MESSAGE = "Hết hàng";
     public static final String MANUFACTURER_NAME_HAS_EXISTED_MESSAGE = "Tên đã tồn tại!";
     public static final String MANUFACTURER_FIELD_REQUIRED_MESSAGE = "Hãy điền đầy đủ thông tin!";
+    
     public static final String LOGIN_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
     public static final String LOGIN_WRONG_INFO_MESSAGE = "Tên hoặc mật khẩu sai!";
+    
+    public static final String CHANGE_PASS_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
+    public static final String CHANGE_PASS_WRONG_RENEW_PASSWORD_MESSAGE = "Nhắc lại mật khẩu sai!";
+    public static final String CHANGE_PASS_WRONG_CURRENT_PASSWORD_MESSAGE = "Sai mật khẩu hiện tại!";
+    public static final String CHANGE_PASS_DONE_MESSAGE = "Đổi mật khẩu thành công!";
+    public static final String CHANGE_PASS_DONE_TITLE = "Thông báo";
 
+    public static final String ADD_PRODUCT_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
+    public static final String ADD_PRODUCT_FIELD_REQUIRED_TITLE = CHANGE_PASS_DONE_TITLE;
+    
     public static final String COMBOBOX_SELECT_MANUFACTURER = "-- Chọn --";
     
     public static final String[] TBL_PRODUCT_TITLES
@@ -82,5 +100,6 @@ public class ConstantHelper {
     public static final int MAIN_FRAME_PRODUCT_MODE = 1;
     public static final int MAIN_FRAME_CUSTOMER_MODE = 2;
     public static final int MAIN_FRAME_BILL_MODE = 3;
+    public static final int MAIN_FRAME_EMPLOYEE_MODE = 4;
     
 }

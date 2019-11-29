@@ -12,8 +12,8 @@ package com.ltnc.nhom3.entity;
 public class Employee {
 
     private int id;
-    private String fullname, address, phone, indentityCard, username, password, role;
-    private boolean active;
+    private String fullname, address, phone, indentityCard, username, password;
+    private boolean admin, active;
 
     public int getId() {
         return id;
@@ -63,12 +63,12 @@ public class Employee {
         this.username = username;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isAdmin() {
+        return admin;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public boolean isActive() {
@@ -89,13 +89,13 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ", password=" + password + ", role=" + role + ", active=" + active + '}';
+        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ", password=" + password + ", admin=" + admin + ", active=" + active + '}';
     }
 
     public Employee() {
     }
 
-    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username, String password, String role, boolean active) {
+    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username, String password, boolean admin, boolean active) {
         this.id = id;
         this.fullname = fullname;
         this.address = address;
@@ -103,7 +103,7 @@ public class Employee {
         this.indentityCard = indentityCard;
         this.username = username;
         this.password = password;
-        this.role = role;
+        this.admin = admin;
         this.active = active;
     }
 }

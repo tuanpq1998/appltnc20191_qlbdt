@@ -39,7 +39,6 @@ public class TableHelper {
         int[] listRowIndexs = jTable.getSelectedRows();
         for (int i = 0; i < listRowIndexs.length; i++)
             listIds[i] = (int) jTable.getValueAt(listRowIndexs[i], 0);
-        for(int i: listIds) System.out.println(">>"+i);
         return listIds;
     }
     

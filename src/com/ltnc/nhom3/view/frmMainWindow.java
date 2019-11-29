@@ -6,6 +6,7 @@
 
 package com.ltnc.nhom3.view;
 
+import com.ltnc.nhom3.view.account.dloLogin;
 import com.ltnc.nhom3.entity.Employee;
 import com.ltnc.nhom3.service.BillDetailService;
 import com.ltnc.nhom3.service.BillService;
@@ -17,6 +18,7 @@ import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.view.template.MenuTemplate;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.view.account.pnlInfo;
 import com.ltnc.nhom3.view.product.pnlList;
 import java.awt.Color;
 import java.awt.Image;
@@ -51,6 +53,7 @@ public class frmMainWindow extends javax.swing.JFrame {
             
     private Employee loggedInEmployee;
     public static frmMainWindow rootFrame;
+    private boolean isCollapse = true;
     
     /** Creates new form frmMainWindow */
     public frmMainWindow() {
@@ -68,6 +71,15 @@ public class frmMainWindow extends javax.swing.JFrame {
         UIManager.put("OptionPane.background", ConstantHelper.SECTION_PANEL_BG);
         UIManager.put("Panel.background", ConstantHelper.SECTION_PANEL_BG);
         showLoginDialog();
+        
+        if (!loggedInEmployee.isAdmin()) btnEmployee.setEnabled(false);
+        if (!loggedInEmployee.isActive()) {
+            btnEmployee.setEnabled(false);
+            btnCustomer.setEnabled(false);
+            btnProduct.setEnabled(false);
+            btnBill.setEnabled(false);
+        }
+        
         mode = ConstantHelper.MAIN_FRAME_INIT_MODE;
         displayUserInLogoutButton();
     }
@@ -89,17 +101,19 @@ public class frmMainWindow extends javax.swing.JFrame {
         btnProduct = MenuTemplate.getStyledButton();
         btnCustomer = MenuTemplate.getStyledButton();
         btnBill = MenuTemplate.getStyledButton();
-        jSeparator2 = MenuTemplate.getStyledSeparator();
-        btnLogOut = MenuTemplate.getStyledButton();
+        btnEmployee = MenuTemplate.getStyledButton();
+        jSeparator3 = MenuTemplate.getStyledSeparator();
+        btnLogOut = MenuTemplate.getStyledSecondaryButton();
         jLabel2 = new javax.swing.JLabel();
+        jSeparator4 = MenuTemplate.getStyledSeparator();
+        btnAccount = MenuTemplate.getStyledSecondaryButton();
+        btnCollapseMenu = MenuTemplate.getStyledSecondaryButton();
         pnlSection = SectionTemplate.getStyledPanel();
         pnlInSection = SectionTemplate.getStyledPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("App nhom 3");
-        setIconImage(getMainIcon());
         setMinimumSize(new java.awt.Dimension(990, 768));
-        setPreferredSize(new java.awt.Dimension(990, 768));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -160,9 +174,9 @@ public class frmMainWindow extends javax.swing.JFrame {
             }
         });
 
-        groupBtnMenu.add(btnLogOut);
-        btnLogOut.setText("Đăng xuất, ");
-        btnLogOut.addMouseListener(new java.awt.event.MouseAdapter() {
+        groupBtnMenu.add(btnEmployee);
+        btnEmployee.setText("Nhân viên");
+        btnEmployee.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnMenuSelectMouseEntered(evt);
             }
@@ -170,6 +184,13 @@ public class frmMainWindow extends javax.swing.JFrame {
                 btnMenuSelectMouseExited(evt);
             }
         });
+        btnEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmployeeActionPerformed(evt);
+            }
+        });
+
+        btnLogOut.setText("Đăng xuất");
         btnLogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogOutActionPerformed(evt);
@@ -177,32 +198,56 @@ public class frmMainWindow extends javax.swing.JFrame {
         });
 
         jLabel2.setBackground(pnlMenu.getBackground());
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Nhóm 3 - LTNC 20191");
         jLabel2.setOpaque(true);
+
+        btnAccount.setText("Tài khoản");
+        btnAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAccountActionPerformed(evt);
+            }
+        });
+
+        btnCollapseMenu.setText(ConstantHelper.COLLAPSE_MENU_TEXT);
+        btnCollapseMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCollapseMenuActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlMenuContainerLayout = new javax.swing.GroupLayout(pnlMenuContainer);
         pnlMenuContainer.setLayout(pnlMenuContainerLayout);
         pnlMenuContainerLayout.setHorizontalGroup(
             pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnBill, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator2)
-            .addGroup(pnlMenuContainerLayout.createSequentialGroup()
+            .addComponent(jSeparator3)
+            .addComponent(jSeparator4)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuContainerLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(pnlMenuContainerLayout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuContainerLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2)))
                 .addContainerGap())
+            .addComponent(btnProduct, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnBill, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnEmployee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(pnlMenuContainerLayout.createSequentialGroup()
-                .addComponent(jLabel2)
-                .addGap(0, 104, Short.MAX_VALUE))
+                .addGroup(pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCollapseMenu))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        pnlMenuContainerLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnAccount, btnCollapseMenu, btnLogOut});
+
         pnlMenuContainerLayout.setVerticalGroup(
             pnlMenuContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMenuContainerLayout.createSequentialGroup()
@@ -216,13 +261,23 @@ public class frmMainWindow extends javax.swing.JFrame {
                 .addComponent(btnCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btnBill, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 223, Short.MAX_VALUE)
+                .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 335, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnCollapseMenu)
+                .addGap(0, 0, 0)
+                .addComponent(btnAccount)
+                .addGap(0, 0, 0)
+                .addComponent(btnLogOut)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        pnlMenuContainerLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnAccount, btnCollapseMenu, btnEmployee, btnLogOut});
 
         javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
         pnlMenu.setLayout(pnlMenuLayout);
@@ -235,17 +290,17 @@ public class frmMainWindow extends javax.swing.JFrame {
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
+            .addGroup(pnlMenuLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                .addComponent(pnlMenuContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout pnlInSectionLayout = new javax.swing.GroupLayout(pnlInSection);
         pnlInSection.setLayout(pnlInSectionLayout);
         pnlInSectionLayout.setHorizontalGroup(
             pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 705, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
         pnlInSectionLayout.setVerticalGroup(
             pnlInSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +354,7 @@ public class frmMainWindow extends javax.swing.JFrame {
             loadInSection(new pnlList(priceService, productService, manufacturerService));
             mode = ConstantHelper.MAIN_FRAME_PRODUCT_MODE;
             reloadGroupButtons();
-        }    
+        }
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
@@ -330,6 +385,56 @@ public class frmMainWindow extends javax.swing.JFrame {
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
         formWindowClosing(null);
     }//GEN-LAST:event_btnLogOutActionPerformed
+
+    private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
+        if (mode != ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE){
+            
+            mode = ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE;
+            reloadGroupButtons();
+        }
+    }//GEN-LAST:event_btnEmployeeActionPerformed
+
+    private void btnAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccountActionPerformed
+        loadInSection(new pnlInfo(loggedInEmployee, employeeService));
+    }//GEN-LAST:event_btnAccountActionPerformed
+
+    private void btnCollapseMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCollapseMenuActionPerformed
+        javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
+        pnlMenu.setLayout(pnlMenuLayout);
+        if (isCollapse) {
+            pnlMenuLayout.setHorizontalGroup(
+                    pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
+                                    .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            )
+            );
+            pnlMenuLayout.setVerticalGroup(
+                    pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMenuLayout.createSequentialGroup()
+                                    .addGap(30, 30, 30)
+                                    .addComponent(pnlMenuContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addContainerGap())
+            );
+            btnCollapseMenu.setText(ConstantHelper.EXPAND_MENU_TEXT);
+        } else {
+            pnlMenuLayout.setHorizontalGroup(
+                    pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
+                                    .addContainerGap(20, Short.MAX_VALUE)
+                                    .addComponent(pnlMenuContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(20, 20, 20))
+            );
+            pnlMenuLayout.setVerticalGroup(
+                    pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMenuLayout.createSequentialGroup()
+                                    .addGap(30, 30, 30)
+                                    .addComponent(pnlMenuContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addContainerGap())
+            );
+            btnCollapseMenu.setText(ConstantHelper.COLLAPSE_MENU_TEXT);
+        };
+        isCollapse = !isCollapse;
+    }//GEN-LAST:event_btnCollapseMenuActionPerformed
     
     private void setStyleForButton(JToggleButton button, int status) {
         Color color = null;
@@ -386,9 +491,9 @@ public class frmMainWindow extends javax.swing.JFrame {
     }
     
     private void displayUserInLogoutButton() {
-        if (loggedInEmployee.getUsername().length() > 6)
+        if (loggedInEmployee.getUsername().length() > 8)
             btnLogOut.setText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
-                    loggedInEmployee.getUsername().substring(0, 5)+ "..."));
+                    loggedInEmployee.getUsername().substring(0, 8)+ "..."));
         else btnLogOut.setText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
                 loggedInEmployee.getUsername()));
         btnLogOut.setToolTipText(String.format(ConstantHelper.LOGOUT_BTN_TEXT, 
@@ -396,15 +501,19 @@ public class frmMainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAccount;
     private javax.swing.JToggleButton btnBill;
+    private javax.swing.JButton btnCollapseMenu;
     private javax.swing.JToggleButton btnCustomer;
-    private javax.swing.JToggleButton btnLogOut;
+    private javax.swing.JToggleButton btnEmployee;
+    private javax.swing.JButton btnLogOut;
     private javax.swing.JToggleButton btnProduct;
     private javax.swing.ButtonGroup groupBtnMenu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JPanel pnlInSection;
     private javax.swing.JPanel pnlMenu;
     private javax.swing.JPanel pnlMenuContainer;
@@ -418,5 +527,24 @@ public class frmMainWindow extends javax.swing.JFrame {
             Logger.getLogger(ConstantHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public void reloadFollowMode() {
+        switch (mode) {
+            case ConstantHelper.MAIN_FRAME_BILL_MODE:
+                loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
+                break;
+            case ConstantHelper.MAIN_FRAME_CUSTOMER_MODE:
+                loadInSection(new com.ltnc.nhom3.view.customer.pnlList());
+                break;
+            case ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE:
+//                loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
+                break;
+            case ConstantHelper.MAIN_FRAME_PRODUCT_MODE:
+                loadInSection(new com.ltnc.nhom3.view.product.pnlList(priceService, productService, manufacturerService));
+                break;
+            default:
+                loadInSection(new JPanel());
+        }
     }
 }

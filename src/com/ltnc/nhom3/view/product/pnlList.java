@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -154,16 +155,11 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
         tblList.setRowHeight(25);
-        tblList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tblListMousePressed(evt);
-            }
-        });
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setBackground(getBackground());
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(com.ltnc.nhom3.utility.ConstantHelper.PRODUCT_LIST_HEADING);
+        lblHeading.setText(ConstantHelper.PRODUCT_LIST_HEADING);
 
         txtSearch.setBackground(getBackground());
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -406,7 +402,7 @@ public class pnlList extends javax.swing.JPanel {
             if (option == JOptionPane.YES_OPTION) {
                 try {
                     if (productService.deleteByIds(TableHelper.extractSelectedIdList(tblList))) {
-                        totalPage -= count;
+                        getTotalPage();
                         loadTable(1);
                     }
                 } catch (SQLException ex) {
@@ -456,27 +452,20 @@ public class pnlList extends javax.swing.JPanel {
     private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
         pageNum = 1;
         loadTable(pageNum);
-        reloadPaginationButtons();
     }//GEN-LAST:event_btnFirstPageActionPerformed
 
     private void btnLastPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastPageActionPerformed
         pageNum = totalPage;
         loadTable(pageNum);
-        reloadPaginationButtons();
     }//GEN-LAST:event_btnLastPageActionPerformed
 
     private void btnPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevPageActionPerformed
         loadTable(--pageNum);
-        reloadPaginationButtons();
     }//GEN-LAST:event_btnPrevPageActionPerformed
 
     private void btnNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextPageActionPerformed
         loadTable(++pageNum);
-        reloadPaginationButtons();
     }//GEN-LAST:event_btnNextPageActionPerformed
-
-    private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
-    }//GEN-LAST:event_tblListMousePressed
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         if (tblList.getSelectedRowCount() == 1) {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view;
+package com.ltnc.nhom3.view.account;
 
 import com.ltnc.nhom3.entity.Employee;
 import com.ltnc.nhom3.service.EmployeeService;
@@ -14,7 +14,6 @@ import java.awt.Frame;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
