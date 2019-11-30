@@ -54,7 +54,9 @@ public class ConstantHelper {
     public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";
     
     public static final String CUSTOMER_LIST_HEADING = "Danh sách khách hàng";
-
+    public static final String CUSTOMER_EDIT_HEADING = "Sửa thông tin khách";
+    public static final String CUSTOMER_ADD_HEADING = "Thêm khách hàng";
+    
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
     public static final String COLLAPSE_MENU_TEXT = "Thu gọn";
@@ -75,6 +77,8 @@ public class ConstantHelper {
     public static final String LOGIN_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
     public static final String LOGIN_WRONG_INFO_MESSAGE = "Tên hoặc mật khẩu sai!";
     
+    public static final String CUSTOMER_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
+    
     public static final String CHANGE_PASS_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
     public static final String CHANGE_PASS_WRONG_RENEW_PASSWORD_MESSAGE = "Nhắc lại mật khẩu sai!";
     public static final String CHANGE_PASS_WRONG_CURRENT_PASSWORD_MESSAGE = "Sai mật khẩu hiện tại!";
@@ -83,13 +87,18 @@ public class ConstantHelper {
 
     public static final String ADD_PRODUCT_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
     public static final String ADD_PRODUCT_FIELD_REQUIRED_TITLE = CHANGE_PASS_DONE_TITLE;
+    public static final String UPDATE_DONE_DIALOG_MESSAGE = "Đã cập nhật thông tin!";
+
     
     public static final String COMBOBOX_SELECT_MANUFACTURER = "-- Chọn --";
     
     public static final String[] TBL_PRODUCT_TITLES
             = new String[]{"ID", "Tên", "Đơn giá", "Ngày ra mắt", "Trạng thái"};
-    public static final int[] TBL_PRODUCT_TITLES_WIDTHS
-            = {40, 400, 165, 115, 125};
+    public static final int[] TBL_PRODUCT_WIDTHS = {40, 400, 165, 115, 125};
+    
+    public static final String[] TBL_CUSTOMER_TITLES
+            = new String[]{"ID", "Tên", "Địa chỉ", "Điện thoại"};
+    public static final int[] TBL_CUSTOMER_WIDTHS = {40, 400, 165, 115};
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int STT_BTN_HOVER = 1;

@@ -361,7 +361,7 @@ public class frmMainWindow extends javax.swing.JFrame {
         if (mode != ConstantHelper.MAIN_FRAME_CUSTOMER_MODE){
             mode = ConstantHelper.MAIN_FRAME_CUSTOMER_MODE;
             reloadGroupButtons();
-            loadInSection(new com.ltnc.nhom3.view.customer.pnlList());
+            loadInSection(new com.ltnc.nhom3.view.customer.pnlList(customerService));
         }
     }//GEN-LAST:event_btnCustomerActionPerformed
 
@@ -432,7 +432,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                                     .addContainerGap())
             );
             btnCollapseMenu.setText(ConstantHelper.COLLAPSE_MENU_TEXT);
-        };
+        }
         isCollapse = !isCollapse;
     }//GEN-LAST:event_btnCollapseMenuActionPerformed
     
@@ -535,7 +535,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                 loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
                 break;
             case ConstantHelper.MAIN_FRAME_CUSTOMER_MODE:
-                loadInSection(new com.ltnc.nhom3.view.customer.pnlList());
+                loadInSection(new com.ltnc.nhom3.view.customer.pnlList(customerService));
                 break;
             case ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE:
 //                loadInSection(new com.ltnc.nhom3.view.bill.pnlList());

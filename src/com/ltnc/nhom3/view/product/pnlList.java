@@ -16,14 +16,12 @@ import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -96,8 +94,7 @@ public class pnlList extends javax.swing.JPanel {
                 setOnOffForButtons(true);
             }
             tblList.setModel(dtm);
-            TableHelper.setWithForAllColumns(tblList, ConstantHelper.TBL_PRODUCT_TITLES_WIDTHS);
-
+            TableHelper.setWithForAllColumns(tblList, ConstantHelper.TBL_PRODUCT_WIDTHS);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }

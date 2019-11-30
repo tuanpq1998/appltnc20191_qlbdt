@@ -8,7 +8,6 @@ package com.ltnc.nhom3.view.customer;
 import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.service.CustomerService;
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
@@ -17,7 +16,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,15 +23,18 @@ import javax.swing.table.DefaultTableModel;
  * @author PhungSyLinh
  */
 public class pnlList extends javax.swing.JPanel {
+    
     private CustomerService customerService;
-    private static  final int[] Withs = {40,400,165,115};
+    
     /**
      * Creates new form pnlList
      */
-    public pnlList()   {
-        customerService = new CustomerService();
+    public pnlList(CustomerService customerService) {
+        this.customerService = customerService;
         initComponents();
         loadInfo(null);
+        jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
+        tblList.getTableHeader().setReorderingAllowed(false);
     }
 
     /**
@@ -55,10 +56,9 @@ public class pnlList extends javax.swing.JPanel {
         btnClearSearch = SectionTemplate.getStyledButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel3 = SectionTemplate.getStyledPanel();
-        btnDetail = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
-        btnDelete = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
+        btnDelete = SectionTemplate.getStyledButton();
 
         jPanel1.setBackground(ConstantHelper.SECTION_PANEL_BG);
 
@@ -85,7 +85,7 @@ public class pnlList extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(com.ltnc.nhom3.utility.ConstantHelper.PRODUCT_LIST_HEADING);
+        lblHeading.setText(ConstantHelper.CUSTOMER_LIST_HEADING);
 
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSearch.setForeground(Color.GRAY);
@@ -147,24 +147,12 @@ public class pnlList extends javax.swing.JPanel {
                         .addGap(396, 396, 396))))
         );
 
-        btnDetail.setText("Xem chi tiết");
-        btnDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDetailActionPerformed(evt);
-            }
-        });
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnClearSearch, txtSearch});
 
         btnEdit.setText("Sửa");
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditActionPerformed(evt);
-            }
-        });
-
-        btnDelete.setText("Xóa");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
             }
         });
 
@@ -175,31 +163,35 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
 
+        btnDelete.setText("Xóa");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDelete)
+                .addGap(18, 18, 18)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDelete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDetail)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDetail)
                     .addComponent(btnEdit)
-                    .addComponent(btnDelete)
-                    .addComponent(btnAdd))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(btnAdd)
+                    .addComponent(btnDelete))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -221,107 +213,92 @@ public class pnlList extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 662, Short.MAX_VALUE)
+            .addGap(0, 654, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 0, 0)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(0, 0, 0)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 593, Short.MAX_VALUE)
+            .addGap(0, 597, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 0, 0)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
+    
     public void loadInfo(List<Customer> customers) {
-        String[] titles = {"ID","Tên","Địa chỉ","Điện thoại"};
+        String[] titles = ConstantHelper.TBL_CUSTOMER_TITLES;
         DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
         try {
             customers = customerService.findAll();
             Object[] row = new Object[titles.length];
-        for(Customer customer : customers){
-            row[0] = customer.getId();
-            row[1] = customer.getFullname();
-            row[2] = customer.getAddress();
-            row[3] = customer.getPhone();
-            dtm.addRow(row);
-        }
-        tblList.setModel(dtm);
-        TableHelper.setWithForAllColumns(tblList, Withs);
+            for (Customer customer : customers) {
+                row[0] = customer.getId();
+                row[1] = customer.getFullname();
+                row[2] = customer.getAddress();
+                row[3] = customer.getPhone();
+                dtm.addRow(row);
+            }
+            tblList.setModel(dtm);
+            TableHelper.setWithForAllColumns(tblList, ConstantHelper.TBL_CUSTOMER_WIDTHS);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
     private void txtSearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusGained
-
+        //TODO
 
     }//GEN-LAST:event_txtSearchFocusGained
 
     private void txtSearchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusLost
-
+        //TODO
 
     }//GEN-LAST:event_txtSearchFocusLost
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-
+        //TODO: sự kiện ấn enter để search
+        
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnClearSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSearchActionPerformed
-
+        //TODO: ấn quay lại => xóa chữ trong thanh search và load ds full.
     }//GEN-LAST:event_btnClearSearchActionPerformed
 
-    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
-
-    }//GEN-LAST:event_btnDetailActionPerformed
-
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-         frmMainWindow.rootFrame.loadInSection(new pnlEdit(TableHelper.extractSelectedId(tblList),customerService));
+        //phải check xem người dùng đã chọn gì trong bảng chưa, nếu rồi thì mới load pnlForm??
+        frmMainWindow.rootFrame.loadInSection(new pnlForm(customerService, TableHelper.extractSelectedId(tblList)));
     }//GEN-LAST:event_btnEditActionPerformed
 
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        frmMainWindow.rootFrame.loadInSection(new pnlForm(customerService));
+    }//GEN-LAST:event_btnAddActionPerformed
+
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        if(tblList.getSelectedRowCount()>0){
-            int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,ConstantHelper.CONFIRM_DIALOG_MESSAGE,ConstantHelper.CONFIRM_DIALOG_TITLE,JOptionPane.YES_NO_CANCEL_OPTION );
-            if(option== JOptionPane.YES_OPTION)
-            { 
-
-                try {
-                    if(customerService.deleteByID(TableHelper.extractSelectedId(tblList))) {
-                        loadInfo(null);
-                    } else {
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
+        if (tblList.getSelectedRowCount() > 0) {
+            //TODO
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlAdd(customerService));
-    }//GEN-LAST:event_btnAddActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClearSearch;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
