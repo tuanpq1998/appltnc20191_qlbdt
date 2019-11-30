@@ -80,7 +80,7 @@ public
                  setOnOffForButton(true);
               }
               tblBill.setModel(dtm);
-              TableHelper.setWithForAllColumns(tblBill,ConstantHelper.TBL_PRODUCT_TITLES_WIDTHS);
+              TableHelper.setWithForAllColumns(tblBill,ConstantHelper.TBL_PRODUCT_WIDTHS);
            }
    /**
     * This method is called from within the constructor to initialize the form.

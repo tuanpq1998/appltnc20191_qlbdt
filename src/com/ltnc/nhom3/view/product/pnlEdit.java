@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
@@ -53,11 +54,11 @@ public class pnlEdit extends javax.swing.JPanel {
         initComponents();
         
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
+        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
         loadPriceFromProductId();
         loadProductFromId();
         renderToForm();
         loadManufacturersToComboBox(product.getManufacturerId());
-        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
     }
 
     private void loadManufacturersToComboBox(int selectManufacturerId) {
@@ -158,7 +159,7 @@ public class pnlEdit extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText("Sửa sản phẩm");
+        lblHeading.setText(ConstantHelper.LOADING_TEXT);
 
         btnGoBack.setText("Quay lại");
         btnGoBack.addActionListener(new java.awt.event.ActionListener() {
@@ -262,7 +263,7 @@ public class pnlEdit extends javax.swing.JPanel {
                 boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index,
                     isSelected, cellHasFocus);
-                if (value != null && !ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
+                if (value != null && !com.ltnc.nhom3.utility.ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
                     Manufacturer item = (Manufacturer) value;
                     String manufacturerStr = IOHandler.convertToDisplayManufacturerString(item);
                     setText(manufacturerStr);
@@ -275,7 +276,7 @@ public class pnlEdit extends javax.swing.JPanel {
 
         chbAvailabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         chbAvailabel.setSelected(true);
-        chbAvailabel.setText(ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
+        chbAvailabel.setText(com.ltnc.nhom3.utility.ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
         chbAvailabel.setBorder(null);
         chbAvailabel.setName(""); // NOI18N
         chbAvailabel.setOpaque(false);
@@ -480,10 +481,26 @@ public class pnlEdit extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        // TODO : check required
+        String name = txtName.getText();
+        if (name.length() == 0) {
+            JOptionPane.showMessageDialog(frmMainWindow.rootFrame, 
+                    ConstantHelper.ADD_PRODUCT_FIELD_REQUIRED_MESSAGE, ConstantHelper.ADD_PRODUCT_FIELD_REQUIRED_TITLE, 
+                    JOptionPane.WARNING_MESSAGE);
+            txtName.requestFocus();
+            return;
+        }
+        if (txtPrice.getText().length() > 0) {
+            try {
+                txtPrice.commitEdit();
+            } catch (ParseException ex) {
+                txtPrice.requestFocus();
+                Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        }
         Product newProduct = new Product();
         newProduct.setId(productId);
-        newProduct.setName(txtName.getText());
+        newProduct.setName(name);
         newProduct.setAvailable(chbAvailabel.isSelected());
         newProduct.setDecription(txtDescription.getText());
         newProduct.setSpecifications(txtSpecifications.getText());

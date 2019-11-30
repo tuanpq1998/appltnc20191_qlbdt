@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -38,7 +40,7 @@ public class IOHandler {
         }
         return dateFromSQL;
     }
-    
+
     public static String convertToDisplayDateTime(String datetimeFromSQL) {
         Date date = null;
         try {
@@ -48,21 +50,23 @@ public class IOHandler {
         }
         return datetimeFromSQL;
     }
-    
+
     public static String convertToDisplayManufacturerString(Manufacturer manufacturer) {
-        if (manufacturer != null)
+        if (manufacturer != null) {
             return manufacturer.getName() + " (" + manufacturer.getCountry() + ")";
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     public static String convertToStringSQLDate(Date date) {
         return formatDateFromSQL.format(date);
     }
-    
+
     public static String convertToStringSQLDateTime(Date date) {
         return formatDateTimeFromSQL.format(date);
     }
-    
+
     public static Date covertStringSQLToDate(String dateFromSQL) {
         try {
             return formatDateFromSQL.parse(dateFromSQL);
@@ -73,6 +77,12 @@ public class IOHandler {
     }
 
     public static String displayStartDate(String startDate) {
-        return " (từ " + convertToDisplayDateTime(startDate)+")";
+        return " (từ " + convertToDisplayDateTime(startDate) + ")";
     }
+
+    public static boolean isContainsNonNumberCharacter(String text) {
+        String regex = "[^0-9]+";
+        return Pattern.compile(regex).matcher(text).find();
+    }
+
 }

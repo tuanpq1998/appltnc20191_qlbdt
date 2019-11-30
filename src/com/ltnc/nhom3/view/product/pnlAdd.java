@@ -452,16 +452,25 @@ public class pnlAdd extends javax.swing.JPanel {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        // TODO : check required
-        try {    
-            txtPrice.commitEdit();
-        } catch (ParseException ex) {
-            txtPrice.requestFocus();
-            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+        String name = txtName.getText();
+        if (name.length() == 0) {
+            JOptionPane.showMessageDialog(frmMainWindow.rootFrame, 
+                    ConstantHelper.ADD_PRODUCT_FIELD_REQUIRED_MESSAGE, ConstantHelper.ADD_PRODUCT_FIELD_REQUIRED_TITLE, 
+                    JOptionPane.WARNING_MESSAGE);
+            txtName.requestFocus();
             return;
         }
+        if (txtPrice.getText().length() > 0) {
+            try {
+                txtPrice.commitEdit();
+            } catch (ParseException ex) {
+                txtPrice.requestFocus();
+                Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        }
         Product product = new Product();
-        product.setName(txtName.getText());
+        product.setName(name);
         product.setAvailable(chbAvailabel.isSelected());
         product.setDecription(txtDescription.getText());
         product.setSpecifications(txtSpecifications.getText());

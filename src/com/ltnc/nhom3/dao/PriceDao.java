@@ -60,7 +60,8 @@ public class PriceDao {
             
             preparedStatement.setString(1, price.getEndDate());
             preparedStatement.setBoolean(2, price.isCurrent());
-
+            preparedStatement.setInt(3, price.getId());
+            
             count = preparedStatement.executeUpdate();
         } finally {
             if (preparedStatement != null) {

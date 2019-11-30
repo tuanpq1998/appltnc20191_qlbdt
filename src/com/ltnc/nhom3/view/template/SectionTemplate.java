@@ -6,7 +6,6 @@
 package com.ltnc.nhom3.view.template;
 
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.ltnc.nhom3.utility.ConstantHelper;
 import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,7 +36,7 @@ public class SectionTemplate {
         button.setFocusable(false);
         button.setOpaque(true);
         button.setMinimumSize(new Dimension(0, 30));
-        button.addMouseListener((new java.awt.event.MouseAdapter() {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(ConstantHelper.SECTION_BTN_BG_HOVER);
@@ -48,7 +47,7 @@ public class SectionTemplate {
                 button.setBackground(ConstantHelper.SECTION_BTN_BG_NORMAL);
                 changeColorBorder(button, ConstantHelper.SECTION_BTN_BODER_NORMAL);
             }
-        }));
+        });
         return button;
     }
 

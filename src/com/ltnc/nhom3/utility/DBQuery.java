@@ -46,13 +46,16 @@ public class DBQuery {
     /* =========== Product =========== */
     private static final String PRODUCT_TABLE = "Product";
     
+    public static final String UPDATE_PRODUCT_MANUFACTURER_ID_NULL = "UPDATE " + PRODUCT_TABLE 
+            + " SET manufacturer_id = NULL WHERE manufacturer_id = ?";
+    
     public static final String FIND_ALL_PRODUCTS = "SELECT * FROM " + PRODUCT_TABLE;
-    public static final String FIND_ALL_PRODUCTS_OFFSET_LIMIT = FIND_ALL_PRODUCTS + " LIMIT ?,?";
+    public static final String FIND_ALL_PRODUCTS_OFFSET_LIMIT = FIND_ALL_PRODUCTS + " WHERE deleted=0 LIMIT ?,?";
     public static final String FIND_ALL_PRODUCTS_BY_NAME = FIND_ALL_PRODUCTS + " WHERE name LIKE ? LIMIT ?,?";
     public static final String DELETE_PRODUCT_BY_ID = "DELETE FROM " + PRODUCT_TABLE 
                 + " WHERE product_id = ?";
-    public static final String DELETE_MANY_PRODUCT_BY_IDS = "DELETE FROM " + PRODUCT_TABLE 
-                + " WHERE product_id IN (";
+    public static final String DELETE_MANY_PRODUCT_BY_IDS = "UPDATE " + PRODUCT_TABLE 
+                + " SET deleted = 1 WHERE product_id IN (";
     public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS
             + " WHERE product_id = ?";
     public static final String CREATE_NEW_PRODUCT = "INSERT INTO " + PRODUCT_TABLE 
@@ -96,6 +99,8 @@ public class DBQuery {
             + " password = ?, role=?, active=? WHERE employee_id = ?";
     public static final String DELETE_EMPLOYEE_BY_ID = "DELETE FROM " + EMPLOYEE_TABLE
             + " WHERE employee_id = ?";
-    public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEE + " WHERE username=? AND active=1";
+    public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEE + " WHERE username=?";
+    public static String UPDATE_EMPLOYEE_PASSWORD_BY_ID = "UPDATE " + EMPLOYEE_TABLE
+            + " SET password = ? WHERE employee_id = ?";
     /* ============================ */
 }

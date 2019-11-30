@@ -8,7 +8,6 @@ package com.ltnc.nhom3.service;
 import com.ltnc.nhom3.dao.ProductDao;
 import com.ltnc.nhom3.entity.Product;
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.sun.corba.se.impl.orbutil.closure.Constant;
 import java.sql.SQLException;
 import java.util.List;
 
