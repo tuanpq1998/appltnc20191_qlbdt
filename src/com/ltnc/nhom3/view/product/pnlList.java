@@ -16,6 +16,7 @@ import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
@@ -155,6 +156,11 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
         tblList.setRowHeight(25);
+        tblList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tblListMousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setBackground(getBackground());
@@ -473,6 +479,13 @@ public class pnlList extends javax.swing.JPanel {
                     productService, priceService, manufacturerService));
         }
     }//GEN-LAST:event_btnDetailActionPerformed
+
+    private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
+        if (evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
+            frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
+                    productService, priceService, manufacturerService));
+        }
+    }//GEN-LAST:event_tblListMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
