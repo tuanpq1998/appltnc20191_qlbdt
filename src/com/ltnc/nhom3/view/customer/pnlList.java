@@ -177,7 +177,7 @@ public class pnlList extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnDelete)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
@@ -254,7 +254,7 @@ public class pnlList extends javax.swing.JPanel {
                 dtm.addRow(row);
             }
             tblList.setModel(dtm);
-            TableHelper.setWithForAllColumns(tblList, ConstantHelper.TBL_CUSTOMER_WIDTHS);
+            TableHelper.setWidthForAllColumns(tblList, ConstantHelper.TBL_CUSTOMER_WIDTHS);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }

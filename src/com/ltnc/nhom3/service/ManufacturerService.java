@@ -37,7 +37,7 @@ public class ManufacturerService {
         return manufacturerDao.createAndReturnId(manufacturer);
     }
     
-    public int isNameExisted(String name) throws SQLException {
+    public int getIdByName(String name) throws SQLException {
         Manufacturer m = findByName(name);
         return m == null ? -1 : m.getId();
     }

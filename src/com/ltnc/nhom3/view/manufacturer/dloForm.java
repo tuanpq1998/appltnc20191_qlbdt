@@ -8,7 +8,6 @@ package com.ltnc.nhom3.view.manufacturer;
 import com.ltnc.nhom3.entity.Manufacturer;
 import com.ltnc.nhom3.service.ManufacturerService;
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Frame;
@@ -69,7 +68,7 @@ public class dloForm extends javax.swing.JDialog {
         btnDelete = SectionTemplate.getStyledButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(ConstantHelper.ADD_MANUFACTURER_DIALOG_TITLE);
+        setTitle(com.ltnc.nhom3.utility.ConstantHelper.ADD_MANUFACTURER_DIALOG_TITLE);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Nhập thông tin", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 14))); // NOI18N
@@ -149,9 +148,9 @@ public class dloForm extends javax.swing.JDialog {
                         .addComponent(lblError)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnDelete)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnCancel)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnSubmit)))
                 .addContainerGap())
         );
@@ -180,19 +179,19 @@ public class dloForm extends javax.swing.JDialog {
             lblError.setText(ConstantHelper.MANUFACTURER_FIELD_REQUIRED_MESSAGE);
         else {
             try {
-                //edit mode
-                if (edittingId > 0) {
-                    Manufacturer manufacturer = new Manufacturer(edittingId, name, country);
-                    manufacturerService.update(manufacturer);
-                    btnCancelActionPerformed(evt);
-                    return;
-                }
-                //add mode
-                int oldId = manufacturerService.isNameExisted(name);
-                if (oldId != -1) {
+                int oldId = manufacturerService.getIdByName(name);
+                if ((edittingId == -1 && oldId != -1) || (edittingId > 0 && edittingId != oldId)) {
                     lblError.setText(ConstantHelper.MANUFACTURER_NAME_HAS_EXISTED_MESSAGE);
                     returnedId = oldId;
                 } else {
+                    if (edittingId > 0) {
+                        //edit mode
+                        Manufacturer manufacturer = new Manufacturer(edittingId, name, country);
+                        manufacturerService.update(manufacturer);
+                        btnCancelActionPerformed(evt);
+                        return;
+                    }
+                    //add mode
                     Manufacturer manufacturer = new Manufacturer(0, name, country);
                     returnedId = manufacturerService.createAndReturnId(manufacturer);
                     btnCancelActionPerformed(evt);

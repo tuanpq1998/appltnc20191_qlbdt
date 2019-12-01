@@ -12,7 +12,6 @@ import java.awt.Color;
  * @author admin
  */
 public class ConstantHelper {
-    
     private static Color getColorFromInt(int colorHex) {
         return new Color(colorHex);
     }
@@ -57,6 +56,18 @@ public class ConstantHelper {
     public static final String CUSTOMER_EDIT_HEADING = "Sửa thông tin khách";
     public static final String CUSTOMER_ADD_HEADING = "Thêm khách hàng";
     
+    public static final String EMPLOYEE_LIST_HEADING = "Danh sách nhân viên";
+    public static final String EMPLOYEE_LIST_SEARCH_HEADING = PRODUCT_LIST_SEARCH_HEADING;
+    public static final String EMPLOYEE_EDIT_HEADING = "Sửa thông nhân viên";
+    public static final String EMPLOYEE_ADD_HEADING = "Thêm nhân viên";
+    public static final String EMPLOYEE_FILED_REQUIRED_MESSAGE = "Hãy điền đầy đủ thông tin!";
+    public static final String EMPLOYEE_USERNAME_HAS_EXISTED_MESSAGE = "Tên đã tồn tại!";
+    public static final String EMPLOYEE_IDENTITY_CARD_PHONE_NUMBER_ONLY_MESSAGE = "Số CMND và điện thoại chỉ gồm chữ số!";
+    public static final String EMPLOYEE_ADD_DONE_MESSAGE = "<html><p>" + ADD_DONE_DIALOG_MESSAGE 
+            + "</p><p>Tài khoản mới: tên=<b>%s<b>, mật khẩu=<b>%s<b></p></html>.";
+    public static final String EMPLOYEE_RESET_PASSWORD_DONE_MESSAGE = "<html><p>Đặt lại thành công!</p>"
+            + "<p>Mật khẩu mới: <b>%s</b>.</p></html>";
+    
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
     public static final String COLLAPSE_MENU_TEXT = "Thu gọn";
@@ -71,8 +82,8 @@ public class ConstantHelper {
     public static final String NO_INFORMATION_MESSAGE = "Không có thông tin";
     public static final String PRODUCT_AVAILABEL_MESSAGE = "Còn hàng";
     public static final String PRODUCT_NOT_AVAILABEL_MESSAGE = "Hết hàng";
-    public static final String MANUFACTURER_NAME_HAS_EXISTED_MESSAGE = "Tên đã tồn tại!";
-    public static final String MANUFACTURER_FIELD_REQUIRED_MESSAGE = "Hãy điền đầy đủ thông tin!";
+    public static final String MANUFACTURER_NAME_HAS_EXISTED_MESSAGE = EMPLOYEE_USERNAME_HAS_EXISTED_MESSAGE;
+    public static final String MANUFACTURER_FIELD_REQUIRED_MESSAGE = EMPLOYEE_FILED_REQUIRED_MESSAGE;
     
     public static final String LOGIN_FIELD_REQUIRED_MESSAGE = MANUFACTURER_FIELD_REQUIRED_MESSAGE;
     public static final String LOGIN_WRONG_INFO_MESSAGE = "Tên hoặc mật khẩu sai!";
@@ -89,16 +100,19 @@ public class ConstantHelper {
     public static final String ADD_PRODUCT_FIELD_REQUIRED_TITLE = CHANGE_PASS_DONE_TITLE;
     public static final String UPDATE_DONE_DIALOG_MESSAGE = "Đã cập nhật thông tin!";
 
-    
     public static final String COMBOBOX_SELECT_MANUFACTURER = "-- Chọn --";
     
     public static final String[] TBL_PRODUCT_TITLES
             = new String[]{"ID", "Tên", "Đơn giá", "Ngày ra mắt", "Trạng thái"};
-    public static final int[] TBL_PRODUCT_WIDTHS = {40, 400, 165, 115, 125};
+    public static final int[] TBL_PRODUCT_WIDTHS = {40, 400, 165, 120, 120};
     
     public static final String[] TBL_CUSTOMER_TITLES
             = new String[]{"ID", "Tên", "Địa chỉ", "Điện thoại"};
-    public static final int[] TBL_CUSTOMER_WIDTHS = {40, 400, 165, 115};
+    public static final int[] TBL_CUSTOMER_WIDTHS = {40, 280, 280, 115};
+    
+    public static final String[] TBL_EMPLOYEE_TITLES 
+            = new String[]{"ID", "Tài khoản", "Điện thoại", "CMND", "Trạng thái"};
+public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 280, 160, 120, 160};
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int STT_BTN_HOVER = 1;

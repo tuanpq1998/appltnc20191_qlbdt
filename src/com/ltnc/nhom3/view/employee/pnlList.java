@@ -3,14 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.product;
+package com.ltnc.nhom3.view.employee;
 
-import com.ltnc.nhom3.entity.Price;
-import com.ltnc.nhom3.entity.Product;
-import com.ltnc.nhom3.service.ManufacturerService;
-import com.ltnc.nhom3.service.PriceService;
-import com.ltnc.nhom3.service.ProductService;
-import com.ltnc.nhom3.utility.IOHandler;
+import com.ltnc.nhom3.entity.Employee;
+import com.ltnc.nhom3.service.EmployeeService;
 import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.TableHelper;
 import com.ltnc.nhom3.view.frmMainWindow;
@@ -30,9 +26,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlList extends javax.swing.JPanel {
 
-    private ProductService productService;
-    private PriceService priceService;
-    private ManufacturerService manufacturerService;
+    private EmployeeService employeeService;
     
     private int totalPage;
     private int pageNum;
@@ -41,11 +35,9 @@ public class pnlList extends javax.swing.JPanel {
     /**
      * Creates new form pnlBill
      */
-    public pnlList(PriceService priceService, ProductService productService, ManufacturerService manufacturerService) {
-        this.productService = productService;
-        this.priceService = priceService;
-        this.manufacturerService = manufacturerService;
+    public pnlList(EmployeeService employeeService) {
         initComponents();
+        this.employeeService = employeeService;
         getTotalPage();
         loadTable(1);
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
@@ -54,7 +46,7 @@ public class pnlList extends javax.swing.JPanel {
     }
 
     private void setOnOffForButtons(boolean isOn) {
-        btnDelete.setEnabled(isOn);
+        btnDisable.setEnabled(isOn);
         btnDetail.setEnabled(isOn);
         btnEdit.setEnabled(isOn);
     }
@@ -62,39 +54,34 @@ public class pnlList extends javax.swing.JPanel {
     public void loadTable(int pageNum) {
         this.pageNum = pageNum;
         reloadPaginationButtons();
-        String[] titles = ConstantHelper.TBL_PRODUCT_TITLES;
+        String[] titles = ConstantHelper.TBL_EMPLOYEE_TITLES;
         DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
-        List<Product> products = null;
+        List<Employee> employees = null;
         try {
             if (searchKey == null){
-                products = productService.findAll(pageNum);
+                employees = employeeService.findAll(pageNum);
             } else {
-                products = productService.findAllByName(searchKey, pageNum);
+                employees = employeeService.findAllByName(searchKey, pageNum);
             }
             Object[] row = new Object[titles.length];
-            if (products.isEmpty()) {
+            if (employees.isEmpty()) {
                 row[1] = ConstantHelper.NO_RESULT_MESSAGE;
                 dtm.addRow(row);
                 setOnOffForButtons(false);
             } else {
-                Price price = null;
-                for (Product product : products) {
-                    row[0] = product.getId();
-                    row[1] = product.getName();
-
-                    price = priceService.findPriceByProductId(product.getId());
-                    row[2] = price == null ? ConstantHelper.NO_INFORMATION_MESSAGE
-                            : IOHandler.convertToDisplayPriceString(price.getValue());
-
-                    row[3] = IOHandler.convertToDisplayDate(product.getReleaseDate());
-                    row[4] = product.isAvailable() ? ConstantHelper.PRODUCT_AVAILABEL_MESSAGE
-                            : ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE;
+                for (Employee employee : employees) {
+                    row[0] = employee.getId();
+                    row[1] = employee.getUsername();
+                    row[2] = employee.getPhone();
+                    row[3] = employee.getIndentityCard();
+                    row[4] = employee.isActive() ? ConstantHelper.ACCOUNT_ACTIVE_TEXT 
+                            : ConstantHelper.ACCOUNT_DEACTIVE_TEXT;
                     dtm.addRow(row);
                 }
                 setOnOffForButtons(true);
             }
             tblList.setModel(dtm);
-            TableHelper.setWidthForAllColumns(tblList, ConstantHelper.TBL_PRODUCT_WIDTHS);
+            TableHelper.setWidthForAllColumns(tblList, ConstantHelper.TBL_EMPLOYEE_WIDTHS);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -125,10 +112,10 @@ public class pnlList extends javax.swing.JPanel {
         lblPaginationStatus = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnDetail = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
-        btnDelete = SectionTemplate.getStyledButton();
+        btnDisable = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
+        btnDetail = SectionTemplate.getStyledButton();
 
         setBackground(ConstantHelper.SECTION_PANEL_BG);
 
@@ -162,7 +149,7 @@ public class pnlList extends javax.swing.JPanel {
 
         lblHeading.setBackground(getBackground());
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(ConstantHelper.PRODUCT_LIST_HEADING);
+        lblHeading.setText(ConstantHelper.EMPLOYEE_LIST_HEADING);
 
         txtSearch.setBackground(getBackground());
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -302,13 +289,6 @@ public class pnlList extends javax.swing.JPanel {
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnClearSearch, txtSearch});
 
-        btnDetail.setText("Xem chi tiết");
-        btnDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDetailActionPerformed(evt);
-            }
-        });
-
         btnEdit.setText("Sửa");
         btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -316,10 +296,10 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
 
-        btnDelete.setText("Xóa");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnDisable.setText("Khóa");
+        btnDisable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnDisableActionPerformed(evt);
             }
         });
 
@@ -330,15 +310,22 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
 
+        btnDetail.setText("Xem chi tiết");
+        btnDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetailActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDelete)
+                .addComponent(btnDisable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -348,13 +335,13 @@ public class pnlList extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDetail)
                     .addComponent(btnEdit)
-                    .addComponent(btnDelete)
-                    .addComponent(btnAdd))
-                .addGap(10, 10, 10))
+                    .addComponent(btnDisable)
+                    .addComponent(btnAdd)
+                    .addComponent(btnDetail))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -397,14 +384,14 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchFocusLost
 
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnDisableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableActionPerformed
         int count = tblList.getSelectedRowCount();
         if (count > 0) {
             int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
                     ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 try {
-                    if (productService.deleteByIds(TableHelper.extractSelectedIdList(tblList))) {
+                    if (employeeService.disableByIds(TableHelper.extractSelectedIdList(tblList))) {
                         getTotalPage();
                         loadTable(1);
                     }
@@ -413,7 +400,7 @@ public class pnlList extends javax.swing.JPanel {
                 }
             }
         }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    }//GEN-LAST:event_btnDisableActionPerformed
 
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
         String searchKeyInput = txtSearch.getText().trim();
@@ -422,17 +409,17 @@ public class pnlList extends javax.swing.JPanel {
             getTotalPage();
             loadTable(1);
             if (searchKey.length() > 15)
-                lblHeading.setText(String.format(ConstantHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
+                lblHeading.setText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
             else 
-                lblHeading.setText(String.format(ConstantHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey));
-            lblHeading.setToolTipText(String.format(ConstantHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey));
+                lblHeading.setText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey));
+            lblHeading.setToolTipText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey));
             btnClearSearch.setVisible(true);
 
         }
     }//GEN-LAST:event_txtSearchKeyPressed
 
     private void btnClearSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSearchActionPerformed
-        lblHeading.setText(ConstantHelper.PRODUCT_LIST_HEADING);
+        lblHeading.setText(ConstantHelper.EMPLOYEE_LIST_HEADING);
         lblHeading.setToolTipText(null);
         txtSearch.setText("");
         searchKey = null;
@@ -443,13 +430,13 @@ public class pnlList extends javax.swing.JPanel {
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         if (tblList.getSelectedRowCount() == 1) {
-            frmMainWindow.rootFrame.loadInSection(new pnlEdit(TableHelper.extractSelectedId(tblList),
-                    productService, priceService, manufacturerService));
+            frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService, 
+                    TableHelper.extractSelectedId(tblList)));
         }
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlAdd(productService, manufacturerService, priceService));
+        frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService));
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
@@ -473,14 +460,14 @@ public class pnlList extends javax.swing.JPanel {
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         if (tblList.getSelectedRowCount() == 1) {
             frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
-                    productService, priceService, manufacturerService));
+                    employeeService));
         }
     }//GEN-LAST:event_btnDetailActionPerformed
 
     private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
         if (evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
             frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
-                    productService, priceService, manufacturerService));
+                    employeeService));
         }
     }//GEN-LAST:event_tblListMousePressed
 
@@ -488,8 +475,8 @@ public class pnlList extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClearSearch;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDetail;
+    private javax.swing.JButton btnDisable;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnFirstPage;
     private javax.swing.JButton btnLastPage;
@@ -511,8 +498,8 @@ public class pnlList extends javax.swing.JPanel {
     private void getTotalPage() {
         try {
             if (searchKey == null)
-                totalPage = productService.countAll() / ConstantHelper.ITEM_PER_PAGE + 1;
-            else totalPage = productService.countAllByName(searchKey) / ConstantHelper.ITEM_PER_PAGE + 1;
+                totalPage = employeeService.countAll() / ConstantHelper.ITEM_PER_PAGE + 1;
+            else totalPage = employeeService.countAllByName(searchKey) / ConstantHelper.ITEM_PER_PAGE + 1;
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -85,4 +85,8 @@ public class IOHandler {
         return Pattern.compile(regex).matcher(text).find();
     }
 
+    public static String generatePassword(String username) {
+        return username.replaceAll("\\s+", "").toLowerCase();
+    }
+
 }

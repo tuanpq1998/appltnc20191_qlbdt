@@ -165,9 +165,6 @@ public class ProductDao {
                 preparedStatement.setInt(i+1, listIds[i]);
 
             count = preparedStatement.executeUpdate();
-            System.out.println(""+preparedStatement);
-                        System.out.println(""+count);
-
         } finally {
             if (preparedStatement != null) preparedStatement.close();
             if (connection != null) connection.close();
@@ -232,10 +229,7 @@ public class ProductDao {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_PRODUCTS_BY_NAME);
             preparedStatement.setString(1, "%"+name+"%");
-
             ResultSet resultSet = preparedStatement.executeQuery();
-            Product product = null;
-
             if (resultSet.next()) {
                     count = resultSet.getInt(1);
             }
@@ -245,6 +239,4 @@ public class ProductDao {
         }
         return count;
     }
-    
-    
 }

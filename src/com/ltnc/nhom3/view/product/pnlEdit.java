@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
@@ -159,7 +158,7 @@ public class pnlEdit extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
-        lblHeading.setText(ConstantHelper.LOADING_TEXT);
+        lblHeading.setText("Sửa sản phẩm");
 
         btnGoBack.setText("Quay lại");
         btnGoBack.addActionListener(new java.awt.event.ActionListener() {

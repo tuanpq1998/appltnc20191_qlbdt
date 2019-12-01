@@ -70,8 +70,9 @@ public class frmMainWindow extends javax.swing.JFrame {
         
         UIManager.put("OptionPane.background", ConstantHelper.SECTION_PANEL_BG);
         UIManager.put("Panel.background", ConstantHelper.SECTION_PANEL_BG);
-        showLoginDialog();
+        UIManager.put("ToolTip.background", ConstantHelper.SECTION_PANEL_BG);
         
+        showLoginDialog();
         if (!loggedInEmployee.isAdmin()) btnEmployee.setEnabled(false);
         if (!loggedInEmployee.isActive()) {
             btnEmployee.setEnabled(false);
@@ -350,7 +351,7 @@ public class frmMainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMenuSelectMouseExited
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
-        if (mode != ConstantHelper.MAIN_FRAME_PRODUCT_MODE){
+        if (mode != ConstantHelper.MAIN_FRAME_PRODUCT_MODE) {
             loadInSection(new pnlList(priceService, productService, manufacturerService));
             mode = ConstantHelper.MAIN_FRAME_PRODUCT_MODE;
             reloadGroupButtons();
@@ -358,7 +359,7 @@ public class frmMainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
-        if (mode != ConstantHelper.MAIN_FRAME_CUSTOMER_MODE){
+        if (mode != ConstantHelper.MAIN_FRAME_CUSTOMER_MODE) {
             mode = ConstantHelper.MAIN_FRAME_CUSTOMER_MODE;
             reloadGroupButtons();
             loadInSection(new com.ltnc.nhom3.view.customer.pnlList(customerService));
@@ -366,7 +367,7 @@ public class frmMainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCustomerActionPerformed
 
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
-        if (mode != ConstantHelper.MAIN_FRAME_BILL_MODE){
+        if (mode != ConstantHelper.MAIN_FRAME_BILL_MODE) {
             loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
             mode = ConstantHelper.MAIN_FRAME_BILL_MODE;
             reloadGroupButtons();
@@ -387,8 +388,8 @@ public class frmMainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogOutActionPerformed
 
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
-        if (mode != ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE){
-            
+        if (mode != ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE) {
+            loadInSection(new com.ltnc.nhom3.view.employee.pnlList(employeeService));
             mode = ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE;
             reloadGroupButtons();
         }
@@ -538,7 +539,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                 loadInSection(new com.ltnc.nhom3.view.customer.pnlList(customerService));
                 break;
             case ConstantHelper.MAIN_FRAME_EMPLOYEE_MODE:
-//                loadInSection(new com.ltnc.nhom3.view.bill.pnlList());
+                loadInSection(new com.ltnc.nhom3.view.employee.pnlList(employeeService));
                 break;
             case ConstantHelper.MAIN_FRAME_PRODUCT_MODE:
                 loadInSection(new com.ltnc.nhom3.view.product.pnlList(priceService, productService, manufacturerService));

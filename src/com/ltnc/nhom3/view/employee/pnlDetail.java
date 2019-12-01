@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ltnc.nhom3.view.product;
+package com.ltnc.nhom3.view.employee;
 
-import com.ltnc.nhom3.entity.Manufacturer;
-import com.ltnc.nhom3.entity.Price;
-import com.ltnc.nhom3.entity.Product;
-import com.ltnc.nhom3.service.ManufacturerService;
-import com.ltnc.nhom3.service.PriceService;
-import com.ltnc.nhom3.service.ProductService;
-import com.ltnc.nhom3.utility.IOHandler;
+import com.ltnc.nhom3.entity.Employee;
+import com.ltnc.nhom3.service.EmployeeService;
 import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import java.awt.Color;
@@ -27,56 +23,44 @@ import javax.swing.JOptionPane;
  */
 public class pnlDetail extends javax.swing.JPanel {
 
-    private int productId;
-    private ProductService productService;
-    private ManufacturerService manufacturerService;
-    private PriceService priceService;
+    private Employee employee;
+    private EmployeeService employeeService;
     
     /**
      * Creates new form pnlDetail
      * @param id
      * @param productService
      */   
-    public pnlDetail(int id, ProductService productService, PriceService priceService, ManufacturerService manufacturerService) {
-        productId = id;
-        this.productService = productService;
-        this.priceService = priceService;
-        this.manufacturerService = manufacturerService;
+    public pnlDetail(int id, EmployeeService employeeService) {
+        this.employeeService = employeeService;
         initComponents();
-        displayProductInfo();
-    }
-    
-    private void displayProductInfo() {
         try {
-            Product product = productService.findById(productId);
-            Price price = priceService.findPriceByProductId(product.getId());
-            int manufacturerId = product.getManufacturerId();
-            if (manufacturerId != 0){
-                Manufacturer manufacturer = manufacturerService.findById(manufacturerId);
-                lblManufacturer.setText(manufacturer != null ? IOHandler.convertToDisplayManufacturerString(manufacturer) 
-                        : ConstantHelper.NO_INFORMATION_MESSAGE);
-            }
-            lblHeading.setText(product.getName());
-            lblName.setText(product.getName());
-            
-            if (product.isAvailable()) {
-                lblAvailable.setText(" "+ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
-                lblAvailable.setForeground(Color.green);
-            } else {
-                lblAvailable.setText(" "+ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
-                lblAvailable.setForeground(Color.red);
-            }
-            
-            lblReleaseDate.setText(IOHandler.convertToDisplayDate(product.getReleaseDate()));
-            
-            lblPrice.setText(price==null ? ConstantHelper.NO_INFORMATION_MESSAGE 
-                            : IOHandler.convertToDisplayPriceString(price.getValue())+IOHandler.displayStartDate(price.getStartDate()));
-            
-            txtSpecifications1.setText(product.getDecription());
-            txtSpecifications.setText(product.getSpecifications());
+            employee = employeeService.findById(id);
+            displayProductInfo();
         } catch (SQLException ex) {
             Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private void displayProductInfo() {
+        lblHeading.setText(employee.getUsername());
+        lblFullname.setText(employee.getFullname());
+        lblAddress.setText(employee.getAddress() == null ? ConstantHelper.NO_INFORMATION_MESSAGE
+                : employee.getAddress());
+        lblPhone.setText(employee.getPhone() == null ? ConstantHelper.NO_INFORMATION_MESSAGE
+                : employee.getPhone());
+        lblIdentityCard.setText(employee.getIndentityCard() == null ? ConstantHelper.NO_INFORMATION_MESSAGE
+                : employee.getIndentityCard());
+        lblUsername.setText(employee.getUsername());
+        if (employee.isActive()) {
+            lblStatus.setText("● "+ConstantHelper.ACCOUNT_ACTIVE_TEXT);
+            lblStatus.setForeground(Color.green);
+        } else {
+            btnDisable.setEnabled(false);
+            lblStatus.setText("● "+ConstantHelper.ACCOUNT_DEACTIVE_TEXT);
+            lblStatus.setForeground(Color.red);
+        }
+
     }
 
     /**
@@ -97,26 +81,24 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel22 = new javax.swing.JLabel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
-        lblName = new javax.swing.JLabel();
-        lblPrice = new javax.swing.JLabel();
-        lblManufacturer = new javax.swing.JLabel();
-        lblReleaseDate = new javax.swing.JLabel();
-        lblAvailable = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtSpecifications = new javax.swing.JTextPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtSpecifications1 = new javax.swing.JTextPane();
+        lblFullname = new javax.swing.JLabel();
+        lblAddress = new javax.swing.JLabel();
+        lblPhone = new javax.swing.JLabel();
+        lblIdentityCard = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
+        lblStatus = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnDelete = SectionTemplate.getStyledButton();
+        btnDisable = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
+        btnResetPassword = SectionTemplate.getStyledButton();
 
         setBackground(ConstantHelper.SECTION_PANEL_BG);
+        setMinimumSize(new java.awt.Dimension(654, 596));
         setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -130,43 +112,37 @@ public class pnlDetail extends javax.swing.JPanel {
         });
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel22.setText("Tên: ");
+        jLabel22.setText("Họ tên:");
         jLabel22.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel22.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel22.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel23.setText("Đơn giá: ");
+        jLabel23.setText("Địa chỉ:");
         jLabel23.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel23.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel23.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel24.setText("Xuất xứ:");
+        jLabel24.setText("Điện thoại:");
         jLabel24.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel24.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel24.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel25.setText("Thông số kỹ thuật:");
-        jLabel25.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel25.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        jLabel25.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-
         jLabel26.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel26.setText("Mô tả: ");
+        jLabel26.setText("Trạng thái:");
         jLabel26.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel26.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel26.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel27.setText("Ngày ra mắt:");
+        jLabel27.setText("Số CMND:");
         jLabel27.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel27.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel27.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel28.setText("Tình trạng:");
+        jLabel28.setText("Tài khoản:");
         jLabel28.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel28.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel28.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
@@ -176,14 +152,13 @@ public class pnlDetail extends javax.swing.JPanel {
         pnlLeftLayout.setHorizontalGroup(
             pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLeftLayout.createSequentialGroup()
-                .addContainerGap(76, Short.MAX_VALUE)
+                .addContainerGap(125, Short.MAX_VALUE)
                 .addGroup(pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel28, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(10, 10, 10))
         );
@@ -201,41 +176,27 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(jLabel28)
                 .addGap(20, 20, 20)
-                .addComponent(jLabel25)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addComponent(jLabel26)
-                .addGap(70, 70, 70))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        lblName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblName.setText("Info");
+        lblFullname.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblFullname.setText("Info");
 
-        lblPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblPrice.setText("Info");
+        lblAddress.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblAddress.setText("Info");
 
-        lblManufacturer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblManufacturer.setText("Info");
+        lblPhone.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblPhone.setText("Info");
 
-        lblReleaseDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblReleaseDate.setText("Info");
+        lblIdentityCard.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblIdentityCard.setText("Info");
 
-        lblAvailable.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
-        lblAvailable.setText("Info");
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblUsername.setText("Info");
 
-        jScrollPane1.setBackground(getBackground());
-        jScrollPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jScrollPane1.setEnabled(false);
-
-        txtSpecifications.setEditable(false);
-        txtSpecifications.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jScrollPane1.setViewportView(txtSpecifications);
-
-        jScrollPane2.setBackground(getBackground());
-        jScrollPane2.setEnabled(false);
-
-        txtSpecifications1.setEditable(false);
-        txtSpecifications1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jScrollPane2.setViewportView(txtSpecifications1);
+        lblStatus.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
+        lblStatus.setText("Info");
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
@@ -244,32 +205,29 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblName)
-                    .addComponent(lblPrice)
-                    .addComponent(lblManufacturer)
-                    .addComponent(lblReleaseDate)
-                    .addComponent(lblAvailable)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(76, Short.MAX_VALUE))
+                    .addComponent(lblFullname)
+                    .addComponent(lblAddress)
+                    .addComponent(lblPhone)
+                    .addComponent(lblIdentityCard)
+                    .addComponent(lblUsername)
+                    .addComponent(lblStatus))
+                .addContainerGap(335, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(lblName)
+                .addComponent(lblFullname)
                 .addGap(20, 20, 20)
-                .addComponent(lblPrice)
+                .addComponent(lblAddress)
                 .addGap(20, 20, 20)
-                .addComponent(lblManufacturer)
+                .addComponent(lblPhone)
                 .addGap(20, 20, 20)
-                .addComponent(lblReleaseDate)
+                .addComponent(lblIdentityCard)
                 .addGap(20, 20, 20)
-                .addComponent(lblAvailable)
-                .addGap(16, 16, 16)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblUsername)
+                .addGap(20, 20, 20)
+                .addComponent(lblStatus)
                 .addContainerGap())
         );
 
@@ -289,7 +247,7 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlFormLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, 402, Short.MAX_VALUE)
+                    .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, 0))
         );
@@ -298,17 +256,20 @@ public class pnlDetail extends javax.swing.JPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator2)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblHeading, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnGoBack))))
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 31, Short.MAX_VALUE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnGoBack)))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -316,21 +277,20 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnGoBack)
+                        .addComponent(lblHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(21, 21, 21))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblHeading))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnGoBack, lblHeading});
-
-        btnDelete.setText("Xóa");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnDisable.setText("Khóa");
+        btnDisable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnDisableActionPerformed(evt);
             }
         });
 
@@ -341,13 +301,22 @@ public class pnlDetail extends javax.swing.JPanel {
             }
         });
 
+        btnResetPassword.setText("Đặt lại mật khẩu");
+        btnResetPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetPasswordActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDelete)
+                .addComponent(btnResetPassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDisable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
                 .addGap(2, 2, 2))
@@ -355,10 +324,11 @@ public class pnlDetail extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
-                    .addComponent(btnDelete))
+                    .addComponent(btnDisable)
+                    .addComponent(btnResetPassword))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -369,72 +339,87 @@ public class pnlDetail extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSeparator1))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(203, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
+        frmMainWindow.rootFrame.loadInSection(new pnlList(employeeService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame, 
-                    ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
-            if (option == JOptionPane.YES_OPTION){
-                try {
-                    if (productService.deleteById(productId))
-                        btnGoBackActionPerformed(evt);
-                } catch (SQLException ex) {
-                    Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+    private void btnDisableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableActionPerformed
+        int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
+                ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            try {
+                if (employeeService.disableById(employee.getId())) {
+                    displayProductInfo();
                 }
+            } catch (SQLException ex) {
+                Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
             }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+        }
+    }//GEN-LAST:event_btnDisableActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlEdit(productId, productService, priceService, manufacturerService));
+        frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService, employee.getId()));
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnResetPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPasswordActionPerformed
+        int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
+                ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            try {
+                String newPassword = IOHandler.generatePassword(employee.getUsername());
+                employeeService.updatePassword(employee.getId(), newPassword);
+                JOptionPane.showMessageDialog(frmMainWindow.rootFrame, 
+                        String.format(ConstantHelper.EMPLOYEE_RESET_PASSWORD_DONE_MESSAGE, newPassword));
+            } catch (SQLException ex) {
+                Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnResetPasswordActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDisable;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnGoBack;
+    private javax.swing.JButton btnResetPassword;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JLabel lblAvailable;
+    private javax.swing.JLabel lblAddress;
+    private javax.swing.JLabel lblFullname;
     private javax.swing.JLabel lblHeading;
-    private javax.swing.JLabel lblManufacturer;
-    private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblPrice;
-    private javax.swing.JLabel lblReleaseDate;
+    private javax.swing.JLabel lblIdentityCard;
+    private javax.swing.JLabel lblPhone;
+    private javax.swing.JLabel lblStatus;
+    private javax.swing.JLabel lblUsername;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
-    private javax.swing.JTextPane txtSpecifications;
-    private javax.swing.JTextPane txtSpecifications1;
     // End of variables declaration//GEN-END:variables
 }

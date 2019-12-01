@@ -59,13 +59,13 @@ public class DBQuery {
     public static final String FIND_PRODUCT_BY_ID = FIND_ALL_PRODUCTS
             + " WHERE product_id = ?";
     public static final String CREATE_NEW_PRODUCT = "INSERT INTO " + PRODUCT_TABLE 
-            + " VALUES(NULL,?,?,?,?,?,?)";
+            + " VALUES(NULL,?,?,?,?,?,?,0)";
     public static final String UPDATE_PRODUCT = "UPDATE " + PRODUCT_TABLE 
             + " SET name = ? , manufacturer_id = ?, specifications = ?,"
             + "description = ?, release_date =?, available = ? WHERE product_id = ?";
-    public static final String COUNT_ALL_PRODUCTS = "SELECT COUNT(*) FROM " + PRODUCT_TABLE;
+    public static final String COUNT_ALL_PRODUCTS = "SELECT COUNT(*) FROM " + PRODUCT_TABLE + " WHERE deleted=0";
     public static final String COUNT_ALL_PRODUCTS_BY_NAME = "SELECT COUNT(*) FROM " + PRODUCT_TABLE
-            + " WHERE name LIKE ?";
+            + " WHERE name LIKE ? AND deleted=0";
     
     public static String getQueryDeleteManyProductIds(int numberIds) {
         StringBuilder query = new StringBuilder(DELETE_MANY_PRODUCT_BY_IDS);
@@ -78,8 +78,8 @@ public class DBQuery {
     }
     /* ============ Price ============ */
     private static final String PRICE_TABLE = "Price";
-    public static final String FIND_ALL_PRICE = "SELECT * FROM " + PRICE_TABLE;
-    public static final String FIND_PRICE_BY_PRODUCT_ID = FIND_ALL_PRICE + " WHERE product_id=? "
+    public static final String FIND_ALL_PRICES = "SELECT * FROM " + PRICE_TABLE;
+    public static final String FIND_PRICE_BY_PRODUCT_ID = FIND_ALL_PRICES + " WHERE product_id=? "
             + "AND current=1";
     public static final String CREATE_NEW_PRICE = "INSERT INTO " + PRICE_TABLE 
             + " VALUES(NULL,?,?,?,NULL,DEFAULT)";
@@ -91,16 +91,32 @@ public class DBQuery {
     /* =========== Employee =========== */
     private static final String EMPLOYEE_TABLE = "Employee";
     
-    public static final String FIND_ALL_EMPLOYEE = "SELECT * FROM " + EMPLOYEE_TABLE;
-    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?)";
-    public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEE + " WHERE employee_id = ?";
+    public static final String FIND_ALL_EMPLOYEES = "SELECT * FROM " + EMPLOYEE_TABLE;
+    public static final String FIND_ALL_EMPLOYEES_OFFSET_LIMIT = FIND_ALL_EMPLOYEES + " WHERE admin=0 LIMIT ?,?";
+    public static final String FIND_ALL_EMPLOYEES_BY_NAME = FIND_ALL_EMPLOYEES + " WHERE admin=0 AND fullname LIKE ? LIMIT ?,?";
+    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?,1)";
+    public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEES + " WHERE employee_id = ?";
     public static final String UPDATE_EMPLOYEE = "UPDATE " + EMPLOYEE_TABLE
-            + " SET fullname = ?,  address =?, phone=? , indentity_card=? , username=?,"
-            + " password = ?, role=?, active=? WHERE employee_id = ?";
-    public static final String DELETE_EMPLOYEE_BY_ID = "DELETE FROM " + EMPLOYEE_TABLE
-            + " WHERE employee_id = ?";
-    public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEE + " WHERE username=?";
+            + " SET fullname = ?,  address = ?, phone= ? , identity_card= ? WHERE employee_id = ?";
+    public static final String DISABLE_EMPLOYEE_BY_ID = "UPDATE " + EMPLOYEE_TABLE
+            + " SET active=0 WHERE employee_id = ?";
+    public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEES + " WHERE username=?";
     public static String UPDATE_EMPLOYEE_PASSWORD_BY_ID = "UPDATE " + EMPLOYEE_TABLE
             + " SET password = ? WHERE employee_id = ?";
+    public static String DISABLE_MANY_EMPLOYEE_BY_IDS = "UPDATE " + EMPLOYEE_TABLE 
+            + " SET active=0 WHERE employee_id IN (";
+    public static String COUNT_ALL_EMPLOYEES = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
+            + " WHERE admin = 0";
+    public static String COUNT_ALL_EMPLOYEES_BY_NAME = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
+            + " WHERE admin = 0 AND fullname LIKE ?";
+    public static String getQueryDisableManyEmployeeIds(int numberIds) {
+        StringBuilder query = new StringBuilder(DISABLE_MANY_EMPLOYEE_BY_IDS);
+        for (int i = 1; i <= numberIds; i++) {
+            query.append("?");
+            if (i != numberIds) query.append(",");
+        }
+        query.append(")");
+        return query.toString();
+    }
     /* ============================ */
 }
