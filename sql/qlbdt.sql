@@ -91,7 +91,7 @@ CREATE TABLE `customer` (
   `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +100,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (3,'Tuan','Ha Noi 2','090909090');
+INSERT INTO `customer` VALUES (3,'Tuan','Ha Noi','090909090'),(4,'Linh','Hà Nội','0989898989');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,6 +116,7 @@ CREATE TABLE `employee` (
   `fullname` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
+  `male` tinyint(1) NOT NULL DEFAULT '1',
   `identity_card` varchar(15) DEFAULT NULL,
   `username` varchar(10) NOT NULL,
   `password` varchar(80) NOT NULL,
@@ -123,7 +124,7 @@ CREATE TABLE `employee` (
   `active` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +133,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,'Admin','Ha Noi','0989898989','099898989','admin','$2a$12$yZ5RvgLnIDiOK9/X2CC5zeTSA4f.Jxnzh7bWvgi5CUUPnU07vjCeK',1,1),(2,'Disable Admin','Ha Noi','012121212','012121221','adminold','$2a$12$7oh8QTspcMvrD8zBjWW4NePLXm2Xf.ffFfXqj5CbLIf.elGx9A9Ce',1,0),(3,'EmployeeDemo','Ha Noi','011111111','011111111','empldemo','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1);
+INSERT INTO `employee` VALUES (1,'Admin','Ha Noi','0989898989',1,'099898989','admin','$2a$12$yZ5RvgLnIDiOK9/X2CC5zeTSA4f.Jxnzh7bWvgi5CUUPnU07vjCeK',1,1),(2,'Disable Admin','Ha Noi','012121212',1,'012121221','adminold','$2a$12$7oh8QTspcMvrD8zBjWW4NePLXm2Xf.ffFfXqj5CbLIf.elGx9A9Ce',1,0),(3,'EmployeeDemo','Ha Noi','011111111',1,'011111111','empldemo','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(4,'Employee1','Thai Nguyen','111111111',0,'222222222','employee1','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(5,'Employee2','Hai Phong','222222222',1,NULL,'employee2','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(6,'Employee3','Số 1 Trần Đại Nghĩa, Bách Khoa, Hai Bà Trưng, Hà Nội','0123456789',0,'0123456789','employee3','$2a$12$hQfHy7vFcEKWVOXabs0FUu1m6pIXwo0M9kq.3JKhGHa/uspBKkz62',0,1),(7,'Employee4',NULL,NULL,1,NULL,'employee4','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(8,'Employee5',NULL,NULL,0,NULL,'employee5','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(9,'Employee6',NULL,NULL,1,NULL,'employee6','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(10,'Employee7',NULL,NULL,0,NULL,'employee7','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(11,'Employee8',NULL,NULL,1,NULL,'employee8','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(12,'Employee9',NULL,NULL,1,NULL,'employee9','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(13,'Employee10',NULL,NULL,1,NULL,'employee10','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(14,'Employee11',NULL,NULL,1,NULL,'employee11','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(15,'Employee12',NULL,NULL,0,NULL,'employee12','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(16,'Employee13',NULL,NULL,0,NULL,'employee13','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(17,'Employee14',NULL,NULL,0,NULL,'employee14','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(18,'Employee15',NULL,NULL,0,NULL,'employee15','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(19,'Employee16',NULL,NULL,1,NULL,'employee16','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(20,'Employee17',NULL,NULL,1,NULL,'employee17','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(21,'Employee18',NULL,NULL,0,NULL,'employee18','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,1),(22,'Employee19',NULL,NULL,1,NULL,'employee19','$2a$12$tVbpkyY7goorJzMHTKYm5uNuj2nAbczlbUhHZ856d5WecPPOhopE6',0,0),(25,'Nhân viên 2',NULL,'0987654321',0,'0987654321','nhanvien2','$2a$12$TN/i2HsOYQRKXu8ham2s8uUefPX89CJktpzD/7PfGi4wdc8.5PhU.',0,0),(26,'Nhân viên 5','Ngõ 30 Hoàng Quốc Việt','0909090909',1,'0909090909','nhanvien5','$2a$12$LLeKV7rbDHuDbdItsGBGZerssSpoDr5mBLBFm.c8S3VoeOMUZYHK.',0,1),(27,'nhan vien 10','Đường 10 Quận 4 Thành phố HCM','0898989898',0,'0898989898','nhanvien10','$2a$12$mdy9wI/j2ShrqafeIXuJZeH5CX0P8AV5OU9TS1nntBcTK1HsruF1G',0,1),(28,'Nhân viên nữ','Nguyễn Hiền, Bách Khoa','0909090909',0,'0909090909','nhanviennu','$2a$12$4hkA0AmaNpYTsrYo/.e58el3BAsv3qXiK8ggABEw5TtrqBfsfClxC',0,1),(29,'Nhan vien nam','ko nói','09898989898',1,'09898989898','nvnam','$2a$12$CQ.G7lnHJgXrzkRqmh4rd.IW9Uy4mpwNOhzQezkIQ3HT141hFRT1.',0,0);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,7 +159,7 @@ CREATE TABLE `manufacturer` (
 
 LOCK TABLES `manufacturer` WRITE;
 /*!40000 ALTER TABLE `manufacturer` DISABLE KEYS */;
-INSERT INTO `manufacturer` VALUES (1,'Oppo','Trung Quốc'),(2,'Apple','Mỹ'),(3,'Samsung','Hàn Quốc'),(4,'Vsmart','Việt Nam'),(5,'Xiaomi','Trung Quốc'),(6,'Sony','Nhật Bản'),(7,'Nokia','Trung Quốc'),(8,'BlackBerry','Trung Quốc'),(9,'ViVo','Trung Quốc'),(12,'BKAV','Việt Nam'),(13,'OnePlus','Tàu');
+INSERT INTO `manufacturer` VALUES (1,'Oppo','Trung Quốc'),(2,'Apple','Mỹ'),(3,'Samsung','Hàn Quốc'),(4,'Vsmart','Việt Nam'),(5,'Xiaomi','Trung Quốc'),(6,'Sony','Nhật Bản'),(7,'Nokia','Trung Quốc'),(8,'BlackBerry','Trung Quốc'),(9,'ViVo','Trung Quốc'),(12,'BKAV','Việt Nam'),(13,'OnePlus','Trung Quốc');
 /*!40000 ALTER TABLE `manufacturer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-29 10:52:15
+-- Dump completed on 2019-12-01 23:07:53
