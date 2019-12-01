@@ -33,10 +33,11 @@ public class EmployeeDao {
             preparedStatement.setString(1, employee.getFullname());
             preparedStatement.setString(2, employee.getAddress());
             preparedStatement.setString(3, employee.getPhone());
-            preparedStatement.setString(4, employee.getIndentityCard());
-            preparedStatement.setString(5, employee.getUsername());
-            preparedStatement.setString(6, employee.getPassword());
-            preparedStatement.setBoolean(7, employee.isAdmin());
+            preparedStatement.setBoolean(4, employee.isMale());
+            preparedStatement.setString(5, employee.getIndentityCard());
+            preparedStatement.setString(6, employee.getUsername());
+            preparedStatement.setString(7, employee.getPassword());
+            preparedStatement.setBoolean(8, employee.isAdmin());
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -57,10 +58,10 @@ public class EmployeeDao {
         try {
             connection = DatabaseConnect.getInstance().getConnection();
             statement = connection.prepareStatement(DBQuery.FIND_ALL_EMPLOYEES_OFFSET_LIMIT);
-            
+
             statement.setInt(1, offset);
             statement.setInt(2, limit);
-            
+
             ResultSet resultSet = statement.executeQuery();
             Employee employee = null;
             employees = new ArrayList<>();
@@ -116,8 +117,9 @@ public class EmployeeDao {
             preparedStatement.setString(1, employee.getFullname());
             preparedStatement.setString(2, employee.getAddress());
             preparedStatement.setString(3, employee.getPhone());
-            preparedStatement.setString(4, employee.getIndentityCard());
-            preparedStatement.setInt(5, employee.getId());
+            preparedStatement.setBoolean(4, employee.isMale());
+            preparedStatement.setString(5, employee.getIndentityCard());
+            preparedStatement.setInt(6, employee.getId());
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -150,7 +152,6 @@ public class EmployeeDao {
             if (connection != null) {
                 connection.close();
             }
-
         }
         return count > 0;
     }
@@ -161,11 +162,12 @@ public class EmployeeDao {
         employee.setFullname(resultSet.getString(2));
         employee.setPhone(resultSet.getString(4));
         employee.setAddress(resultSet.getString(3));
-        employee.setIndentityCard(resultSet.getString(5));
-        employee.setUsername(resultSet.getString(6));
-        employee.setPassword(resultSet.getString(7));
-        employee.setAdmin(resultSet.getBoolean(8));
-        employee.setActive(resultSet.getBoolean(9));
+        employee.setMale(resultSet.getBoolean(5));
+        employee.setIndentityCard(resultSet.getString(6));
+        employee.setUsername(resultSet.getString(7));
+        employee.setPassword(resultSet.getString(8));
+        employee.setAdmin(resultSet.getBoolean(9));
+        employee.setActive(resultSet.getBoolean(10));
         return employee;
     }
 
@@ -223,11 +225,11 @@ public class EmployeeDao {
         try {
             connection = DatabaseConnect.getInstance().getConnection();
             statement = connection.prepareStatement(DBQuery.FIND_ALL_EMPLOYEES_BY_NAME);
-            
-            statement.setString(1, "%"+fullname+"%");
+
+            statement.setString(1, "%" + fullname + "%");
             statement.setInt(2, offset);
             statement.setInt(3, limit);
-            
+
             ResultSet resultSet = statement.executeQuery();
             Employee employee = null;
             employees = new ArrayList<>();
@@ -250,19 +252,24 @@ public class EmployeeDao {
         int count = 0;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        try {            
+        try {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.getQueryDisableManyEmployeeIds(listIds.length));
-            
-            for (int i = 0; i < listIds.length; i++)
-                preparedStatement.setInt(i+1, listIds[i]);
+
+            for (int i = 0; i < listIds.length; i++) {
+                preparedStatement.setInt(i + 1, listIds[i]);
+            }
 
             count = preparedStatement.executeUpdate();
         } finally {
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
-        return count > 0; 
+        return count > 0;
     }
 
     public int countAll() throws SQLException {
@@ -273,7 +280,9 @@ public class EmployeeDao {
             connection = DatabaseConnect.getInstance().getConnection();
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(DBQuery.COUNT_ALL_EMPLOYEES);
-            if (resultSet.next()) count = resultSet.getInt(1);
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
         } finally {
             if (statement != null) {
                 statement.close();
@@ -292,15 +301,39 @@ public class EmployeeDao {
         try {
             connection = DatabaseConnect.getInstance().getConnection();
             preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_EMPLOYEES_BY_NAME);
-            preparedStatement.setString(1, "%"+name+"%");
+            preparedStatement.setString(1, "%" + name + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                    count = resultSet.getInt(1);
+                count = resultSet.getInt(1);
             }
-        } finally {            
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return count;
+    }
+
+    public boolean enableById(int id) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.ENABLE_EMPLOYEE_BY_ID);
+            preparedStatement.setInt(1, id);
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
     }
 }

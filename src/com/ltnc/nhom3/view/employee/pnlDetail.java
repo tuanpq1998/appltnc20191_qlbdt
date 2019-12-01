@@ -52,11 +52,14 @@ public class pnlDetail extends javax.swing.JPanel {
         lblIdentityCard.setText(employee.getIndentityCard() == null ? ConstantHelper.NO_INFORMATION_MESSAGE
                 : employee.getIndentityCard());
         lblUsername.setText(employee.getUsername());
+        lblGender.setText(employee.isMale() ? ConstantHelper.EMPLOYEE_GENDER_MALE 
+                : ConstantHelper.EMPLOYEE_GENDER_FEMALE);
         if (employee.isActive()) {
+            btnDisableOrEnable.setText(ConstantHelper.EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT);
             lblStatus.setText("● "+ConstantHelper.ACCOUNT_ACTIVE_TEXT);
             lblStatus.setForeground(Color.green);
         } else {
-            btnDisable.setEnabled(false);
+            btnDisableOrEnable.setText(ConstantHelper.EMPLOYEE_ENABLE_ACTIVE_STATUS_BTN_TEXT);
             lblStatus.setText("● "+ConstantHelper.ACCOUNT_DEACTIVE_TEXT);
             lblStatus.setForeground(Color.red);
         }
@@ -84,6 +87,7 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
         lblFullname = new javax.swing.JLabel();
         lblAddress = new javax.swing.JLabel();
@@ -91,9 +95,10 @@ public class pnlDetail extends javax.swing.JPanel {
         lblIdentityCard = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
         lblStatus = new javax.swing.JLabel();
+        lblGender = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnDisable = SectionTemplate.getStyledButton();
+        btnDisableOrEnable = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
         btnResetPassword = SectionTemplate.getStyledButton();
 
@@ -136,16 +141,22 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel26.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel27.setText("Số CMND:");
+        jLabel27.setText("Giới tính:");
         jLabel27.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel27.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel27.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel28.setText("Tài khoản:");
+        jLabel28.setText("Số CMND:");
         jLabel28.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel28.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel28.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
+        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel29.setText("Tài khoản:");
+        jLabel29.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel29.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jLabel29.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout pnlLeftLayout = new javax.swing.GroupLayout(pnlLeft);
         pnlLeft.setLayout(pnlLeftLayout);
@@ -159,7 +170,8 @@ public class pnlDetail extends javax.swing.JPanel {
                     .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel28, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(10, 10, 10))
         );
         pnlLeftLayout.setVerticalGroup(
@@ -175,6 +187,8 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addComponent(jLabel27)
                 .addGap(20, 20, 20)
                 .addComponent(jLabel28)
+                .addGap(20, 20, 20)
+                .addComponent(jLabel29)
                 .addGap(20, 20, 20)
                 .addComponent(jLabel26)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -198,6 +212,9 @@ public class pnlDetail extends javax.swing.JPanel {
         lblStatus.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
         lblStatus.setText("Info");
 
+        lblGender.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblGender.setText("Info");
+
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
         pnlRightLayout.setHorizontalGroup(
@@ -210,7 +227,8 @@ public class pnlDetail extends javax.swing.JPanel {
                     .addComponent(lblPhone)
                     .addComponent(lblIdentityCard)
                     .addComponent(lblUsername)
-                    .addComponent(lblStatus))
+                    .addComponent(lblStatus)
+                    .addComponent(lblGender))
                 .addContainerGap(335, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
@@ -222,6 +240,8 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addComponent(lblAddress)
                 .addGap(20, 20, 20)
                 .addComponent(lblPhone)
+                .addGap(20, 20, 20)
+                .addComponent(lblGender)
                 .addGap(20, 20, 20)
                 .addComponent(lblIdentityCard)
                 .addGap(20, 20, 20)
@@ -287,10 +307,10 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        btnDisable.setText("Khóa");
-        btnDisable.addActionListener(new java.awt.event.ActionListener() {
+        btnDisableOrEnable.setText("Khóa");
+        btnDisableOrEnable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDisableActionPerformed(evt);
+                btnDisableOrEnableActionPerformed(evt);
             }
         });
 
@@ -316,7 +336,7 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnResetPassword)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDisable)
+                .addComponent(btnDisableOrEnable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
                 .addGap(2, 2, 2))
@@ -327,7 +347,7 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
-                    .addComponent(btnDisable)
+                    .addComponent(btnDisableOrEnable)
                     .addComponent(btnResetPassword))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -354,7 +374,7 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addContainerGap(163, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -362,19 +382,27 @@ public class pnlDetail extends javax.swing.JPanel {
         frmMainWindow.rootFrame.loadInSection(new pnlList(employeeService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
-    private void btnDisableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableActionPerformed
+    private void btnDisableOrEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableOrEnableActionPerformed
         int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
                 ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
         if (option == JOptionPane.YES_OPTION) {
             try {
-                if (employeeService.disableById(employee.getId())) {
-                    displayProductInfo();
+                if (employee.isActive()) {
+                    if (employeeService.disableById(employee.getId())) {
+                        employee = employeeService.findById(employee.getId());
+                        displayProductInfo();
+                    }
+                } else {
+                    if (employeeService.enableById(employee.getId())) {
+                        employee = employeeService.findById(employee.getId());
+                        displayProductInfo();
+                    }
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_btnDisableActionPerformed
+    }//GEN-LAST:event_btnDisableOrEnableActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService, employee.getId()));
@@ -397,7 +425,7 @@ public class pnlDetail extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDisable;
+    private javax.swing.JButton btnDisableOrEnable;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnResetPassword;
@@ -407,12 +435,14 @@ public class pnlDetail extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JLabel lblAddress;
     private javax.swing.JLabel lblFullname;
+    private javax.swing.JLabel lblGender;
     private javax.swing.JLabel lblHeading;
     private javax.swing.JLabel lblIdentityCard;
     private javax.swing.JLabel lblPhone;

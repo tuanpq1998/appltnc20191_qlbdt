@@ -94,20 +94,22 @@ public class DBQuery {
     public static final String FIND_ALL_EMPLOYEES = "SELECT * FROM " + EMPLOYEE_TABLE;
     public static final String FIND_ALL_EMPLOYEES_OFFSET_LIMIT = FIND_ALL_EMPLOYEES + " WHERE admin=0 LIMIT ?,?";
     public static final String FIND_ALL_EMPLOYEES_BY_NAME = FIND_ALL_EMPLOYEES + " WHERE admin=0 AND fullname LIKE ? LIMIT ?,?";
-    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?,1)";
+    public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?,?,1)";
     public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEES + " WHERE employee_id = ?";
     public static final String UPDATE_EMPLOYEE = "UPDATE " + EMPLOYEE_TABLE
-            + " SET fullname = ?,  address = ?, phone= ? , identity_card= ? WHERE employee_id = ?";
+            + " SET fullname = ?,  address = ?, phone= ?, male = ?, identity_card= ? WHERE employee_id = ?";
     public static final String DISABLE_EMPLOYEE_BY_ID = "UPDATE " + EMPLOYEE_TABLE
             + " SET active=0 WHERE employee_id = ?";
+    public static final String ENABLE_EMPLOYEE_BY_ID = "UPDATE " + EMPLOYEE_TABLE
+            + " SET active=1 WHERE employee_id = ?";
     public static final String FIND_EMPLYEE_BY_USERNAME = FIND_ALL_EMPLOYEES + " WHERE username=?";
     public static String UPDATE_EMPLOYEE_PASSWORD_BY_ID = "UPDATE " + EMPLOYEE_TABLE
             + " SET password = ? WHERE employee_id = ?";
-    public static String DISABLE_MANY_EMPLOYEE_BY_IDS = "UPDATE " + EMPLOYEE_TABLE 
+    public static final String DISABLE_MANY_EMPLOYEE_BY_IDS = "UPDATE " + EMPLOYEE_TABLE 
             + " SET active=0 WHERE employee_id IN (";
-    public static String COUNT_ALL_EMPLOYEES = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
+    public static final String COUNT_ALL_EMPLOYEES = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
             + " WHERE admin = 0";
-    public static String COUNT_ALL_EMPLOYEES_BY_NAME = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
+    public static final String COUNT_ALL_EMPLOYEES_BY_NAME = "SELECT COUNT(*) FROM " + EMPLOYEE_TABLE
             + " WHERE admin = 0 AND fullname LIKE ?";
     public static String getQueryDisableManyEmployeeIds(int numberIds) {
         StringBuilder query = new StringBuilder(DISABLE_MANY_EMPLOYEE_BY_IDS);

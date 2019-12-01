@@ -82,5 +82,9 @@ public class EmployeeService {
         employee.setPassword(BCrypt.hashpw(employee.getPassword(), BCrypt.gensalt(12)));
         return employeeDao.create(employee);
     }
+
+    public boolean enableById(int id) throws SQLException {
+        return employeeDao.enableById(id);
+    }
     
 }

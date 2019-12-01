@@ -13,7 +13,7 @@ public class Employee {
 
     private int id;
     private String fullname, address, phone, indentityCard, username, password;
-    private boolean admin, active;
+    private boolean admin, active, male;
 
     public int getId() {
         return id;
@@ -87,15 +87,23 @@ public class Employee {
         this.password = password;
     }
 
+    public boolean isMale() {
+        return male;
+    }
+
+    public void setMale(boolean male) {
+        this.male = male;
+    }
+
     @Override
     public String toString() {
-        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ", password=" + password + ", admin=" + admin + ", active=" + active + '}';
+        return "Employee{" + "id=" + id + ", fullname=" + fullname + ", address=" + address + ", phone=" + phone + ", indentityCard=" + indentityCard + ", username=" + username + ", password=" + password + ", admin=" + admin + ", active=" + active + ", male=" + male + '}';
     }
 
     public Employee() {
     }
 
-    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username, String password, boolean admin, boolean active) {
+    public Employee(int id, String fullname, String address, String phone, String indentityCard, String username, String password, boolean admin, boolean active, boolean male) {
         this.id = id;
         this.fullname = fullname;
         this.address = address;
@@ -105,5 +113,6 @@ public class Employee {
         this.password = password;
         this.admin = admin;
         this.active = active;
+        this.male = male;
     }
 }

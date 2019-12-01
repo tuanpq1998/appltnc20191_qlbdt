@@ -134,6 +134,7 @@ public class pnlList extends javax.swing.JPanel {
 
         jScrollPane1.setBackground(getBackground());
         jScrollPane1.setBorder(null);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         tblList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblList.setModel(new javax.swing.table.DefaultTableModel(

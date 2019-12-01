@@ -12,6 +12,7 @@ import java.awt.Color;
  * @author admin
  */
 public class ConstantHelper {
+
     private static Color getColorFromInt(int colorHex) {
         return new Color(colorHex);
     }
@@ -67,6 +68,10 @@ public class ConstantHelper {
             + "</p><p>Tài khoản mới: tên=<b>%s<b>, mật khẩu=<b>%s<b></p></html>.";
     public static final String EMPLOYEE_RESET_PASSWORD_DONE_MESSAGE = "<html><p>Đặt lại thành công!</p>"
             + "<p>Mật khẩu mới: <b>%s</b>.</p></html>";
+    public static final String EMPLOYEE_GENDER_MALE = "Nam";
+    public static final String EMPLOYEE_GENDER_FEMALE = "Nữ";
+    public static final String EMPLOYEE_ENABLE_ACTIVE_STATUS_BTN_TEXT = "Mở lại";
+    public static final String EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT = "Khóa";
     
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
@@ -111,8 +116,8 @@ public class ConstantHelper {
     public static final int[] TBL_CUSTOMER_WIDTHS = {40, 280, 280, 115};
     
     public static final String[] TBL_EMPLOYEE_TITLES 
-            = new String[]{"ID", "Tài khoản", "Điện thoại", "CMND", "Trạng thái"};
-public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 280, 160, 120, 160};
+            = new String[]{"ID", "Tài khoản", "Điện thoại", "Giới tính", "CMND", "Trạng thái"};
+public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 140, 160, 120, 140, 160};
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int STT_BTN_HOVER = 1;

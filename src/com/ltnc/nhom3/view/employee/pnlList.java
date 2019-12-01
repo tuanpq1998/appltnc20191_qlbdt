@@ -73,8 +73,10 @@ public class pnlList extends javax.swing.JPanel {
                     row[0] = employee.getId();
                     row[1] = employee.getUsername();
                     row[2] = employee.getPhone();
-                    row[3] = employee.getIndentityCard();
-                    row[4] = employee.isActive() ? ConstantHelper.ACCOUNT_ACTIVE_TEXT 
+                    row[3] = employee.isMale() ? ConstantHelper.EMPLOYEE_GENDER_MALE 
+                            : ConstantHelper.EMPLOYEE_GENDER_FEMALE;
+                    row[4] = employee.getIndentityCard();
+                    row[5] = employee.isActive() ? ConstantHelper.ACCOUNT_ACTIVE_TEXT 
                             : ConstantHelper.ACCOUNT_DEACTIVE_TEXT;
                     dtm.addRow(row);
                 }
@@ -121,6 +123,7 @@ public class pnlList extends javax.swing.JPanel {
 
         jScrollPane1.setBackground(getBackground());
         jScrollPane1.setBorder(null);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         tblList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblList.setModel(new javax.swing.table.DefaultTableModel(

@@ -58,6 +58,7 @@ public class pnlForm extends javax.swing.JPanel {
     private void initComponents() {
 
         groupRoleRadioBtn = new javax.swing.ButtonGroup();
+        groupGenderRadioBtn = new javax.swing.ButtonGroup();
         jPanel1 = SectionTemplate.getStyledPanel();
         lblHeading = new javax.swing.JLabel();
         btnGoBack = SectionTemplate.getStyledButton();
@@ -70,6 +71,7 @@ public class pnlForm extends javax.swing.JPanel {
         jLabel26 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
         txtFullname = new javax.swing.JTextField();
         txtAddress = new javax.swing.JTextField();
@@ -77,6 +79,8 @@ public class pnlForm extends javax.swing.JPanel {
         txtIdentityCard = new javax.swing.JTextField();
         txtUsername = new javax.swing.JTextField();
         rdoRole = new javax.swing.JRadioButton();
+        rdoMale = new javax.swing.JRadioButton();
+        rdoFemale = new javax.swing.JRadioButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnReset = SectionTemplate.getStyledButton();
@@ -131,6 +135,12 @@ public class pnlForm extends javax.swing.JPanel {
         jLabel28.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel28.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
+        jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel25.setText("Giới tính:");
+        jLabel25.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel25.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        jLabel25.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
         javax.swing.GroupLayout pnlLeftLayout = new javax.swing.GroupLayout(pnlLeft);
         pnlLeft.setLayout(pnlLeftLayout);
         pnlLeftLayout.setHorizontalGroup(
@@ -143,7 +153,8 @@ public class pnlForm extends javax.swing.JPanel {
                     .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel28, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel26, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(10, 10, 10))
         );
         pnlLeftLayout.setVerticalGroup(
@@ -155,6 +166,8 @@ public class pnlForm extends javax.swing.JPanel {
                 .addComponent(jLabel23)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel24)
+                .addGap(26, 26, 26)
+                .addComponent(jLabel25)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel27)
                 .addGap(26, 26, 26)
@@ -190,6 +203,18 @@ public class pnlForm extends javax.swing.JPanel {
         rdoRole.setSelected(true);
         rdoRole.setText("Nhân viên");
 
+        rdoMale.setBackground(ConstantHelper.SECTION_PANEL_BG);
+        groupGenderRadioBtn.add(rdoMale);
+        rdoMale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        rdoMale.setSelected(true);
+        rdoMale.setText(ConstantHelper.EMPLOYEE_GENDER_MALE);
+        rdoMale.setName(""); // NOI18N
+
+        rdoFemale.setBackground(ConstantHelper.SECTION_PANEL_BG);
+        groupGenderRadioBtn.add(rdoFemale);
+        rdoFemale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        rdoFemale.setText(ConstantHelper.EMPLOYEE_GENDER_FEMALE);
+
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
         pnlRightLayout.setHorizontalGroup(
@@ -197,6 +222,10 @@ public class pnlForm extends javax.swing.JPanel {
             .addGroup(pnlRightLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlRightLayout.createSequentialGroup()
+                        .addComponent(rdoMale)
+                        .addGap(10, 10, 10)
+                        .addComponent(rdoFemale))
                     .addComponent(rdoRole)
                     .addComponent(txtFullname, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -213,7 +242,11 @@ public class pnlForm extends javax.swing.JPanel {
                 .addComponent(txtAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
                 .addComponent(txtPhone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
+                .addGap(20, 20, 20)
+                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rdoMale)
+                    .addComponent(rdoFemale))
+                .addGap(18, 18, 18)
                 .addComponent(txtIdentityCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -362,11 +395,13 @@ public class pnlForm extends javax.swing.JPanel {
         }
         try {
             if ((!isEditMode() && employeeService.findByUsername(username) == null)  || isEditMode() ) {
+                boolean isMale = rdoMale.isSelected();
                 Employee employee = new Employee();
                 employee.setFullname(fullname);
                 employee.setIndentityCard(identityCard);
                 employee.setAddress(txtAddress.getText());
                 employee.setPhone(phone);
+                employee.setMale(isMale);
                 employee.setAdmin(false);
                 employee.setActive(true);
                 if (isEditMode()) {
@@ -400,10 +435,12 @@ public class pnlForm extends javax.swing.JPanel {
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSubmit;
+    private javax.swing.ButtonGroup groupGenderRadioBtn;
     private javax.swing.ButtonGroup groupRoleRadioBtn;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
@@ -415,6 +452,8 @@ public class pnlForm extends javax.swing.JPanel {
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
+    private javax.swing.JRadioButton rdoFemale;
+    private javax.swing.JRadioButton rdoMale;
     private javax.swing.JRadioButton rdoRole;
     private javax.swing.JTextField txtAddress;
     private javax.swing.JTextField txtFullname;
@@ -433,5 +472,8 @@ public class pnlForm extends javax.swing.JPanel {
         txtPhone.setText(edittingEmployee.getPhone());
         txtIdentityCard.setText(edittingEmployee.getIndentityCard());
         txtUsername.setText(edittingEmployee.getUsername());
+        if (edittingEmployee.isMale()) 
+            rdoMale.setSelected(true);
+        else rdoFemale.setSelected(true);
     }
 }
