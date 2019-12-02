@@ -20,9 +20,8 @@ import java.util.List;
  *
  * @author admin
  */
-public class CustomerDao implements CrudDao<Customer> {
+public class CustomerDao {
 
-    @Override
     public boolean create(Customer customer) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -43,7 +42,6 @@ public class CustomerDao implements CrudDao<Customer> {
         return count > 0;
     }
 
-    @Override
     public List<Customer> findAll() throws SQLException {
         List<Customer> customers = null;
         Connection connection = null;
@@ -53,7 +51,7 @@ public class CustomerDao implements CrudDao<Customer> {
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_CUSTOMERS);
             Customer customer = null;
-            customers = new ArrayList<Customer>();
+            customers = new ArrayList<>();
 
             while (resultSet.next()) {
                     customer = extractFromResultSet(resultSet);
@@ -66,7 +64,6 @@ public class CustomerDao implements CrudDao<Customer> {
         return customers;
     }
 
-    @Override
     public Customer findById(int id) throws SQLException {
         Customer customer  = null;
         Connection connection = null;
@@ -89,7 +86,6 @@ public class CustomerDao implements CrudDao<Customer> {
         return customer;
     }
 
-    @Override
     public boolean update(Customer customer) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -111,7 +107,6 @@ public class CustomerDao implements CrudDao<Customer> {
         return count > 0;
     }
 
-    @Override
     public boolean deleteById(int id) throws SQLException {
         int count = 0;
         Connection connection = null;
@@ -130,8 +125,7 @@ public class CustomerDao implements CrudDao<Customer> {
         return count > 0;
     }
 
-    @Override
-    public Customer extractFromResultSet(ResultSet resultSet) throws SQLException {
+    private Customer extractFromResultSet(ResultSet resultSet) throws SQLException {
         Customer customer = new Customer();
         customer.setId(resultSet.getInt(1));
         customer.setFullname(resultSet.getString(2));
