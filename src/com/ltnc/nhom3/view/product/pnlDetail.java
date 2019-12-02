@@ -15,6 +15,7 @@ import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
+import com.ltnc.nhom3.view.price.dloHistory;
 import java.awt.Color;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -50,6 +51,11 @@ public class pnlDetail extends javax.swing.JPanel {
         try {
             Product product = productService.findById(productId);
             Price price = priceService.findPriceByProductId(product.getId());
+            if (price == null) {
+                btnHistoryPrice.setVisible(false);
+                lblPrice.setText(ConstantHelper.NO_INFORMATION_MESSAGE);
+            } else lblPrice.setText(IOHandler.convertToDisplayPriceString(price.getValue()));
+            txtDescription.setText(product.getDecription());
             int manufacturerId = product.getManufacturerId();
             if (manufacturerId != 0){
                 Manufacturer manufacturer = manufacturerService.findById(manufacturerId);
@@ -58,21 +64,14 @@ public class pnlDetail extends javax.swing.JPanel {
             }
             lblHeading.setText(product.getName());
             lblName.setText(product.getName());
-            
             if (product.isAvailable()) {
-                lblAvailable.setText(" "+ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
+                lblAvailable.setText(ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
                 lblAvailable.setForeground(Color.green);
             } else {
-                lblAvailable.setText(" "+ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
+                lblAvailable.setText(ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE);
                 lblAvailable.setForeground(Color.red);
             }
-            
             lblReleaseDate.setText(IOHandler.convertToDisplayDate(product.getReleaseDate()));
-            
-            lblPrice.setText(price==null ? ConstantHelper.NO_INFORMATION_MESSAGE 
-                            : IOHandler.convertToDisplayPriceString(price.getValue())+IOHandler.displayStartDate(price.getStartDate()));
-            
-            txtSpecifications1.setText(product.getDecription());
             txtSpecifications.setText(product.getSpecifications());
         } catch (SQLException ex) {
             Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,7 +109,8 @@ public class pnlDetail extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSpecifications = new javax.swing.JTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
-        txtSpecifications1 = new javax.swing.JTextPane();
+        txtDescription = new javax.swing.JTextPane();
+        btnHistoryPrice = SectionTemplate.getStyledSecondaryButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnDelete = SectionTemplate.getStyledButton();
@@ -233,9 +233,16 @@ public class pnlDetail extends javax.swing.JPanel {
         jScrollPane2.setBackground(getBackground());
         jScrollPane2.setEnabled(false);
 
-        txtSpecifications1.setEditable(false);
-        txtSpecifications1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jScrollPane2.setViewportView(txtSpecifications1);
+        txtDescription.setEditable(false);
+        txtDescription.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jScrollPane2.setViewportView(txtDescription);
+
+        btnHistoryPrice.setText("xem lịch sử giá");
+        btnHistoryPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoryPriceActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
@@ -245,7 +252,10 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblName)
-                    .addComponent(lblPrice)
+                    .addGroup(pnlRightLayout.createSequentialGroup()
+                        .addComponent(lblPrice)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHistoryPrice))
                     .addComponent(lblManufacturer)
                     .addComponent(lblReleaseDate)
                     .addComponent(lblAvailable)
@@ -259,8 +269,10 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(lblName)
                 .addGap(20, 20, 20)
-                .addComponent(lblPrice)
-                .addGap(20, 20, 20)
+                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPrice)
+                    .addComponent(btnHistoryPrice))
+                .addGap(16, 16, 16)
                 .addComponent(lblManufacturer)
                 .addGap(20, 20, 20)
                 .addComponent(lblReleaseDate)
@@ -407,11 +419,16 @@ public class pnlDetail extends javax.swing.JPanel {
         frmMainWindow.rootFrame.loadInSection(new pnlEdit(productId, productService, priceService, manufacturerService));
     }//GEN-LAST:event_btnEditActionPerformed
 
+    private void btnHistoryPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryPriceActionPerformed
+        new dloHistory(frmMainWindow.rootFrame, priceService, productId, lblName.getText()).setVisible(true);
+    }//GEN-LAST:event_btnHistoryPriceActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnGoBack;
+    private javax.swing.JButton btnHistoryPrice;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
@@ -434,7 +451,7 @@ public class pnlDetail extends javax.swing.JPanel {
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
+    private javax.swing.JTextPane txtDescription;
     private javax.swing.JTextPane txtSpecifications;
-    private javax.swing.JTextPane txtSpecifications1;
     // End of variables declaration//GEN-END:variables
 }

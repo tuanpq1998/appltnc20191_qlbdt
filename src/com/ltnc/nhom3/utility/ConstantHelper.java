@@ -22,7 +22,6 @@ public class ConstantHelper {
     public static final Color MENU_BTN_BG_HOVER = getColorFromInt(0x19478a);
     public static final Color MENU_BTN_BG_SELECTED = getColorFromInt(0x3e6db5);
     public static final Color MENU_BTN_DISABLED = getColorFromInt(0x666666);
-
     
     public static final Color SECTION_PANEL_BG = getColorFromInt(0xffffff);
     public static final Color SECTION_PANEL_LINE = getColorFromInt(0xa0a0a0);
@@ -51,7 +50,7 @@ public class ConstantHelper {
     public static final String LOGOUT_BTN_TEXT = "Đăng xuất (%s)";
     
     public static final String PRODUCT_LIST_HEADING = "Danh sách sản phẩm";
-    public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";
+    public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";    
     
     public static final String CUSTOMER_LIST_HEADING = "Danh sách khách hàng";
     public static final String CUSTOMER_EDIT_HEADING = "Sửa thông tin khách";

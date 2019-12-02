@@ -75,10 +75,6 @@ public class IOHandler {
         return null;
     }
 
-    public static String displayStartDate(String startDate) {
-        return " (từ " + convertToDisplayDateTime(startDate) + ")";
-    }
-
     public static boolean isContainsNonNumberCharacter(String text) {
         String regex = "[^0-9]+";
         return Pattern.compile(regex).matcher(text).find();
