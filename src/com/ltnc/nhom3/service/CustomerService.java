@@ -26,11 +26,11 @@ public class CustomerService {
         return customerDao.findAll();
     }
 
-    public Customer findByID(int ID) throws SQLException {
-        return customerDao.findById(ID);
+    public Customer findById(int id) throws SQLException {
+        return customerDao.findById(id);
     }
 
-    public boolean deleteByID(int idSelected) throws SQLException {
+    public boolean deleteById(int idSelected) throws SQLException {
         return customerDao.deleteById(idSelected);
     }
 
@@ -40,6 +40,10 @@ public class CustomerService {
 
     public boolean update(Customer customer) throws SQLException {
         return customerDao.update(customer);
+    }
+
+    public List<Customer> findByFullname(String searchKey) {
+        return customerDao.findByFullname(searchKey);
     }
 
 }

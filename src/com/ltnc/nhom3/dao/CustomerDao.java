@@ -36,8 +36,12 @@ public class CustomerDao {
 
             count = preparedStatement.executeUpdate();
         } finally {
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return count > 0;
     }
@@ -54,34 +58,42 @@ public class CustomerDao {
             customers = new ArrayList<>();
 
             while (resultSet.next()) {
-                    customer = extractFromResultSet(resultSet);
-                    customers.add(customer);
+                customer = extractFromResultSet(resultSet);
+                customers.add(customer);
             }
-        } finally {            
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return customers;
     }
 
     public Customer findById(int id) throws SQLException {
-        Customer customer  = null;
+        Customer customer = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
-                connection = DatabaseConnect.getInstance().getConnection();
-                preparedStatement = connection.prepareStatement(DBQuery.FIND_CUSTOMER_BY_ID);
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_CUSTOMER_BY_ID);
 
-                preparedStatement.setInt(1, id);
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) { 
-                    customer = extractFromResultSet(resultSet);
-                    
-                    break;
-                }
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customer = extractFromResultSet(resultSet);
+
+                break;
+            }
         } finally {
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return customer;
     }
@@ -101,8 +113,12 @@ public class CustomerDao {
 
             count = preparedStatement.executeUpdate();
         } finally {
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return count > 0;
     }
@@ -119,8 +135,12 @@ public class CustomerDao {
 
             count = preparedStatement.executeUpdate();
         } finally {
-            if (preparedStatement != null) preparedStatement.close();
-            if (connection != null) connection.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         }
         return count > 0;
     }
@@ -133,5 +153,33 @@ public class CustomerDao {
         customer.setAddress(resultSet.getString(3));
         return customer;
     }
-    
+
+    public List<Customer> findByFullname(String searchKey) throws SQLException {
+        List<Customer> customers = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_CUSTOMER_BY_FULLNAME);
+
+            preparedStatement.setString(1, '%' + searchKey + '%');
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Customer customer = null;
+            customers = new ArrayList<>();
+
+            while (resultSet.next()) {
+                customer = extractFromResultSet(resultSet);
+                customers.add(customer);
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return customers;
+    }
+
 }

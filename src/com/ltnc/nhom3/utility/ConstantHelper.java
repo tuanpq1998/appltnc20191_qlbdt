@@ -53,6 +53,7 @@ public class ConstantHelper {
     public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";    
     
     public static final String CUSTOMER_LIST_HEADING = "Danh sách khách hàng";
+    public static final String CUSTOMER_LIST_SEARCH_HEADING = PRODUCT_LIST_SEARCH_HEADING;  
     public static final String CUSTOMER_EDIT_HEADING = "Sửa thông tin khách";
     public static final String CUSTOMER_ADD_HEADING = "Thêm khách hàng";
     

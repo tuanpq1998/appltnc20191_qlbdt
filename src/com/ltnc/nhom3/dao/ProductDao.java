@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,10 @@ public class ProductDao {
             preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_PRODUCT,
                     PreparedStatement.RETURN_GENERATED_KEYS);     
             preparedStatement.setString(1, product.getName());
-            preparedStatement.setInt(2, product.getManufacturerId());
+            if (product.getManufacturerId() == 0) 
+                //set null
+                preparedStatement.setNull(2,Types.BIGINT);
+            else preparedStatement.setInt(2, product.getManufacturerId());
             preparedStatement.setString(3, product.getSpecifications());
             preparedStatement.setString(4, product.getDecription());
             preparedStatement.setString(5, product.getReleaseDate());
@@ -104,7 +108,10 @@ public class ProductDao {
             preparedStatement = connection.prepareStatement(DBQuery.UPDATE_PRODUCT);
 
             preparedStatement.setString(1, product.getName());
-            preparedStatement.setInt(2, product.getManufacturerId());
+            if (product.getManufacturerId() == 0) 
+                //set null
+                preparedStatement.setNull(2,Types.BIGINT);
+            else preparedStatement.setInt(2, product.getManufacturerId());
             preparedStatement.setString(3, product.getSpecifications());
             preparedStatement.setString(4, product.getDecription());
             preparedStatement.setString(5, product.getReleaseDate());
@@ -195,10 +202,6 @@ public class ProductDao {
             if (connection != null) connection.close();
         }
         return products;
-    }
-
-    public boolean create(Product t) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public int countAll() throws SQLException {

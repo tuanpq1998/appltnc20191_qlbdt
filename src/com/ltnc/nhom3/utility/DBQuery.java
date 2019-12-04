@@ -21,6 +21,8 @@ public class DBQuery {
                 + " WHERE customer_id = ?";
     public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
             + " SET fullname = ? , address = ?, phone = ? WHERE customer_id = ?";
+    public static final String FIND_CUSTOMER_BY_FULLNAME = FIND_ALL_CUSTOMERS + " WHERE fullname LIKE ?";
+
     /* ============================ */
     
     /* =========== Bill =========== */

@@ -42,7 +42,7 @@ public class pnlForm extends javax.swing.JPanel {
         editMode = true;
         lblHeading.setText(ConstantHelper.CUSTOMER_EDIT_HEADING);
         try {
-            edittingCustomer = this.customerService.findByID(customerId);
+            edittingCustomer = this.customerService.findById(customerId);
             displayInfoToForm();
         } catch (SQLException ex) {
             Logger.getLogger(pnlForm.class.getName()).log(Level.SEVERE, null, ex);
