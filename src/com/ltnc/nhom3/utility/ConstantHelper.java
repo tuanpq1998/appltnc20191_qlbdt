@@ -83,8 +83,9 @@ public class ConstantHelper {
     public static final String ACCOUNT_ACTIVE_TEXT = "Đang hoạt động";
     public static final String ACCOUNT_DEACTIVE_TEXT = "Bị khóa";
     
+    public static final String DOT_TEXT = "\u25BA";
     public static final String NO_RESULT_MESSAGE = "Danh sách trống";
-    public static final String NO_INFORMATION_MESSAGE = "Không có thông tin";
+    public static final String NO_INFORMATION_MESSAGE = "(không có)";
     public static final String PRODUCT_AVAILABEL_MESSAGE = "Còn hàng";
     public static final String PRODUCT_NOT_AVAILABEL_MESSAGE = "Hết hàng";
     public static final String MANUFACTURER_NAME_HAS_EXISTED_MESSAGE = EMPLOYEE_USERNAME_HAS_EXISTED_MESSAGE;
@@ -117,7 +118,11 @@ public class ConstantHelper {
     
     public static final String[] TBL_EMPLOYEE_TITLES 
             = new String[]{"ID", "Tài khoản", "Điện thoại", "Giới tính", "CMND", "Trạng thái"};
-public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 140, 160, 120, 140, 160};
+    public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 140, 160, 120, 140, 160};
+    
+    public static final String[] TBL_PRICE_TITLES
+            = new String[]{"","Mức giá", "Ngày bắt đầu", "Ngày kết thúc"};
+    public static final int[] TBL_PRICE_WIDTHS = {20, 140, 130, 130};
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int STT_BTN_HOVER = 1;

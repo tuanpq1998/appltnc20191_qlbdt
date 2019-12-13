@@ -7,6 +7,7 @@ package com.ltnc.nhom3.service;
 
 import com.ltnc.nhom3.dao.CustomerDao;
 import com.ltnc.nhom3.entity.Customer;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -22,8 +23,9 @@ public class CustomerService {
         customerDao = new CustomerDao();
     }
 
-    public List<Customer> findAll() throws SQLException {
-        return customerDao.findAll();
+    public List<Customer> findAll(int pageNum) throws SQLException {
+        return customerDao.findAll((pageNum-1) * ConstantHelper.ITEM_PER_PAGE, 
+                ConstantHelper.ITEM_PER_PAGE);
     }
 
     public Customer findById(int id) throws SQLException {
@@ -42,8 +44,21 @@ public class CustomerService {
         return customerDao.update(customer);
     }
 
-    public List<Customer> findByFullname(String searchKey) {
+    public List<Customer> findByFullname(String searchKey) throws SQLException {
         return customerDao.findByFullname(searchKey);
     }
 
+    public List<Customer> findByName(String searchKey, int pageNum) throws SQLException {
+        return customerDao.fillAllLikeName(searchKey, (pageNum - 1) * ConstantHelper.ITEM_PER_PAGE,
+                ConstantHelper.ITEM_PER_PAGE);
+    }
+
+    public int countAll() throws SQLException {
+        return customerDao.countAll();
+    }
+
+    public int countAllByName(String name) throws SQLException {
+        return customerDao.countAllByName(name);
+    }
+    
 }

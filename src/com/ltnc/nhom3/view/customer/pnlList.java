@@ -28,6 +28,8 @@ public class pnlList extends javax.swing.JPanel {
     
     private CustomerService customerService;
     private String searchKey;
+    private int totalPage;
+    private int pageNum;
     
     /**
      * Creates new form pnlList
@@ -35,7 +37,8 @@ public class pnlList extends javax.swing.JPanel {
     public pnlList(CustomerService customerService) {
         this.customerService = customerService;
         initComponents();
-        loadInfo();
+        getTotalPage();
+        loadTable(1);
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         tblList.getTableHeader().setReorderingAllowed(false);
         btnClearSearch.setVisible(false);
@@ -53,7 +56,7 @@ public class pnlList extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = SectionTemplate.getStyledPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblList = new javax.swing.JTable();
+        tblList = new TableHelper.CustomTable();
         lblHeading = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         jSeparator2 = SectionTemplate.getStyledSeparator();
@@ -331,15 +334,17 @@ public class pnlList extends javax.swing.JPanel {
         btnEdit.setEnabled(isOn);
     }
     
-    public void loadInfo() {
+    public void loadTable(int pageNum) {
+        this.pageNum = pageNum;
+        reloadPaginationButtons();
         String[] titles = ConstantHelper.TBL_CUSTOMER_TITLES;
         DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
         List<Customer> customers = null;
         try {
-            if(searchKey==null){
-                customers = customerService.findAll();
+            if (searchKey == null) {
+                customers = customerService.findAll(pageNum);
             } else {
-                customers = customerService.findByFullname(searchKey);
+                customers = customerService.findByName(searchKey, pageNum);
             }
             Object[] row = new Object[titles.length];
             if (customers.isEmpty()) {
@@ -381,7 +386,7 @@ public class pnlList extends javax.swing.JPanel {
         String searchKeyInput = txtSearch.getText().trim();
         if(!searchKeyInput.equals("") && evt.getKeyCode() == KeyEvent.VK_ENTER){
             searchKey = searchKeyInput;
-            loadInfo();
+            loadTable(1);
             if (searchKey.length() > 15)
                 lblHeading.setText(String.format(ConstantHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
             else 
@@ -396,7 +401,8 @@ public class pnlList extends javax.swing.JPanel {
         lblHeading.setToolTipText(null);
         txtSearch.setText("");
         searchKey = null;
-        loadInfo();
+        getTotalPage();
+        loadTable(1);
         btnClearSearch.setVisible(false);
     }//GEN-LAST:event_btnClearSearchActionPerformed
 
@@ -417,7 +423,8 @@ public class pnlList extends javax.swing.JPanel {
             if(option == JOptionPane.YES_OPTION){
                 try {
                     customerService.deleteById(TableHelper.extractSelectedId(tblList));
-                    loadInfo();
+                    getTotalPage();
+                    loadTable(pageNum > totalPage? 1 : pageNum);
                 } catch (SQLException ex) {
                     Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -426,21 +433,19 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextPageActionPerformed
-//        loadTable(++pageNum);
+        loadTable(++pageNum);
     }//GEN-LAST:event_btnNextPageActionPerformed
 
     private void btnPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevPageActionPerformed
-//        loadTable(--pageNum);
+        loadTable(--pageNum);
     }//GEN-LAST:event_btnPrevPageActionPerformed
 
     private void btnLastPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastPageActionPerformed
-//        pageNum = totalPage;
-//        loadTable(pageNum);
+        loadTable(totalPage);
     }//GEN-LAST:event_btnLastPageActionPerformed
 
     private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
-//        pageNum = 1;
-//        loadTable(pageNum);
+        loadTable(1);
     }//GEN-LAST:event_btnFirstPageActionPerformed
 
 
@@ -465,4 +470,33 @@ public class pnlList extends javax.swing.JPanel {
     private javax.swing.JTable tblList;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
+
+    private void getTotalPage() {
+        try {
+            int totalItems = 0;
+            if (searchKey == null)
+                totalItems = customerService.countAll();
+            else totalItems = customerService.countAllByName(searchKey);
+            totalPage = totalItems / ConstantHelper.ITEM_PER_PAGE 
+                    + (totalItems % ConstantHelper.ITEM_PER_PAGE == 0? 0 : 1);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void reloadPaginationButtons() {
+        btnPrevPage.setEnabled(true);
+        btnFirstPage.setEnabled(true);
+        btnLastPage.setEnabled(true);
+        btnNextPage.setEnabled(true);
+        if (pageNum == 1) {
+            btnFirstPage.setEnabled(false);
+            btnPrevPage.setEnabled(false);
+        }
+        if (pageNum == totalPage) {
+            btnNextPage.setEnabled(false);
+            btnLastPage.setEnabled(false);
+        }
+        lblPaginationStatus.setText(String.format(ConstantHelper.PAGINATION_TEXT, pageNum, totalPage));
+    }
 }

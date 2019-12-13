@@ -164,7 +164,7 @@
                 <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblListMousePressed"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="TableHelper.getTableWithToolTip()"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new TableHelper.CustomTable()"/>
               </AuxValues>
             </Component>
           </SubComponents>

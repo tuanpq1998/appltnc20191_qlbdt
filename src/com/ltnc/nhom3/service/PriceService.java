@@ -7,7 +7,9 @@ package com.ltnc.nhom3.service;
 
 import com.ltnc.nhom3.dao.PriceDao;
 import com.ltnc.nhom3.entity.Price;
+import com.ltnc.nhom3.utility.ConstantHelper;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -30,5 +32,14 @@ public class PriceService {
 
     public boolean update(Price price) throws SQLException {
         return priceDao.update(price);
+    }
+
+    public List<Price> findAllByProductId(int productId, int pageNum) throws SQLException {
+        return priceDao.findAllByProductId(productId, (pageNum-1) * ConstantHelper.ITEM_PER_PAGE, 
+                ConstantHelper.ITEM_PER_PAGE);
+    }
+
+    public int countAllByProductId(int productId) throws SQLException {
+        return priceDao.countAllByProductId(productId);
     }
 }

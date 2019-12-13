@@ -13,10 +13,9 @@ import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.ltnc.nhom3.view.template.SectionTemplate;
-import com.ltnc.nhom3.view.template.SectionTemplate.CustomComboBoxModel;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.manufacturer.dloForm;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -26,7 +25,6 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
@@ -50,7 +48,7 @@ public class pnlAdd extends javax.swing.JPanel {
         this.priceService = priceService;
         initComponents();
         loadManufacturersToComboBox(-1);
-        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
+        cbbManufacturer.setUI(new SectionTemplate.CustomComboBoxUI());
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
     }
 
@@ -58,7 +56,7 @@ public class pnlAdd extends javax.swing.JPanel {
         try {
             Manufacturer selectManufacturer = null;
             List<Manufacturer> list = manufacturerService.findAll();
-            DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+            DefaultComboBoxModel model = new SectionTemplate.CustomComboBoxModel();
             model.addElement(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);
@@ -76,7 +74,7 @@ public class pnlAdd extends javax.swing.JPanel {
     }
     
     private void resetComboBox() {
-        CustomComboBoxModel model = (CustomComboBoxModel) cbbManufacturer.getModel();
+        SectionTemplate.CustomComboBoxModel model = (SectionTemplate.CustomComboBoxModel) cbbManufacturer.getModel();
         model.setSelectionAllowed(true);
         model.setSelectedItem(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
     }

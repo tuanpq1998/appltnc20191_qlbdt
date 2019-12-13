@@ -46,24 +46,54 @@ public class CustomerDao {
         return count > 0;
     }
 
-    public List<Customer> findAll() throws SQLException {
+    public List<Customer> findAll(int offset, int limit) throws SQLException {
         List<Customer> customers = null;
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(DBQuery.FIND_ALL_CUSTOMERS);
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMER_OFFSET_LIMIT);
+            preparedStatement.setInt(1, offset);
+            preparedStatement.setInt(2, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
             Customer customer = null;
             customers = new ArrayList<>();
-
             while (resultSet.next()) {
                 customer = extractFromResultSet(resultSet);
                 customers.add(customer);
             }
         } finally {
-            if (statement != null) {
-                statement.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return customers;
+    }
+    
+    public List<Customer> fillAllLikeName(String name, int offset, int limit) throws SQLException {
+        List<Customer> customers = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMER_LIKE_FULLNAME);
+            preparedStatement.setString(1, "%" + name + "%");
+            preparedStatement.setInt(2, offset);
+            preparedStatement.setInt(3, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Customer product = null;
+            customers = new ArrayList<>();
+
+            while (resultSet.next()) {
+                product = extractFromResultSet(resultSet);
+                customers.add(product);
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
             if (connection != null) {
                 connection.close();
@@ -132,6 +162,7 @@ public class CustomerDao {
             preparedStatement = connection.prepareStatement(DBQuery.DELETE_CUSTOMER_BY_ID);
 
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, id);
 
             count = preparedStatement.executeUpdate();
         } finally {
@@ -181,5 +212,50 @@ public class CustomerDao {
         }
         return customers;
     }
+    public int countAll() throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        Statement statement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(DBQuery.COUNT_ALL_CUSTOMER);
 
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
+    }
+
+    public int countAllByName(String name) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_CUSTOMER_BY_NAME);
+            preparedStatement.setString(1, "%" + name + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Customer customer = null;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
+    }
 }

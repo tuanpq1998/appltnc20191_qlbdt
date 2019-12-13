@@ -11,20 +11,6 @@ package com.ltnc.nhom3.utility;
  */
 public class DBQuery {
 
-    /* ========= Customer ========= */
-    private static final String CUSTOMER_TABLE = "Customer";
-    
-    public static final String FIND_ALL_CUSTOMERS = "SELECT * FROM " + CUSTOMER_TABLE;
-    public static final String FIND_CUSTOMER_BY_ID = FIND_ALL_CUSTOMERS + " WHERE customer_id = ?";
-    public static final String CREATE_NEW_CUSTOMER = "INSERT INTO " + CUSTOMER_TABLE + " VALUES(NULL,?,?,?)";
-    public static final String DELETE_CUSTOMER_BY_ID = "DELETE FROM " + CUSTOMER_TABLE 
-                + " WHERE customer_id = ?";
-    public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
-            + " SET fullname = ? , address = ?, phone = ? WHERE customer_id = ?";
-    public static final String FIND_CUSTOMER_BY_FULLNAME = FIND_ALL_CUSTOMERS + " WHERE fullname LIKE ?";
-
-    /* ============================ */
-    
     /* =========== Bill =========== */
     private static final String BILL_TABLE = "Bill";
     
@@ -87,7 +73,9 @@ public class DBQuery {
             + " VALUES(NULL,?,?,?,NULL,DEFAULT)";
     public static final String UPDATE_PRICE = "UPDATE " + PRICE_TABLE
             + " SET end_date = ?,  current = ? WHERE price_id = ?";
-    
+    public static final String FIND_ALL_PRICES_BY_PRODUCT_ID = FIND_ALL_PRICES + " WHERE product_id = ? ORDER BY start_date DESC LIMIT ?,?";
+    public static final String COUNT_ALL_PRICES_BY_PRODUCT_ID = "SELECT COUNT(*) FROM "+ PRICE_TABLE + " WHERE product_id=?";
+
     /* =============================== */
     
     /* =========== Employee =========== */
@@ -95,7 +83,7 @@ public class DBQuery {
     
     public static final String FIND_ALL_EMPLOYEES = "SELECT * FROM " + EMPLOYEE_TABLE;
     public static final String FIND_ALL_EMPLOYEES_OFFSET_LIMIT = FIND_ALL_EMPLOYEES + " WHERE admin=0 LIMIT ?,?";
-    public static final String FIND_ALL_EMPLOYEES_BY_NAME = FIND_ALL_EMPLOYEES + " WHERE admin=0 AND fullname LIKE ? LIMIT ?,?";
+    public static final String FIND_ALL_EMPLOYEES_LIKE_FULLNAME = FIND_ALL_EMPLOYEES + " WHERE admin=0 AND fullname LIKE ? LIMIT ?,?";
     public static final String CREATE_NEW_EMPLOYEE = "INSERT INTO " + EMPLOYEE_TABLE + " VALUES(NULL,?,?,?,?,?,?,?,?,1)";
     public static final String FIND_EMPLYEE_BY_ID = FIND_ALL_EMPLOYEES + " WHERE employee_id = ?";
     public static final String UPDATE_EMPLOYEE = "UPDATE " + EMPLOYEE_TABLE
@@ -122,5 +110,23 @@ public class DBQuery {
         query.append(")");
         return query.toString();
     }
+    /* ============================ */
+    
+    /* ========= Customer ========= */
+    private static final String CUSTOMER_TABLE = "Customer";
+    
+    public static final String FIND_ALL_CUSTOMERS = "SELECT * FROM " + CUSTOMER_TABLE;
+    public static final String FIND_CUSTOMER_BY_ID = FIND_ALL_CUSTOMERS + " WHERE customer_id = ?";
+    public static final String CREATE_NEW_CUSTOMER = "INSERT INTO " + CUSTOMER_TABLE + " VALUES(NULL,?,?,?)";
+    public static final String DELETE_CUSTOMER_BY_ID = "UPDATE " + BILL_TABLE + " SET customer_id=NULL WHERE customer_id=?;DELETE FROM " + CUSTOMER_TABLE 
+                + " WHERE customer_id = ?";
+    public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
+            + " SET fullname = ? , address = ?, phone = ? WHERE customer_id = ?";
+    public static final String FIND_CUSTOMER_BY_FULLNAME = FIND_ALL_CUSTOMERS + " WHERE fullname LIKE ?";
+    public static final String FIND_ALL_CUSTOMER_OFFSET_LIMIT = FIND_ALL_CUSTOMERS + " LIMIT ?,?";
+    public static final String FIND_ALL_CUSTOMER_LIKE_FULLNAME = FIND_CUSTOMER_BY_FULLNAME +  " LIMIT ?,?";
+    public static final String COUNT_ALL_CUSTOMER = "SELECT COUNT(*) FROM " + CUSTOMER_TABLE;
+    public static final String COUNT_ALL_CUSTOMER_BY_NAME = "SELECT COUNT(*) FROM "+CUSTOMER_TABLE+" WHERE name LIKE ?";
+    
     /* ============================ */
 }

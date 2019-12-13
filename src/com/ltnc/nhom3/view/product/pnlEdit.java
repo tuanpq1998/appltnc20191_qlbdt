@@ -53,7 +53,7 @@ public class pnlEdit extends javax.swing.JPanel {
         initComponents();
         
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
-        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
+        cbbManufacturer.setUI(new SectionTemplate.CustomComboBoxUI());
         loadPriceFromProductId();
         loadProductFromId();
         renderToForm();
@@ -64,7 +64,7 @@ public class pnlEdit extends javax.swing.JPanel {
         try {
             Manufacturer selectManufacturer = null;
             List<Manufacturer> list = manufacturerService.findAll();
-            DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+            DefaultComboBoxModel model = new SectionTemplate.CustomComboBoxModel();
             model.addElement(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);

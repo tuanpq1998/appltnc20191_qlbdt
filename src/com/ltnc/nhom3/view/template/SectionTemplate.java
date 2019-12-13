@@ -83,10 +83,6 @@ public class SectionTemplate {
         }
     }
 
-    public static CustomComboBoxModel getCustomComboBoxModel() {
-        return new CustomComboBoxModel();
-    }
-
     public static class CustomComboBoxUI extends WindowsComboBoxUI {
         @Override
         public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
@@ -95,10 +91,6 @@ public class SectionTemplate {
             g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
             g.setColor(t);
         }
-    }
-
-    public static WindowsComboBoxUI getCustomComboBoxUI() {
-        return new CustomComboBoxUI();
     }
 
     public static JButton getStyledSecondaryButton() {
