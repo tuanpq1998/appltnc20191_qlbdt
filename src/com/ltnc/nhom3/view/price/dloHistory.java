@@ -5,10 +5,18 @@
  */
 package com.ltnc.nhom3.view.price;
 
+import com.ltnc.nhom3.entity.Price;
 import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.IOHandler;
+import com.ltnc.nhom3.view.product.pnlList;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.template.TableHelper;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +26,8 @@ public class dloHistory extends javax.swing.JDialog {
 
     private PriceService priceService;
     private int productId;
+    private int totalPage;
+    private int pageNum = 1;
     
     /**
      * Creates new form dloPrice
@@ -27,8 +37,40 @@ public class dloHistory extends javax.swing.JDialog {
         initComponents();
         this.priceService = priceService;
         this.productId = productId;
+        jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         setLocationRelativeTo(parent);
         setTitle(productName);
+        getTotalPage();
+        loadPriceToTable(1);
+    }
+    
+    private void loadPriceToTable(int pageNum) {
+        this.pageNum = pageNum;
+        reloadPaginationButtons();
+        String[] titles = ConstantHelper.TBL_PRICE_TITLES;
+        DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
+        List<Price> prices = null;
+        try {
+            prices = priceService.findAllByProductId(productId, pageNum);
+            Object[] row = new Object[titles.length];
+            if (prices.isEmpty()) {
+                row[1] = ConstantHelper.NO_RESULT_MESSAGE;
+                dtm.addRow(row);
+            } else {
+                for (Price price : prices) {
+                    row[0] = price.isCurrent() ? ConstantHelper.DOT_TEXT : "";
+                    row[1] = IOHandler.convertToDisplayPriceString(price.getValue());
+                    row[2] = IOHandler.convertToDisplayDateTime(price.getStartDate());
+                    String endDate = price.getEndDate();
+                    row[3] = endDate==null ? ConstantHelper.NO_INFORMATION_MESSAGE : IOHandler.convertToDisplayDateTime(endDate);
+                    dtm.addRow(row);
+                }
+            }
+            tbPriceList.setModel(dtm);
+            TableHelper.setWidthForAllColumns(tbPriceList, ConstantHelper.TBL_PRICE_WIDTHS);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -42,7 +84,7 @@ public class dloHistory extends javax.swing.JDialog {
 
         jPanel1 = SectionTemplate.getStyledPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbPriceList = TableHelper.getTableWithToolTip();
+        tbPriceList = new TableHelper.CustomTable();
         jPanel3 = SectionTemplate.getStyledPanel();
         btnNextPage = SectionTemplate.getStyledButton();
         btnPrevPage = SectionTemplate.getStyledButton();
@@ -58,41 +100,15 @@ public class dloHistory extends javax.swing.JDialog {
         jScrollPane1.setBackground(ConstantHelper.SECTION_PANEL_BG);
         jScrollPane1.setBorder(null);
 
-        tbPriceList.setAutoCreateRowSorter(true);
-        tbPriceList.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         tbPriceList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Giá", "Ngày bắt đầu", "Ngày kết thúc"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
-        });
-        tbPriceList.setFocusable(false);
-        tbPriceList.setRowHeight(20);
-        tbPriceList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                tbPriceListMousePressed(evt);
-            }
-        });
+        ));
         jScrollPane1.setViewportView(tbPriceList);
-        if (tbPriceList.getColumnModel().getColumnCount() > 0) {
-            tbPriceList.getColumnModel().getColumn(0).setResizable(false);
-            tbPriceList.getColumnModel().getColumn(1).setResizable(false);
-            tbPriceList.getColumnModel().getColumn(2).setResizable(false);
-        }
 
         btnNextPage.setText("▶");
         btnNextPage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -135,7 +151,7 @@ public class dloHistory extends javax.swing.JDialog {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(62, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnFirstPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnPrevPage)
@@ -145,7 +161,7 @@ public class dloHistory extends javax.swing.JDialog {
                 .addComponent(btnNextPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLastPage)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,8 +186,8 @@ public class dloHistory extends javax.swing.JDialog {
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,24 +218,22 @@ public class dloHistory extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tbPriceListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPriceListMousePressed
-        
-    }//GEN-LAST:event_tbPriceListMousePressed
-
     private void btnNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextPageActionPerformed
-
+        loadPriceToTable(++pageNum);
     }//GEN-LAST:event_btnNextPageActionPerformed
 
     private void btnPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevPageActionPerformed
-        
+        loadPriceToTable(--pageNum);
     }//GEN-LAST:event_btnPrevPageActionPerformed
 
     private void btnLastPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastPageActionPerformed
-        
+        pageNum = totalPage;
+        loadPriceToTable(pageNum);
     }//GEN-LAST:event_btnLastPageActionPerformed
 
     private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
-        
+        pageNum = 1;
+        loadPriceToTable(pageNum);
     }//GEN-LAST:event_btnFirstPageActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -233,4 +247,30 @@ public class dloHistory extends javax.swing.JDialog {
     private javax.swing.JLabel lblPaginationStatus;
     private javax.swing.JTable tbPriceList;
     // End of variables declaration//GEN-END:variables
+
+    private void getTotalPage() {
+        try {
+            int totalItems = priceService.countAllByProductId(productId);
+            totalPage = totalItems / ConstantHelper.ITEM_PER_PAGE 
+                    + (totalItems % ConstantHelper.ITEM_PER_PAGE == 0 ? 0 : 1);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void reloadPaginationButtons() {
+        btnPrevPage.setEnabled(true);
+        btnFirstPage.setEnabled(true);
+        btnLastPage.setEnabled(true);
+        btnNextPage.setEnabled(true);
+        if (pageNum == 1) {
+            btnFirstPage.setEnabled(false);
+            btnPrevPage.setEnabled(false);
+        }
+        if (pageNum == totalPage) {
+            btnNextPage.setEnabled(false);
+            btnLastPage.setEnabled(false);
+        }
+        lblPaginationStatus.setText(String.format(ConstantHelper.PAGINATION_TEXT, pageNum, totalPage));
+    }
 }

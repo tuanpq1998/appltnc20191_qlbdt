@@ -37,6 +37,7 @@ public class pnlList extends javax.swing.JPanel {
     private int totalPage;
     private int pageNum;
     private String searchKey;
+    private boolean emptyTable = false;
 
     /**
      * Creates new form pnlBill
@@ -76,7 +77,9 @@ public class pnlList extends javax.swing.JPanel {
                 row[1] = ConstantHelper.NO_RESULT_MESSAGE;
                 dtm.addRow(row);
                 setOnOffForButtons(false);
+                emptyTable = true;
             } else {
+                emptyTable = false;
                 Price price = null;
                 for (Product product : products) {
                     row[0] = product.getId();
@@ -112,7 +115,7 @@ public class pnlList extends javax.swing.JPanel {
         groupPaginationBtns = new javax.swing.ButtonGroup();
         jPanel1 = SectionTemplate.getStyledPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblList = TableHelper.getTableWithToolTip();
+        tblList = new TableHelper.CustomTable();
         lblHeading = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         jSeparator2 = SectionTemplate.getStyledSeparator();
@@ -133,7 +136,6 @@ public class pnlList extends javax.swing.JPanel {
         setBackground(ConstantHelper.SECTION_PANEL_BG);
 
         jScrollPane1.setBackground(getBackground());
-        jScrollPane1.setBorder(null);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         tblList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -153,7 +155,6 @@ public class pnlList extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        tblList.setRowHeight(25);
         tblList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 tblListMousePressed(evt);
@@ -349,7 +350,7 @@ public class pnlList extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDetail)
                     .addComponent(btnEdit)
@@ -407,7 +408,7 @@ public class pnlList extends javax.swing.JPanel {
                 try {
                     if (productService.deleteByIds(TableHelper.extractSelectedIdList(tblList))) {
                         getTotalPage();
-                        loadTable(1);
+                        loadTable(pageNum > totalPage ? 1 : pageNum);
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
@@ -479,7 +480,7 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDetailActionPerformed
 
     private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
-        if (evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
+        if (!emptyTable && evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
             frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
                     productService, priceService, manufacturerService));
         }
@@ -511,9 +512,12 @@ public class pnlList extends javax.swing.JPanel {
 
     private void getTotalPage() {
         try {
+            int totalItems = 0;
             if (searchKey == null)
-                totalPage = productService.countAll() / ConstantHelper.ITEM_PER_PAGE + 1;
-            else totalPage = productService.countAllByName(searchKey) / ConstantHelper.ITEM_PER_PAGE + 1;
+                totalItems = productService.countAll();
+            else totalItems = productService.countAllByName(searchKey);
+            totalPage = totalItems / ConstantHelper.ITEM_PER_PAGE 
+                    + (totalItems % ConstantHelper.ITEM_PER_PAGE == 0 ? 0 : 1);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }

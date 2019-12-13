@@ -13,10 +13,9 @@ import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.utility.ConstantHelper;
-import com.ltnc.nhom3.view.template.SectionTemplate;
-import com.ltnc.nhom3.view.template.SectionTemplate.CustomComboBoxModel;
 import com.ltnc.nhom3.view.frmMainWindow;
-import com.ltnc.nhom3.view.manufacturer.DialogHelper;
+import com.ltnc.nhom3.view.manufacturer.dloForm;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Component;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -49,7 +48,7 @@ public class pnlAdd extends javax.swing.JPanel {
         this.priceService = priceService;
         initComponents();
         loadManufacturersToComboBox(-1);
-        cbbManufacturer.setUI(SectionTemplate.getCustomComboBoxUI());
+        cbbManufacturer.setUI(new SectionTemplate.CustomComboBoxUI());
         frmMainWindow.rootFrame.getRootPane().setDefaultButton(btnSubmit); //set default btn
     }
 
@@ -57,22 +56,25 @@ public class pnlAdd extends javax.swing.JPanel {
         try {
             Manufacturer selectManufacturer = null;
             List<Manufacturer> list = manufacturerService.findAll();
-            DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+            DefaultComboBoxModel model = new SectionTemplate.CustomComboBoxModel();
             model.addElement(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
             for (Manufacturer manufacturer : list) {
                 model.addElement(manufacturer);
-                 if (manufacturer.getId() == selectManufacturerId)
+                if (manufacturer.getId() == selectManufacturerId) {
                     selectManufacturer = manufacturer;
+                }
             }
             cbbManufacturer.setModel(model);
-            if (selectManufacturer != null) cbbManufacturer.setSelectedItem(selectManufacturer);
+            if (selectManufacturer != null) {
+                cbbManufacturer.setSelectedItem(selectManufacturer);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     private void resetComboBox() {
-        CustomComboBoxModel model = (CustomComboBoxModel) cbbManufacturer.getModel();
+        SectionTemplate.CustomComboBoxModel model = (SectionTemplate.CustomComboBoxModel) cbbManufacturer.getModel();
         model.setSelectionAllowed(true);
         model.setSelectedItem(ConstantHelper.COMBOBOX_SELECT_MANUFACTURER);
     }
@@ -201,15 +203,15 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addComponent(jLabel23)
                 .addGap(26, 26, 26)
                 .addComponent(jLabel24)
-                .addGap(26, 26, 26)
+                .addGap(29, 29, 29)
                 .addComponent(jLabel27)
-                .addGap(26, 26, 26)
+                .addGap(23, 23, 23)
                 .addComponent(jLabel28)
-                .addGap(26, 26, 26)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel25)
-                .addGap(91, 91, 91)
+                .addGap(84, 84, 84)
                 .addComponent(jLabel26)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(63, 63, 63))
         );
 
         txtName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -229,7 +231,7 @@ public class pnlAdd extends javax.swing.JPanel {
                 boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index,
                     isSelected, cellHasFocus);
-                if (value != null && !ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
+                if (value != null && !com.ltnc.nhom3.utility.ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(value)) {
                     Manufacturer item = (Manufacturer) value;
                     String manufacturerStr = IOHandler.convertToDisplayManufacturerString(item);
                     setText(manufacturerStr);
@@ -242,7 +244,7 @@ public class pnlAdd extends javax.swing.JPanel {
 
         chbAvailabel.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         chbAvailabel.setSelected(true);
-        chbAvailabel.setText(ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
+        chbAvailabel.setText(com.ltnc.nhom3.utility.ConstantHelper.PRODUCT_AVAILABEL_MESSAGE);
         chbAvailabel.setBorder(null);
         chbAvailabel.setName(""); // NOI18N
         chbAvailabel.setOpaque(false);
@@ -318,7 +320,7 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addComponent(chbAvailabel)
                 .addGap(23, 23, 23)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -475,13 +477,14 @@ public class pnlAdd extends javax.swing.JPanel {
         product.setDecription(txtDescription.getText());
         product.setSpecifications(txtSpecifications.getText());
         product.setReleaseDate(IOHandler.convertToStringSQLDate(txtReleaseDate.getDate()));
-        product.setManufacturerId(((Manufacturer)cbbManufacturer.getSelectedItem()).getId());
-        
-        Price price = new Price();
+        try {
+            product.setManufacturerId(((Manufacturer)cbbManufacturer.getSelectedItem()).getId());
+        } catch (ClassCastException ex) {}
         try {
             int productId = productService.createAndReturnId(product);
             if (productId > 0) {
                 if (txtPrice.getValue() != null){
+                    Price price = new Price();
                     price.setProductId(productId);
                     price.setValue(((Number)txtPrice.getValue()).doubleValue());
                     price.setStartDate(IOHandler.convertToStringSQLDateTime(new Date()));
@@ -489,14 +492,16 @@ public class pnlAdd extends javax.swing.JPanel {
                 }
                 JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.ADD_DONE_DIALOG_MESSAGE);
                 frmMainWindow.rootFrame.loadInSection(new pnlList(priceService, productService, manufacturerService));
-            };
+            }
         } catch (SQLException ex) {
             Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnCreateManufacturerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateManufacturerActionPerformed
-        int returnedId = DialogHelper.showAddManufacturerForm(frmMainWindow.rootFrame, manufacturerService);
+        dloForm addManufacturerDialog = new dloForm(frmMainWindow.rootFrame, manufacturerService);
+        addManufacturerDialog.setVisible(true);
+        int returnedId = addManufacturerDialog.getReturnedId();
         if (returnedId != -1)
             loadManufacturersToComboBox(returnedId);
     }//GEN-LAST:event_btnCreateManufacturerActionPerformed
@@ -504,8 +509,9 @@ public class pnlAdd extends javax.swing.JPanel {
     private void btnEditManufacturerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditManufacturerActionPerformed
         if(!ConstantHelper.COMBOBOX_SELECT_MANUFACTURER.equals(cbbManufacturer.getSelectedItem())) {
             int manufacturerId = ((Manufacturer)cbbManufacturer.getSelectedItem()).getId();
-            if(DialogHelper.showEditManufacturerForm(frmMainWindow.rootFrame, manufacturerService,
-                    manufacturerId) == 0)
+            dloForm editManufacturerDialog = new dloForm(frmMainWindow.rootFrame, manufacturerService, manufacturerId);
+            editManufacturerDialog.setVisible(true);
+            if(editManufacturerDialog.getReturnedId() == 0)
                 resetComboBox();
             loadManufacturersToComboBox(manufacturerId);
         }

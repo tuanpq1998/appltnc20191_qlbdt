@@ -56,11 +56,11 @@ public class pnlDetail extends javax.swing.JPanel {
                 : ConstantHelper.EMPLOYEE_GENDER_FEMALE);
         if (employee.isActive()) {
             btnDisableOrEnable.setText(ConstantHelper.EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT);
-            lblStatus.setText("● "+ConstantHelper.ACCOUNT_ACTIVE_TEXT);
+            lblStatus.setText(ConstantHelper.ACCOUNT_ACTIVE_TEXT);
             lblStatus.setForeground(Color.green);
         } else {
             btnDisableOrEnable.setText(ConstantHelper.EMPLOYEE_ENABLE_ACTIVE_STATUS_BTN_TEXT);
-            lblStatus.setText("● "+ConstantHelper.ACCOUNT_DEACTIVE_TEXT);
+            lblStatus.setText(ConstantHelper.ACCOUNT_DEACTIVE_TEXT);
             lblStatus.setForeground(Color.red);
         }
 

@@ -224,7 +224,7 @@ public class EmployeeDao {
         PreparedStatement statement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            statement = connection.prepareStatement(DBQuery.FIND_ALL_EMPLOYEES_BY_NAME);
+            statement = connection.prepareStatement(DBQuery.FIND_ALL_EMPLOYEES_LIKE_FULLNAME);
 
             statement.setString(1, "%" + fullname + "%");
             statement.setInt(2, offset);

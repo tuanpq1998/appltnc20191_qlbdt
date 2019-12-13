@@ -229,17 +229,17 @@ public class pnlAdd extends javax.swing.JPanel {
 
    private void jcbCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbCustomerActionPerformed
        // TODO add your handling code here:
-       try {
-           List<Customer> customerList = customerService.findAll();
-           DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
-           model.addElement("--- Select ---");
-           for (Customer customer : customerList) {
-               model.addElement(customer);
-           }
-           jcbCustomer.setModel(model);
-       } catch (SQLException ex) {
-           Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
-       }
+//       try {
+//           List<Customer> customerList = customerService.findAll();
+//           DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+//           model.addElement("--- Select ---");
+//           for (Customer customer : customerList) {
+//               model.addElement(customer);
+//           }
+//           jcbCustomer.setModel(model);
+//       } catch (SQLException ex) {
+//           Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+//       }
    }//GEN-LAST:event_jcbCustomerActionPerformed
 
    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
@@ -251,12 +251,12 @@ public class pnlAdd extends javax.swing.JPanel {
        try {
            // TODO add your handling code here:
            List<Product> productList = productService.findAll(1);
-           DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
-           model.addElement("---Select---");
-           for (Product product : productList) {
-               model.addElement(product);
-           }
-           jcbProduct.setModel(model);
+//           DefaultComboBoxModel model = SectionTemplate.getCustomComboBoxModel();
+//           model.addElement("---Select---");
+//           for (Product product : productList) {
+//               model.addElement(product);
+//           }
+//           jcbProduct.setModel(model);
        } catch (SQLException ex) {
            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
        }

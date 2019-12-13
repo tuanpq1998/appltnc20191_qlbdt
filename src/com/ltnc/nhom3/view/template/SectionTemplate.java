@@ -83,10 +83,6 @@ public class SectionTemplate {
         }
     }
 
-    public static CustomComboBoxModel getCustomComboBoxModel() {
-        return new CustomComboBoxModel();
-    }
-
     public static class CustomComboBoxUI extends WindowsComboBoxUI {
         @Override
         public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
@@ -97,16 +93,12 @@ public class SectionTemplate {
         }
     }
 
-    public static WindowsComboBoxUI getCustomComboBoxUI() {
-        return new CustomComboBoxUI();
-    }
-
     public static JButton getStyledSecondaryButton() {
         JButton button = new JButton();
         button.setBackground(ConstantHelper.SECTION_PANEL_BG);
         button.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
         button.setForeground(new java.awt.Color(0, 0, 0));
-        button.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        button.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setOpaque(true);

@@ -101,7 +101,7 @@ public class pnlList extends javax.swing.JPanel {
         groupPaginationBtns = new javax.swing.ButtonGroup();
         jPanel1 = SectionTemplate.getStyledPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblList = TableHelper.getTableWithToolTip();
+        tblList = new TableHelper.CustomTable();
         lblHeading = new javax.swing.JLabel();
         txtSearch = new javax.swing.JTextField();
         jSeparator2 = SectionTemplate.getStyledSeparator();
@@ -338,7 +338,7 @@ public class pnlList extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
                     .addComponent(btnDisable)
@@ -396,7 +396,7 @@ public class pnlList extends javax.swing.JPanel {
                 try {
                     if (employeeService.disableByIds(TableHelper.extractSelectedIdList(tblList))) {
                         getTotalPage();
-                        loadTable(1);
+                        loadTable(pageNum > totalPage ? 1 : pageNum);
                     }
                 } catch (SQLException ex) {
                     Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
@@ -500,9 +500,12 @@ public class pnlList extends javax.swing.JPanel {
 
     private void getTotalPage() {
         try {
+            int totalItems = 0;
             if (searchKey == null)
-                totalPage = employeeService.countAll() / ConstantHelper.ITEM_PER_PAGE + 1;
-            else totalPage = employeeService.countAllByName(searchKey) / ConstantHelper.ITEM_PER_PAGE + 1;
+                totalItems = employeeService.countAll();
+            else totalItems = employeeService.countAllByName(searchKey);
+            totalPage = totalItems / ConstantHelper.ITEM_PER_PAGE 
+                    + (totalItems % ConstantHelper.ITEM_PER_PAGE ==  0 ? 0 : 1);
         } catch (SQLException ex) {
             Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
         }

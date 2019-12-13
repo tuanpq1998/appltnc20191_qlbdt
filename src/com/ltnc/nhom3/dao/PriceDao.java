@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,5 +110,55 @@ public class PriceDao {
             if (connection != null) connection.close();
         }
         return price;
+    }
+
+    public List<Price> findAllByProductId(int productId, int offset, int limit) throws SQLException {
+        List<Price> prices = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_PRICES_BY_PRODUCT_ID);
+            
+            preparedStatement.setInt(1, productId);
+            preparedStatement.setInt(2, offset);
+            preparedStatement.setInt(3, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            Price price = null;
+            prices = new ArrayList<>();
+
+            while (resultSet.next()) {
+                    price = extractFromResultSet(resultSet);
+                    prices.add(price);
+            }
+        } finally {            
+            if (preparedStatement != null) preparedStatement.close();
+            if (connection != null) connection.close();
+        }
+        return prices;
+    }
+
+    public int countAllByProductId(int productId) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            
+            preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_PRICES_BY_PRODUCT_ID);
+            
+            preparedStatement.setInt(1, productId);
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) count = resultSet.getInt(1);
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
     }
 }

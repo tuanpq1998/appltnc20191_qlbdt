@@ -21,15 +21,19 @@ import javax.swing.JOptionPane;
  * @author admin
  */
 public class dloForm extends javax.swing.JDialog {
-    protected int returnedId;
+    private int returnedId;
     private int edittingId;
-    
+
+    public int getReturnedId() {
+        return returnedId;
+    }
+        
     private ManufacturerService manufacturerService;
     /**
      * Creates new form NewJDialog
      */
-    public dloForm(java.awt.Frame parent, boolean modal, ManufacturerService manufacturerService) {
-        super(parent, modal);
+    public dloForm(java.awt.Frame parent, ManufacturerService manufacturerService) {
+        super(parent, true);
         returnedId = -1;
         edittingId = -1;
         initComponents();
@@ -40,8 +44,8 @@ public class dloForm extends javax.swing.JDialog {
         btnDelete.setVisible(false);
     }
 
-    public dloForm(Frame parent, boolean modal, ManufacturerService manufacturerService, int manufacturerId) {        
-        this(parent, modal, manufacturerService);
+    public dloForm(Frame parent, ManufacturerService manufacturerService, int manufacturerId) {        
+        this(parent, manufacturerService);
         edittingId = manufacturerId;
         displayInfo();
         btnDelete.setVisible(true);
@@ -215,11 +219,11 @@ public class dloForm extends javax.swing.JDialog {
             try {
                 manufacturerService.deleteById(edittingId);
                 returnedId = 0;
+                btnCancelActionPerformed(evt);
             } catch (SQLException ex) {
                 Logger.getLogger(dloForm.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        btnCancelActionPerformed(evt);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void displayInfo() {
