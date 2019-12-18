@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,11 +27,20 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlList extends javax.swing.JPanel {
     
+    private boolean isChooseMode = false;
+    private boolean emptyTable = false;
+    private int returnedCustomerId;
+    private JDialog dialog;
+    
     private CustomerService customerService;
     private String searchKey;
     private int totalPage;
     private int pageNum;
-    
+
+    public int getReturnedCustomerId() {
+        return returnedCustomerId;
+    }
+
     /**
      * Creates new form pnlList
      */
@@ -42,6 +52,19 @@ public class pnlList extends javax.swing.JPanel {
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         tblList.getTableHeader().setReorderingAllowed(false);
         btnClearSearch.setVisible(false);
+        btnChoose.setVisible(false);
+    }
+    
+    public pnlList(CustomerService customerService, boolean isChooseMode, JDialog dialog) {
+        this(customerService);
+        this.isChooseMode = isChooseMode;
+        btnChoose.setVisible(isChooseMode);
+        if (isChooseMode) {
+            btnAdd.setVisible(false);
+            btnDelete.setVisible(false);
+            btnEdit.setVisible(false);
+        }
+        this.dialog = dialog;
     }
 
     /**
@@ -72,6 +95,7 @@ public class pnlList extends javax.swing.JPanel {
         btnEdit = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
         btnDelete = SectionTemplate.getStyledButton();
+        btnChoose = SectionTemplate.getStyledButton();
 
         jPanel1.setBackground(ConstantHelper.SECTION_PANEL_BG);
 
@@ -96,6 +120,11 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
         tblList.setRowHeight(25);
+        tblList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tblListMousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
@@ -277,12 +306,21 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
 
+        btnChoose.setText("Chọn");
+        btnChoose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(376, Short.MAX_VALUE)
+                .addComponent(btnChoose)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAdd)
@@ -297,7 +335,8 @@ public class pnlList extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
                     .addComponent(btnAdd)
-                    .addComponent(btnDelete))
+                    .addComponent(btnDelete)
+                    .addComponent(btnChoose))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -351,7 +390,9 @@ public class pnlList extends javax.swing.JPanel {
                 row[1] = ConstantHelper.NO_RESULT_MESSAGE;
                 dtm.addRow(row);
                 setOnOffForButtons(false);
+                emptyTable = true;
             } else {
+                emptyTable = false;
                 for (Customer customer : customers) {
                     row[0] = customer.getId();
                     row[1] = customer.getFullname();
@@ -386,6 +427,7 @@ public class pnlList extends javax.swing.JPanel {
         String searchKeyInput = txtSearch.getText().trim();
         if(!searchKeyInput.equals("") && evt.getKeyCode() == KeyEvent.VK_ENTER){
             searchKey = searchKeyInput;
+            getTotalPage();
             loadTable(1);
             if (searchKey.length() > 15)
                 lblHeading.setText(String.format(ConstantHelper.PRODUCT_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
@@ -417,7 +459,7 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-         if (tblList.getSelectedRowCount() > 0) {
+        if (tblList.getSelectedRowCount() > 0) {
             int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame, ConstantHelper.CONFIRM_DIALOG_MESSAGE,
                     ConstantHelper.CONFIRM_DIALOG_TITLE,JOptionPane.YES_NO_OPTION);
             if(option == JOptionPane.YES_OPTION){
@@ -448,9 +490,23 @@ public class pnlList extends javax.swing.JPanel {
         loadTable(1);
     }//GEN-LAST:event_btnFirstPageActionPerformed
 
+    private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
+        if (!emptyTable && tblList.getSelectedRowCount() == 1 && isChooseMode) {
+            returnedCustomerId = TableHelper.extractSelectedId(tblList);
+            dialog.dispose();
+        }
+    }//GEN-LAST:event_btnChooseActionPerformed
+
+    private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
+        if (evt.getClickCount() == 2) {
+            btnChooseActionPerformed(null);
+        }
+    }//GEN-LAST:event_tblListMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnChoose;
     private javax.swing.JButton btnClearSearch;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;

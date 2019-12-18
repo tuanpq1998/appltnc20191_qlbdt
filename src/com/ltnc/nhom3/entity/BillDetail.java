@@ -12,7 +12,6 @@ package com.ltnc.nhom3.entity;
 public class BillDetail {
     private int id, billId, productId, quantity;
     private double subTotal;
-    private String note;
 
     public int getId() {
         return id;
@@ -54,29 +53,20 @@ public class BillDetail {
         this.subTotal = subTotal;
     }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
     public BillDetail() {
     }
 
-    public BillDetail(int id, int billId, int productId, int quantity, double subTotal, String note) {
+    public BillDetail(int id, int billId, int productId, int quantity, double subTotal) {
         this.id = id;
         this.billId = billId;
         this.productId = productId;
         this.quantity = quantity;
         this.subTotal = subTotal;
-        this.note = note;
     }
 
     @Override
     public String toString() {
-        return "BillDetail{" + "id=" + id + ", billId=" + billId + ", productId=" + productId + ", quantity=" + quantity + ", subTotal=" + subTotal + ", note=" + note + '}';
+        return "BillDetail{" + "id=" + id + ", billId=" + billId + ", productId=" + productId + ", quantity=" + quantity + ", subTotal=" + subTotal + '}';
     }
 
 }

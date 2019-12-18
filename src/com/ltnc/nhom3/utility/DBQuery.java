@@ -17,6 +17,9 @@ public class DBQuery {
     public static final String FIND_ALL_BILLS = "SELECT * FROM " + BILL_TABLE;
     public static final String FIND_ALL_BILLS_OFFSET_LIMIT = FIND_ALL_BILLS + " LIMIT ?,?";
     public static final String COUNT_ALL_BILLS = "SELECT COUNT(*) FROM " + BILL_TABLE;
+    public static final String FIND_BILL_BY_ID = FIND_ALL_BILLS + " WHERE bill_id = ?";
+    public static final String CREATE_NEW_BILL = "INSERT INTO " + BILL_TABLE + " VALUES(NULL,?,?,?,?,?)";
+
     /* ============================ */
     
     /* =========== Manufacturer =========== */
@@ -128,7 +131,18 @@ public class DBQuery {
     public static final String FIND_ALL_CUSTOMERS_OFFSET_LIMIT = FIND_ALL_CUSTOMERS + " LIMIT ?,?";
     public static final String FIND_ALL_CUSTOMERS_LIKE_FULLNAME = FIND_CUSTOMER_BY_FULLNAME +  " LIMIT ?,?";
     public static final String COUNT_ALL_CUSTOMERS = "SELECT COUNT(*) FROM " + CUSTOMER_TABLE;
-    public static final String COUNT_ALL_CUSTOMERS_BY_NAME = "SELECT COUNT(*) FROM "+CUSTOMER_TABLE+" WHERE name LIKE ?";
+    public static final String COUNT_ALL_CUSTOMERS_BY_NAME = "SELECT COUNT(*) FROM "+CUSTOMER_TABLE+" WHERE fullname LIKE ?";
     
     /* ============================ */
+    
+    /* ========= BillDetail ========= */
+    private static final String BILLDETAIL_TABLE = "Bill_detail";
+    public static final String FIND_ALL_BILLDETAILS_BY_BILL_ID_OFFSET_LIMIT = "SELECT * FROM " + BILLDETAIL_TABLE
+            + " WHERE bill_id=? LIMIT ?,?";
+    public static final String COUNT_ALL_BILLDETAILS_BY_BILL_ID = "SELECT COUNT(*) FROM " + BILLDETAIL_TABLE
+            + " WHERE bill_id=?";
+    public static final String CREATE_NEW_BILLDETAIL = "INSERT INTO " + BILLDETAIL_TABLE + " VALUES(NULL, ?,?,?,?)";
+
+    
+    /* =============================== */
 }

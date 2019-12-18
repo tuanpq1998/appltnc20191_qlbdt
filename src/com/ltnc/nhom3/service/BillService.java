@@ -32,4 +32,12 @@ public class BillService {
         return billDao.countAll();
     }
 
+    public Bill findById(int billId) throws SQLException {
+        return billDao.findById(billId);
+    }
+
+    public int create(Bill bill) throws SQLException {
+        return billDao.create(bill);
+    }
+
 }

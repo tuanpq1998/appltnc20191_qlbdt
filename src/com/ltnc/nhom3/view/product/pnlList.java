@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -33,16 +34,25 @@ public class pnlList extends javax.swing.JPanel {
     private ProductService productService;
     private PriceService priceService;
     private ManufacturerService manufacturerService;
-    
+
+    private boolean isChooseMode = false;
+    private int returnedProductId;
+    private JDialog dialog;
+
     private int totalPage;
     private int pageNum;
     private String searchKey;
     private boolean emptyTable = false;
 
+    public int getReturnedProductId() {
+        return returnedProductId;
+    }
+    
     /**
      * Creates new form pnlBill
      */
-    public pnlList(PriceService priceService, ProductService productService, ManufacturerService manufacturerService) {
+    public pnlList(PriceService priceService, ProductService productService, 
+            ManufacturerService manufacturerService) {
         this.productService = productService;
         this.priceService = priceService;
         this.manufacturerService = manufacturerService;
@@ -52,6 +62,21 @@ public class pnlList extends javax.swing.JPanel {
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         tblList.getTableHeader().setReorderingAllowed(false);
         btnClearSearch.setVisible(false);
+        btnChoose.setVisible(false);
+    }
+    
+    public pnlList(PriceService priceService, ProductService productService, 
+            ManufacturerService manufacturerService, boolean isChooseMode, JDialog dialog) {
+        this(priceService, productService, manufacturerService);
+        this.isChooseMode = isChooseMode;
+        btnChoose.setVisible(isChooseMode);
+        if (isChooseMode) {
+            btnAdd.setVisible(false);
+            btnDelete.setVisible(false);
+            btnEdit.setVisible(false);
+            btnDetail.setVisible(false);
+        }
+        this.dialog = dialog;
     }
 
     private void setOnOffForButtons(boolean isOn) {
@@ -132,6 +157,7 @@ public class pnlList extends javax.swing.JPanel {
         btnEdit = SectionTemplate.getStyledButton();
         btnDelete = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
+        btnChoose = SectionTemplate.getStyledButton();
 
         setBackground(ConstantHelper.SECTION_PANEL_BG);
 
@@ -332,12 +358,21 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
 
+        btnChoose.setText("Chọn");
+        btnChoose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnChoose)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDelete)
@@ -355,7 +390,8 @@ public class pnlList extends javax.swing.JPanel {
                     .addComponent(btnDetail)
                     .addComponent(btnEdit)
                     .addComponent(btnDelete)
-                    .addComponent(btnAdd))
+                    .addComponent(btnAdd)
+                    .addComponent(btnChoose))
                 .addGap(10, 10, 10))
         );
 
@@ -481,14 +517,28 @@ public class pnlList extends javax.swing.JPanel {
 
     private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
         if (!emptyTable && evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
-            frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
+            if (isChooseMode) btnChooseActionPerformed(null);
+            else frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
                     productService, priceService, manufacturerService));
         }
     }//GEN-LAST:event_tblListMousePressed
 
+    private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
+        if (!emptyTable && tblList.getSelectedRowCount() == 1 && isChooseMode) {
+            if (tblList.getValueAt(tblList.getSelectedRow(), 2).equals(ConstantHelper.NO_INFORMATION_MESSAGE)
+                    || tblList.getValueAt(tblList.getSelectedRow(), 4).equals(ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE)) {
+                JOptionPane.showMessageDialog(frmMainWindow.rootFrame, "Sản phẩm này hết hàng hoặc chưa có giá!");
+                return;
+            }
+            returnedProductId = TableHelper.extractSelectedId(tblList);
+            dialog.dispose();
+        }
+    }//GEN-LAST:event_btnChooseActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnChoose;
     private javax.swing.JButton btnClearSearch;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDetail;
