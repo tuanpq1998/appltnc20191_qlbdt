@@ -46,7 +46,8 @@ public class ConstantHelper {
     public static final String ADD_MANUFACTURER_DIALOG_TITLE = "Thêm hãng sản xuất";
     public static final String EDIT_MANUFACTURER_DIALOG_TITLE = "Sửa hãng sản xuất";
     public static final String EDIT_PRODUCT_HEADING = "Sửa sản phẩm";
-    
+    public static final String CREATE_TAB_NOT_ALLOWED_MESSAGE = "Số tab mới đã đạt tối đa!";
+
     public static final String LOGOUT_BTN_TEXT = "Đăng xuất (%s)";
     
     public static final String PRODUCT_LIST_HEADING = "Danh sách sản phẩm";
@@ -72,6 +73,8 @@ public class ConstantHelper {
     public static final String EMPLOYEE_GENDER_FEMALE = "Nữ";
     public static final String EMPLOYEE_ENABLE_ACTIVE_STATUS_BTN_TEXT = "Mở lại";
     public static final String EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT = "Khóa";
+    
+    public static final String BILL_LIST_HEADING = "Danh sách hóa đơn";
     
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
@@ -123,6 +126,10 @@ public class ConstantHelper {
     public static final String[] TBL_PRICE_TITLES
             = new String[]{"","Mức giá", "Ngày bắt đầu", "Ngày kết thúc"};
     public static final int[] TBL_PRICE_WIDTHS = {20, 140, 130, 130};
+    
+    public static final String[] TBL_BILL_TITLES 
+            = new String[]{"ID", "Khách hàng", "Ngày tạo", "TK tạo", "Tổng tiền"};
+    public static final int[] TBL_BILL_WIDTHS = {40, 200, 160, 160, 200};
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int STT_BTN_HOVER = 1;

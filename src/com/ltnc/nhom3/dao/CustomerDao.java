@@ -52,7 +52,7 @@ public class CustomerDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMER_OFFSET_LIMIT);
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMERS_OFFSET_LIMIT);
             preparedStatement.setInt(1, offset);
             preparedStatement.setInt(2, limit);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -79,7 +79,7 @@ public class CustomerDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMER_LIKE_FULLNAME);
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_CUSTOMERS_LIKE_FULLNAME);
             preparedStatement.setString(1, "%" + name + "%");
             preparedStatement.setInt(2, offset);
             preparedStatement.setInt(3, limit);
@@ -219,7 +219,7 @@ public class CustomerDao {
         try {
             connection = DatabaseConnect.getInstance().getConnection();
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(DBQuery.COUNT_ALL_CUSTOMER);
+            ResultSet resultSet = statement.executeQuery(DBQuery.COUNT_ALL_CUSTOMERS);
 
             if (resultSet.next()) {
                 count = resultSet.getInt(1);
@@ -241,7 +241,7 @@ public class CustomerDao {
         PreparedStatement preparedStatement = null;
         try {
             connection = DatabaseConnect.getInstance().getConnection();
-            preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_CUSTOMER_BY_NAME);
+            preparedStatement = connection.prepareStatement(DBQuery.COUNT_ALL_CUSTOMERS_BY_NAME);
             preparedStatement.setString(1, "%" + name + "%");
             ResultSet resultSet = preparedStatement.executeQuery();
             Customer customer = null;

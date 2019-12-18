@@ -14,7 +14,9 @@ public class DBQuery {
     /* =========== Bill =========== */
     private static final String BILL_TABLE = "Bill";
     
-    public static final String FIND_ALL_BILLS = "";
+    public static final String FIND_ALL_BILLS = "SELECT * FROM " + BILL_TABLE;
+    public static final String FIND_ALL_BILLS_OFFSET_LIMIT = FIND_ALL_BILLS + " LIMIT ?,?";
+    public static final String COUNT_ALL_BILLS = "SELECT COUNT(*) FROM " + BILL_TABLE;
     /* ============================ */
     
     /* =========== Manufacturer =========== */
@@ -123,10 +125,10 @@ public class DBQuery {
     public static final String UPDATE_CUSTOMER = "UPDATE " + CUSTOMER_TABLE 
             + " SET fullname = ? , address = ?, phone = ? WHERE customer_id = ?";
     public static final String FIND_CUSTOMER_BY_FULLNAME = FIND_ALL_CUSTOMERS + " WHERE fullname LIKE ?";
-    public static final String FIND_ALL_CUSTOMER_OFFSET_LIMIT = FIND_ALL_CUSTOMERS + " LIMIT ?,?";
-    public static final String FIND_ALL_CUSTOMER_LIKE_FULLNAME = FIND_CUSTOMER_BY_FULLNAME +  " LIMIT ?,?";
-    public static final String COUNT_ALL_CUSTOMER = "SELECT COUNT(*) FROM " + CUSTOMER_TABLE;
-    public static final String COUNT_ALL_CUSTOMER_BY_NAME = "SELECT COUNT(*) FROM "+CUSTOMER_TABLE+" WHERE name LIKE ?";
+    public static final String FIND_ALL_CUSTOMERS_OFFSET_LIMIT = FIND_ALL_CUSTOMERS + " LIMIT ?,?";
+    public static final String FIND_ALL_CUSTOMERS_LIKE_FULLNAME = FIND_CUSTOMER_BY_FULLNAME +  " LIMIT ?,?";
+    public static final String COUNT_ALL_CUSTOMERS = "SELECT COUNT(*) FROM " + CUSTOMER_TABLE;
+    public static final String COUNT_ALL_CUSTOMERS_BY_NAME = "SELECT COUNT(*) FROM "+CUSTOMER_TABLE+" WHERE name LIKE ?";
     
     /* ============================ */
 }
