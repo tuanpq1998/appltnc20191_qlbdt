@@ -20,13 +20,11 @@ public class DatabaseConnect {
     private Connection connection;
 
     public DatabaseConnect() {
-        Properties properties = new Properties();
         try {
-            properties.load(DatabaseConnect.class.getResourceAsStream("/dbconfig.properties"));
-            final String driver = properties.getProperty("driver");
-            final String server = properties.getProperty("server");
-            final String user = properties.getProperty("user");
-            final String pass = properties.getProperty("pass");
+            final String driver = "com.mysql.jdbc.Driver";
+            final String server = "jdbc:mysql://localhost/qlbdt?autoReconnect=true&useSSL=false&allowMultiQueries=true";
+            final String user = "nhom03";
+            final String pass = "Nhatduy1998@";
             Class.forName(driver);
             connection = DriverManager.getConnection(server, user, pass);
         } catch (Exception e) {
