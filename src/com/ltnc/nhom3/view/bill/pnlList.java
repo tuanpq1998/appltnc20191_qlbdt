@@ -12,6 +12,8 @@ import com.ltnc.nhom3.service.BillDetailService;
 import com.ltnc.nhom3.service.BillService;
 import com.ltnc.nhom3.service.CustomerService;
 import com.ltnc.nhom3.service.EmployeeService;
+import com.ltnc.nhom3.service.ManufacturerService;
+import com.ltnc.nhom3.service.PriceService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.utility.IOHandler;
@@ -24,7 +26,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -38,22 +39,28 @@ public class pnlList extends javax.swing.JPanel {
     private ProductService productService;
     private BillService billService;
     private BillDetailService billDetailService;
+    private PriceService priceService;
+    private ManufacturerService manufacturerService;
     
-    private int totalPage;
-    private int pageNum;
+    private int totalPage, pageNum;
     private String searchKey;
+    private boolean emptyTable = false;
 
     /**
      * Creates new form pnlBill
      */
-    public pnlList(EmployeeService employeeService, CustomerService customerService, ProductService productService,
-            BillService billService, BillDetailService billDetailService) {
+    public pnlList(EmployeeService employeeService, CustomerService customerService, PriceService priceService,
+            BillService billService, BillDetailService billDetailService, ProductService productService,
+            ManufacturerService manufacturerService) {
         initComponents();
         this.employeeService = employeeService;
         this.customerService = customerService;
         this.productService = productService;
         this.billDetailService = billDetailService;
         this.billService = billService;
+        this.manufacturerService = manufacturerService;
+        this.priceService = priceService;
+        
         getTotalPage();
         loadTable(1);
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
@@ -62,9 +69,7 @@ public class pnlList extends javax.swing.JPanel {
     }
 
     private void setOnOffForButtons(boolean isOn) {
-        btnDisable.setEnabled(isOn);
         btnDetail.setEnabled(isOn);
-        btnEdit.setEnabled(isOn);
     }
 
     public void loadTable(int pageNum) {
@@ -84,7 +89,9 @@ public class pnlList extends javax.swing.JPanel {
                 row[1] = ConstantHelper.NO_RESULT_MESSAGE;
                 dtm.addRow(row);
                 setOnOffForButtons(false);
+                emptyTable = true;
             } else {
+                emptyTable = false;
                 for (Bill bill : bills) {
                     row[0] = bill.getId();
                     Customer customer = customerService.findById(bill.getCustomerId());
@@ -130,8 +137,6 @@ public class pnlList extends javax.swing.JPanel {
         lblPaginationStatus = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnEdit = SectionTemplate.getStyledButton();
-        btnDisable = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
         btnDetail = SectionTemplate.getStyledButton();
 
@@ -159,6 +164,11 @@ public class pnlList extends javax.swing.JPanel {
             }
         });
         tblList.setRowHeight(25);
+        tblList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tblListMousePressed(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblList);
 
         lblHeading.setBackground(getBackground());
@@ -303,21 +313,7 @@ public class pnlList extends javax.swing.JPanel {
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnClearSearch, txtSearch});
 
-        btnEdit.setText("Sửa");
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
-
-        btnDisable.setText("Khóa");
-        btnDisable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDisableActionPerformed(evt);
-            }
-        });
-
-        btnAdd.setText("Thêm");
+        btnAdd.setText("Tạo mới");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -339,10 +335,6 @@ public class pnlList extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDisable)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEdit)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnDetail)
                 .addContainerGap())
         );
@@ -351,8 +343,6 @@ public class pnlList extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnEdit)
-                    .addComponent(btnDisable)
                     .addComponent(btnAdd)
                     .addComponent(btnDetail))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -398,24 +388,6 @@ public class pnlList extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchFocusLost
 
 
-    private void btnDisableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableActionPerformed
-        int count = tblList.getSelectedRowCount();
-        if (count > 0) {
-            int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
-                    ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
-            if (option == JOptionPane.YES_OPTION) {
-                try {
-                    if (employeeService.disableByIds(TableHelper.extractSelectedIdList(tblList))) {
-                        getTotalPage();
-                        loadTable(pageNum > totalPage ? 1 : pageNum);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }//GEN-LAST:event_btnDisableActionPerformed
-
     private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
         String searchKeyInput = txtSearch.getText().trim();
         if (!searchKeyInput.equals("") && evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -442,17 +414,6 @@ public class pnlList extends javax.swing.JPanel {
         btnClearSearch.setVisible(false);
     }//GEN-LAST:event_btnClearSearchActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        if (tblList.getSelectedRowCount() == 1) {
-//            frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService, 
-//                    TableHelper.extractSelectedId(tblList)));
-        }
-    }//GEN-LAST:event_btnEditActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-//        frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService));
-    }//GEN-LAST:event_btnAddActionPerformed
-
     private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
         pageNum = 1;
         loadTable(pageNum);
@@ -473,18 +434,27 @@ public class pnlList extends javax.swing.JPanel {
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         if (tblList.getSelectedRowCount() == 1) {
-//            frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
-//                    employeeService));
+            frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
+                    employeeService, customerService, priceService, billService, billDetailService, 
+                    productService, manufacturerService));
         }
     }//GEN-LAST:event_btnDetailActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        frmMainWindow.rootFrame.loadInSection(new pnlAdd(employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void tblListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMousePressed
+        if (!emptyTable && evt.getClickCount() == 2 && tblList.getSelectedRowCount() == 1) {
+            btnDetailActionPerformed(null);
+        }
+    }//GEN-LAST:event_tblListMousePressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnClearSearch;
     private javax.swing.JButton btnDetail;
-    private javax.swing.JButton btnDisable;
-    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnFirstPage;
     private javax.swing.JButton btnLastPage;
     private javax.swing.JButton btnNextPage;

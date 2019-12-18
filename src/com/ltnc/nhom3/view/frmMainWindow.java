@@ -41,7 +41,7 @@ import javax.swing.JToggleButton;
  * @author admin
  */
 public class frmMainWindow extends javax.swing.JFrame {
-    private final int MAX_NUM_TAB = 7;
+    private final int MAX_NUM_TAB = 6;
     private List<Integer> listTabMode = new ArrayList<>();
 
     private EmployeeService employeeService;
@@ -123,7 +123,7 @@ public class frmMainWindow extends javax.swing.JFrame {
         JPanel pnlHeader = new JPanel();
         pnlHeader.add(headerTitle, BorderLayout.WEST);
         pnlHeader.add(closeButton, BorderLayout.EAST);
-        pnlHeader.setPreferredSize(new Dimension(80, 28));
+        pnlHeader.setPreferredSize(new Dimension(95, 28));
         listTabMode.add(ConstantHelper.MAIN_FRAME_INIT_MODE);
         pnlTab.setTabComponentAt(index, pnlHeader);
         closeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -480,7 +480,9 @@ public class frmMainWindow extends javax.swing.JFrame {
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
         int indexTab = pnlTab.getSelectedIndex();
         if (listTabMode.get(indexTab) != ConstantHelper.MAIN_FRAME_BILL_MODE) {
-            loadInSection(btnBill.getText(), new com.ltnc.nhom3.view.bill.pnlList(employeeService, customerService, productService, billService, billDetailService));
+            loadInSection(btnBill.getText(), 
+                    new com.ltnc.nhom3.view.bill.pnlList(employeeService, customerService, priceService, 
+                            billService, billDetailService, productService, manufacturerService));
             listTabMode.set(indexTab, ConstantHelper.MAIN_FRAME_BILL_MODE);
             reloadGroupButtons();
         }
@@ -636,7 +638,9 @@ public class frmMainWindow extends javax.swing.JFrame {
     public void reloadFollowMode() {
         switch (listTabMode.get(pnlTab.getSelectedIndex())) {
             case ConstantHelper.MAIN_FRAME_BILL_MODE:
-                loadInSection(new com.ltnc.nhom3.view.bill.pnlList(employeeService, customerService, productService, billService, billDetailService));
+                loadInSection(new com.ltnc.nhom3.view.bill.pnlList(employeeService, 
+                        customerService, priceService, billService, billDetailService, 
+                        productService, manufacturerService));
                 break;
             case ConstantHelper.MAIN_FRAME_CUSTOMER_MODE:
                 loadInSection(new com.ltnc.nhom3.view.customer.pnlList(customerService));
@@ -650,6 +654,10 @@ public class frmMainWindow extends javax.swing.JFrame {
             default:
                 loadInSection(new JPanel());
         }
+    }
+    
+    public Employee getLoggedInEmployee() {
+        return loggedInEmployee;
     }
     
     private void reloadGroupButtonsInTab() {

@@ -7,7 +7,6 @@ package com.ltnc.nhom3.dao;
 
 import com.ltnc.nhom3.connect.DatabaseConnect;
 import com.ltnc.nhom3.entity.Bill;
-import com.ltnc.nhom3.entity.Customer;
 import com.ltnc.nhom3.utility.DBQuery;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +29,7 @@ public class BillDao {
         bill.setCreateDate(resultSet.getString(3));
         bill.setEmployeeId(resultSet.getInt(4));
         bill.setTotalMoney(resultSet.getDouble(5));
+        bill.setNote(resultSet.getString(6));
         return bill;
     }
     
@@ -81,6 +81,61 @@ public class BillDao {
             }
         }
         return count;
+    }
+
+    public Bill findById(int billId) throws SQLException {
+        Bill bill = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_BILL_BY_ID);
+
+            preparedStatement.setInt(1, billId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                bill = extractFromResultSet(resultSet);
+
+                break;
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return bill;
+    }
+
+    public int create(Bill bill) throws SQLException {
+        int newId = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.CREATE_NEW_BILL,
+                    PreparedStatement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setInt(1, bill.getCustomerId());
+            preparedStatement.setInt(3, bill.getEmployeeId());
+            preparedStatement.setString(2, bill.getCreateDate());
+            preparedStatement.setDouble(4, bill.getTotalMoney());
+            preparedStatement.setString(5, bill.getNote());
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) newId=rs.getInt(1);
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return newId;
     }
     
 }

@@ -75,6 +75,7 @@ public class ConstantHelper {
     public static final String EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT = "Khóa";
     
     public static final String BILL_LIST_HEADING = "Danh sách hóa đơn";
+    public static final String BILL_DETAIL_HEADING = "Chi tiết hóa đơn";
     
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
@@ -119,6 +120,10 @@ public class ConstantHelper {
             = new String[]{"ID", "Tên", "Địa chỉ", "Điện thoại"};
     public static final int[] TBL_CUSTOMER_WIDTHS = {40, 280, 280, 115};
     
+    public static final String[] TBL_BILLDETAIL_TITLES
+            = new String[]{"STT", "Sản phẩm", "Đơn giá", "Số lượng", "Thành tiền", "IMEI"};
+    public static final int[] TBL_BILLDETAIL_WIDTHS = {40, 220, 130, 80, 130, 160};
+    
     public static final String[] TBL_EMPLOYEE_TITLES 
             = new String[]{"ID", "Tài khoản", "Điện thoại", "Giới tính", "CMND", "Trạng thái"};
     public static final int[] TBL_EMPLOYEE_WIDTHS = {40, 140, 160, 120, 140, 160};
@@ -131,7 +136,11 @@ public class ConstantHelper {
             = new String[]{"ID", "Khách hàng", "Ngày tạo", "TK tạo", "Tổng tiền"};
     public static final int[] TBL_BILL_WIDTHS = {40, 200, 160, 160, 200};
     
+    public static final String LBL_TOTAL_ADD_BILL = "Tổng số lượng: %s - Tổng tiền: %s";
+    
     public static final int ITEM_PER_PAGE = 15;
+    public static final int ITEM_BILLDETAIL_PER_PAGE = 5;
+    
     public static final int STT_BTN_HOVER = 1;
     public static final int STT_BTN_NORMAL = 0;
     public static final int STT_BTN_SELECTED = 2;

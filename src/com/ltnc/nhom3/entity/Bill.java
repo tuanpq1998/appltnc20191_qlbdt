@@ -11,15 +11,16 @@ package com.ltnc.nhom3.entity;
  */
 public class Bill {
     private int id, customerId, employeeId;
-    private String createDate;
+    private String createDate, note;
     private double totalMoney;
 
-    public Bill(int id, int customerId, int employeeId, String createDate, double totalMoney) {
+    public Bill(int id, int customerId, int employeeId, String createDate, double totalMoney, String note) {
         this.id = id;
         this.customerId = customerId;
         this.employeeId = employeeId;
         this.createDate = createDate;
         this.totalMoney = totalMoney;
+        this.note = note;
     }
 
     public Bill() {
@@ -70,4 +71,11 @@ public class Bill {
         return "Bill{" + "id=" + id + ", customerId=" + customerId + ", employeeId=" + employeeId + ", createDate=" + createDate + ", totalMoney=" + totalMoney + '}';
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 }

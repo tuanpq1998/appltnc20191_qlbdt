@@ -45,7 +45,6 @@ public class ManufacturerDao {
             }
         }
         return newId;
-
     }
 
     public List<Manufacturer> findAll() throws SQLException {
