@@ -6,247 +6,528 @@
 package com.ltnc.nhom3.view.bill;
 
 import com.ltnc.nhom3.entity.Bill;
+import com.ltnc.nhom3.entity.Customer;
+import com.ltnc.nhom3.entity.Employee;
 import com.ltnc.nhom3.service.BillDetailService;
 import com.ltnc.nhom3.service.BillService;
-import com.ltnc.nhom3.service.PriceService;
+import com.ltnc.nhom3.service.CustomerService;
+import com.ltnc.nhom3.service.EmployeeService;
 import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.template.TableHelper;
+import com.ltnc.nhom3.view.frmMainWindow;
+import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author duynn2911
+ * @author admin
  */
-public
-        class pnlList extends javax.swing.JPanel {
-   private BillService billService;
-   private BillDetailService billDetailService;
-   private ProductService productService;
-   private PriceService priceService;
+public class pnlList extends javax.swing.JPanel {
 
-   /**
-    * Creates new form pnlList
-    */
-   public
-           pnlList() {
-              billService = new BillService();
-              billDetailService = new BillDetailService();
-              productService = new ProductService();
-              priceService = new PriceService();
-      initComponents();
-      loadTable(null);
-      jScrollPanel.getViewport().setBackground(Color.white);
-      tblBill.getTableHeader().setReorderingAllowed(false);
-      btnClearSearch.setVisible(true);
-      
-   }
-           public void setOnOffForButton(boolean isOn)
-           {
-              btnDelete.setEnabled(isOn);
-              btnEdit.setEnabled(isOn);
-              btnDetail.setEnabled(isOn);
-           }
+    private EmployeeService employeeService;
+    private CustomerService customerService;
+    private ProductService productService;
+    private BillService billService;
+    private BillDetailService billDetailService;
+    
+    private int totalPage;
+    private int pageNum;
+    private String searchKey;
 
-           private
-    void loadTable(List<Bill> bills)
-           {
-              String[] titles = ConstantHelper.TBL_PRODUCT_TITLES;
-              DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
-              if(bills == null )
-                 bills = billService.findAll();
-              Object[] row = new Object[titles.length];
-              if(bills.isEmpty())
-              {
-                 row[1] = ConstantHelper.NO_RESULT_MESSAGE;
-                 dtm.addRow(row);
-                 setOnOffForButton(false);
-              }
-              else
-              {
-                 for(Bill bill : bills)
-                 {
+    /**
+     * Creates new form pnlBill
+     */
+    public pnlList(EmployeeService employeeService, CustomerService customerService, ProductService productService,
+            BillService billService, BillDetailService billDetailService) {
+        initComponents();
+        this.employeeService = employeeService;
+        this.customerService = customerService;
+        this.productService = productService;
+        this.billDetailService = billDetailService;
+        this.billService = billService;
+        getTotalPage();
+        loadTable(1);
+        jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
+        tblList.getTableHeader().setReorderingAllowed(false);
+        btnClearSearch.setVisible(false);
+    }
+
+    private void setOnOffForButtons(boolean isOn) {
+        btnDisable.setEnabled(isOn);
+        btnDetail.setEnabled(isOn);
+        btnEdit.setEnabled(isOn);
+    }
+
+    public void loadTable(int pageNum) {
+        this.pageNum = pageNum;
+        reloadPaginationButtons();
+        String[] titles = ConstantHelper.TBL_BILL_TITLES;
+        DefaultTableModel dtm = TableHelper.getNonEditableTableModel(titles);
+        List<Bill> bills = null;
+        try {
+            if (searchKey == null){
+                bills = billService.findAll(pageNum);
+            } else {
+//                bills = billService.findAllByName(searchKey, pageNum);
+            }
+            Object[] row = new Object[titles.length];
+            if (bills.isEmpty()) {
+                row[1] = ConstantHelper.NO_RESULT_MESSAGE;
+                dtm.addRow(row);
+                setOnOffForButtons(false);
+            } else {
+                for (Bill bill : bills) {
                     row[0] = bill.getId();
-                    row[1] = bill.getCustomerId();
-                    row[3] = bill.getEmployeeId();
-                    row[4] = IOHandler.convertToDisplayDate(bill.getCreateDate());
+                    Customer customer = customerService.findById(bill.getCustomerId());
+                    row[1] = customer == null ? "" : customer.getFullname()+" (" + customer.getPhone() +")";
+                    row[2] = IOHandler.convertToDisplayDateTime(bill.getCreateDate());
+                    Employee employee = employeeService.findById(bill.getEmployeeId());
+                    row[3] = employee == null ? ConstantHelper.NO_INFORMATION_MESSAGE : employee.getUsername();
+                    row[4] = IOHandler.convertToDisplayPriceString(bill.getTotalMoney());
+                    
                     dtm.addRow(row);
-                 }
-                 setOnOffForButton(true);
-              }
-              tblBill.setModel(dtm);
-              TableHelper.setWidthForAllColumns(tblBill,ConstantHelper.TBL_PRODUCT_WIDTHS);
-           }
-   /**
-    * This method is called from within the constructor to initialize the form.
-    * WARNING: Do NOT modify this code. The content of this method is always
-    * regenerated by the Form Editor.
-    */
-   @SuppressWarnings("unchecked")
-   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-   private void initComponents() {
+                }
+                setOnOffForButtons(true);
+            }
+            tblList.setModel(dtm);
+            TableHelper.setWidthForAllColumns(tblList, ConstantHelper.TBL_BILL_WIDTHS);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-      jLabel1 = new javax.swing.JLabel();
-      btnAdd = new javax.swing.JButton();
-      btnEdit = new javax.swing.JButton();
-      btnDelete = new javax.swing.JButton();
-      btnDetail = new javax.swing.JButton();
-      jScrollPanel = new javax.swing.JScrollPane();
-      tblBill = new javax.swing.JTable();
-      jScrollPane1 = new javax.swing.JScrollPane();
-      txtSearch = new javax.swing.JTextArea();
-      btnClearSearch = new javax.swing.JButton();
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-      jLabel1.setText("BILL LIST");
+        groupPaginationBtns = new javax.swing.ButtonGroup();
+        jPanel1 = SectionTemplate.getStyledPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblList = new TableHelper.CustomTable();
+        lblHeading = new javax.swing.JLabel();
+        txtSearch = new javax.swing.JTextField();
+        jSeparator2 = SectionTemplate.getStyledSeparator();
+        btnClearSearch = SectionTemplate.getStyledButton();
+        jPanel3 = SectionTemplate.getStyledPanel();
+        btnNextPage = SectionTemplate.getStyledButton();
+        btnPrevPage = SectionTemplate.getStyledButton();
+        btnLastPage = SectionTemplate.getStyledButton();
+        btnFirstPage = SectionTemplate.getStyledButton();
+        lblPaginationStatus = new javax.swing.JLabel();
+        jSeparator1 = SectionTemplate.getStyledSeparator();
+        jPanel2 = SectionTemplate.getStyledPanel();
+        btnEdit = SectionTemplate.getStyledButton();
+        btnDisable = SectionTemplate.getStyledButton();
+        btnAdd = SectionTemplate.getStyledButton();
+        btnDetail = SectionTemplate.getStyledButton();
 
-      btnAdd.setText("Add");
-      btnAdd.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            btnAddActionPerformed(evt);
-         }
-      });
+        setBackground(ConstantHelper.SECTION_PANEL_BG);
 
-      btnEdit.setText("Edit");
+        jScrollPane1.setBackground(getBackground());
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-      btnDelete.setText("Delete");
+        tblList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tblList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-      btnDetail.setText("Detail");
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
-      tblBill.setModel(new javax.swing.table.DefaultTableModel(
-         new Object [][] {
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null},
-            {null, null, null, null}
-         },
-         new String [] {
-            "Title 1", "Title 2", "Title 3", "Title 4"
-         }
-      ));
-      jScrollPanel.setViewportView(tblBill);
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblList.setRowHeight(25);
+        jScrollPane1.setViewportView(tblList);
 
-      txtSearch.setColumns(20);
-      txtSearch.setRows(5);
-      txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
-         public void keyPressed(java.awt.event.KeyEvent evt) {
-            txtSearchKeyPressed(evt);
-         }
-      });
-      jScrollPane1.setViewportView(txtSearch);
+        lblHeading.setBackground(getBackground());
+        lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        lblHeading.setText(ConstantHelper.BILL_LIST_HEADING);
 
-      btnClearSearch.setText("Back");
-      btnClearSearch.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            btnClearSearchActionPerformed(evt);
-         }
-      });
+        txtSearch.setBackground(getBackground());
+        txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtSearch.setForeground(Color.GRAY);
+        txtSearch.setText("Tìm kiếm");
+        txtSearch.setToolTipText(txtSearch.getText());
+        txtSearch.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtSearchFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtSearchFocusLost(evt);
+            }
+        });
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSearchKeyPressed(evt);
+            }
+        });
 
-      javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-      this.setLayout(layout);
-      layout.setHorizontalGroup(
-         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGroup(layout.createSequentialGroup()
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnAdd)
-            .addGap(18, 18, 18)
-            .addComponent(btnEdit)
-            .addGap(18, 18, 18)
-            .addComponent(btnDelete)
-            .addGap(18, 18, 18)
-            .addComponent(btnDetail)
-            .addGap(47, 47, 47))
-         .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addGroup(layout.createSequentialGroup()
-                  .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(btnClearSearch)
-                  .addGap(18, 18, 18)
-                  .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))
-               .addComponent(jScrollPanel))
-            .addContainerGap())
-      );
-      layout.setVerticalGroup(
-         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGroup(layout.createSequentialGroup()
-            .addContainerGap(27, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(btnClearSearch, javax.swing.GroupLayout.Alignment.TRAILING)
-               .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(18, 18, 18)
-            .addComponent(jScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-               .addComponent(btnAdd)
-               .addComponent(btnEdit)
-               .addComponent(btnDelete)
-               .addComponent(btnDetail))
-            .addGap(28, 28, 28))
-      );
-   }// </editor-fold>//GEN-END:initComponents
+        btnClearSearch.setText("Quay lại");
+        btnClearSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearSearchActionPerformed(evt);
+            }
+        });
 
-   private void txtSearchFocusGained(java.awt.event.FocusEvent evt) {                                      
+        btnNextPage.setText("▶");
+        groupPaginationBtns.add(btnNextPage);
+        btnNextPage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNextPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextPageActionPerformed(evt);
+            }
+        });
+
+        btnPrevPage.setText("◀");
+        groupPaginationBtns.add(btnPrevPage);
+        btnPrevPage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPrevPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPrevPageActionPerformed(evt);
+            }
+        });
+
+        btnLastPage.setText("▶|");
+        groupPaginationBtns.add(btnLastPage);
+        btnLastPage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLastPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLastPageActionPerformed(evt);
+            }
+        });
+
+        btnFirstPage.setText("|◀");
+        groupPaginationBtns.add(btnFirstPage);
+        btnFirstPage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnFirstPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFirstPageActionPerformed(evt);
+            }
+        });
+
+        lblPaginationStatus.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblPaginationStatus.setText("1/2");
+        lblPaginationStatus.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnFirstPage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnPrevPage)
+                .addGap(20, 20, 20)
+                .addComponent(lblPaginationStatus)
+                .addGap(20, 20, 20)
+                .addComponent(btnNextPage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnLastPage)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(lblPaginationStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnNextPage)
+                        .addComponent(btnPrevPage)
+                        .addComponent(btnLastPage)
+                        .addComponent(btnFirstPage)))
+                .addGap(8, 8, 8))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnClearSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnClearSearch)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblHeading))
+                .addGap(11, 11, 11)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnClearSearch, txtSearch});
+
+        btnEdit.setText("Sửa");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        btnDisable.setText("Khóa");
+        btnDisable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDisableActionPerformed(evt);
+            }
+        });
+
+        btnAdd.setText("Thêm");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnDetail.setText("Xem chi tiết");
+        btnDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetailActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDisable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDetail)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEdit)
+                    .addComponent(btnDisable)
+                    .addComponent(btnAdd)
+                    .addComponent(btnDetail))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void txtSearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusGained
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_FOCUS);
         if ("Tìm kiếm".equals(txtSearch.getText())) {
             txtSearch.setText("");
         }
-    }                                     
+    }//GEN-LAST:event_txtSearchFocusGained
 
-    private void txtSearchFocusLost(java.awt.event.FocusEvent evt) {                                    
+    private void txtSearchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusLost
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_NON_FOCUS);
         if (txtSearch.getText() == null || txtSearch.getText().length() == 0) {
             txtSearch.setText("Tìm kiếm");
         }
-    }                               
-   private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-      // TODO add your handling code here:
-      
-   }//GEN-LAST:event_btnAddActionPerformed
-
-   private void btnClearSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSearchActionPerformed
-      // TODO add your handling code here:
-     jLabel1.setText("Bill List");
-     jLabel1.setToolTipText(null);
-     txtSearch.setText("");
-      loadTable(null);
-      btnClearSearch.setVisible(false);
-   }//GEN-LAST:event_btnClearSearchActionPerformed
-
-   private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
-      // TODO add your handling code here:
-      String searchKey = txtSearch.getText();
-      if(!searchKey.equals("") && evt.getKeyCode()==KeyEvent.VK_ENTER)
-      {
-         List<Bill> listResultBill;
-         listResultBill = BillService.findAllByName(searchKey);
-         loadTable(listResultBill);
-         String searchKeyHeading = searchKey;
-         if(searchKeyHeading.length()>20)
-            searchKeyHeading = searchKeyHeading.substring(0,15)+"...";
-         jLabel1.setText("List bill for key: '"+searchKeyHeading+"'");
-         jLabel1.setToolTipText("List bill for key: '"+searchKey+"'");
-         btnClearSearch.setVisible(true);
-      }
-   }//GEN-LAST:event_txtSearchKeyPressed
+    }//GEN-LAST:event_txtSearchFocusLost
 
 
-   // Variables declaration - do not modify//GEN-BEGIN:variables
-   private javax.swing.JButton btnAdd;
-   private javax.swing.JButton btnClearSearch;
-   private javax.swing.JButton btnDelete;
-   private javax.swing.JButton btnDetail;
-   private javax.swing.JButton btnEdit;
-   private javax.swing.JLabel jLabel1;
-   private javax.swing.JScrollPane jScrollPane1;
-   private javax.swing.JScrollPane jScrollPanel;
-   private javax.swing.JTable tblBill;
-   private javax.swing.JTextArea txtSearch;
-   // End of variables declaration//GEN-END:variables
+    private void btnDisableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableActionPerformed
+        int count = tblList.getSelectedRowCount();
+        if (count > 0) {
+            int option = JOptionPane.showConfirmDialog(frmMainWindow.rootFrame,
+                    ConstantHelper.CONFIRM_DIALOG_MESSAGE, ConstantHelper.CONFIRM_DIALOG_TITLE, JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                try {
+                    if (employeeService.disableByIds(TableHelper.extractSelectedIdList(tblList))) {
+                        getTotalPage();
+                        loadTable(pageNum > totalPage ? 1 : pageNum);
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnDisableActionPerformed
+
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+        String searchKeyInput = txtSearch.getText().trim();
+        if (!searchKeyInput.equals("") && evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            searchKey = searchKeyInput;
+            getTotalPage();
+            loadTable(1);
+            if (searchKey.length() > 15)
+                lblHeading.setText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey.substring(0, 15) + "..."));
+            else 
+                lblHeading.setText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey));
+            lblHeading.setToolTipText(String.format(ConstantHelper.EMPLOYEE_LIST_SEARCH_HEADING, searchKey));
+            btnClearSearch.setVisible(true);
+
+        }
+    }//GEN-LAST:event_txtSearchKeyPressed
+
+    private void btnClearSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearSearchActionPerformed
+        lblHeading.setText(ConstantHelper.EMPLOYEE_LIST_HEADING);
+        lblHeading.setToolTipText(null);
+        txtSearch.setText("");
+        searchKey = null;
+        getTotalPage();
+        loadTable(1);
+        btnClearSearch.setVisible(false);
+    }//GEN-LAST:event_btnClearSearchActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        if (tblList.getSelectedRowCount() == 1) {
+//            frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService, 
+//                    TableHelper.extractSelectedId(tblList)));
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+//        frmMainWindow.rootFrame.loadInSection(new pnlForm(employeeService));
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnFirstPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstPageActionPerformed
+        pageNum = 1;
+        loadTable(pageNum);
+    }//GEN-LAST:event_btnFirstPageActionPerformed
+
+    private void btnLastPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastPageActionPerformed
+        pageNum = totalPage;
+        loadTable(pageNum);
+    }//GEN-LAST:event_btnLastPageActionPerformed
+
+    private void btnPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevPageActionPerformed
+        loadTable(--pageNum);
+    }//GEN-LAST:event_btnPrevPageActionPerformed
+
+    private void btnNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextPageActionPerformed
+        loadTable(++pageNum);
+    }//GEN-LAST:event_btnNextPageActionPerformed
+
+    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
+        if (tblList.getSelectedRowCount() == 1) {
+//            frmMainWindow.rootFrame.loadInSection(new pnlDetail(TableHelper.extractSelectedId(tblList),
+//                    employeeService));
+        }
+    }//GEN-LAST:event_btnDetailActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnClearSearch;
+    private javax.swing.JButton btnDetail;
+    private javax.swing.JButton btnDisable;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnFirstPage;
+    private javax.swing.JButton btnLastPage;
+    private javax.swing.JButton btnNextPage;
+    private javax.swing.JButton btnPrevPage;
+    private javax.swing.ButtonGroup groupPaginationBtns;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JLabel lblHeading;
+    private javax.swing.JLabel lblPaginationStatus;
+    private javax.swing.JTable tblList;
+    private javax.swing.JTextField txtSearch;
+    // End of variables declaration//GEN-END:variables
+
+    private void getTotalPage() {
+        try {
+            int totalItems = 0;
+//            if (searchKey == null)
+                totalItems = billService.countAll();
+//            else totalItems = employeeService.countAllByName(searchKey);
+            totalPage = totalItems / ConstantHelper.ITEM_PER_PAGE 
+                    + (totalItems % ConstantHelper.ITEM_PER_PAGE ==  0 ? 0 : 1);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlList.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void reloadPaginationButtons() {
+        btnPrevPage.setEnabled(true);
+        btnFirstPage.setEnabled(true);
+        btnLastPage.setEnabled(true);
+        btnNextPage.setEnabled(true);
+        if (pageNum == 1) {
+            btnFirstPage.setEnabled(false);
+            btnPrevPage.setEnabled(false);
+        }
+        if (pageNum == totalPage) {
+            btnNextPage.setEnabled(false);
+            btnLastPage.setEnabled(false);
+        }
+        lblPaginationStatus.setText(String.format(ConstantHelper.PAGINATION_TEXT, pageNum, totalPage));
+    }
 }

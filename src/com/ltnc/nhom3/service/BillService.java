@@ -5,7 +5,10 @@
  */
 package com.ltnc.nhom3.service;
 
+import com.ltnc.nhom3.dao.BillDao;
 import com.ltnc.nhom3.entity.Bill;
+import com.ltnc.nhom3.utility.ConstantHelper;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -13,12 +16,20 @@ import java.util.List;
  * @author admin
  */
 public class BillService {
-
-    public static List<Bill> findAllByName(String searchKey) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    private BillDao billDao;
+    
+    public BillService() {
+        billDao = new BillDao();
+    }
+    
+    public List<Bill> findAll(int pageNum) throws SQLException {
+        return billDao.findAll((pageNum-1) * ConstantHelper.ITEM_PER_PAGE, 
+                ConstantHelper.ITEM_PER_PAGE);
     }
 
-    public List<Bill> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int countAll() throws SQLException {
+        return billDao.countAll();
     }
+
 }
