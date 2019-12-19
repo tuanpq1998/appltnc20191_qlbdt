@@ -33,7 +33,7 @@ public class BillDetailService {
         return billDetailDao.countAllByBillId(billId);
     }
 
-    public void create(BillDetail billDetail) {
+    public void create(BillDetail billDetail) throws SQLException {
         billDetailDao.create(billDetail);
     }
     

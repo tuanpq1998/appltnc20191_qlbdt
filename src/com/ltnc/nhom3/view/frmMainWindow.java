@@ -133,7 +133,8 @@ public class frmMainWindow extends javax.swing.JFrame {
                 if (i != -1) {
                     listTabMode.remove(i);
                     pnlTab.remove(i);
-                    if (i == pnlTab.getTabCount()-1) pnlTab.setSelectedIndex(i-1);
+                    if (i == pnlTab.getTabCount()-1) 
+                        pnlTab.setSelectedIndex(i-1);
                     else reloadGroupButtonsInTab();
                 }
             }
