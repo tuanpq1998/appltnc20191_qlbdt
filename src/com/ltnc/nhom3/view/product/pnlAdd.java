@@ -258,6 +258,7 @@ public class pnlAdd extends javax.swing.JPanel {
 
         txtReleaseDate.setDateFormatString("dd/MM/yyyy");
         txtReleaseDate.setDoubleBuffered(false);
+        txtReleaseDate.setFocusable(false);
         txtReleaseDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtReleaseDate.setMaximumSize(new java.awt.Dimension(91, 20));
         txtReleaseDate.setMinimumSize(new java.awt.Dimension(91, 20));

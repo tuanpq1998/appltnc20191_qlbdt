@@ -534,7 +534,7 @@ public class pnlAdd extends javax.swing.JPanel {
                     }
                     billDetailService.createFromList(listBillDetails);
                     JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.BILL_CREATE_DONE_MESSAGE);
-                    btnGoBackActionPerformed(null);
+                    frmMainWindow.rootFrame.loadInSection(new pnlDetail(newBillId, employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
             }
             } catch (SQLException ex) {
                 Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);

@@ -117,7 +117,7 @@ public class BillDetailDao {
             preparedStatement = connection.prepareStatement(DBQuery.getQueryCreateManyBillDetails(listBillDetails.size()));            
             
             BillDetail billDetail = null;
-            for (int i = 0, j = 0; i < listBillDetails.size(); i++) {
+            for (int i = 0; i < listBillDetails.size(); i++) {
                 billDetail = listBillDetails.get(i);
                 preparedStatement.setInt(i*4+1, billDetail.getBillId());
                 preparedStatement.setInt(i*4+2, billDetail.getProductId());
@@ -185,6 +185,22 @@ public class BillDetailDao {
             }
         }
         return billDetails;
+    }
+
+    public int deleteByBillId(int billId) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            statement = connection.prepareStatement(DBQuery.DELETE_ALL_BILLDETAILS_BY_BILL_ID);
+            statement.setInt(1, billId);
+            count = statement.executeUpdate();
+        } finally {
+            if (statement != null) statement.close();
+            if (connection != null) connection.close();            
+        }
+        return count;
     }
     
 }

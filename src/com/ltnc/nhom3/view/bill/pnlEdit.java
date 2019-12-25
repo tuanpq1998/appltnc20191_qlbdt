@@ -27,7 +27,6 @@ import java.awt.Dimension;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,11 +42,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlEdit extends javax.swing.JPanel {
     
-    private int customerId, totalQuantity = 0;
+    private int totalQuantity = 0, billId;
     private double totalMoney = 0;
     private List<BillDetail> listBillDetails = new ArrayList<>();
-
-    private Employee employee;
     
     private EmployeeService employeeService;
     private CustomerService customerService;
@@ -62,7 +59,7 @@ public class pnlEdit extends javax.swing.JPanel {
      * @param id
      * @param productService
      */   
-    public pnlEdit(EmployeeService employeeService, CustomerService customerService, PriceService priceService,
+    public pnlEdit(int billId, EmployeeService employeeService, CustomerService customerService, PriceService priceService,
             BillService billService, BillDetailService billDetailService, ProductService productService,
             ManufacturerService manufacturerService) {
         this.employeeService = employeeService;
@@ -72,14 +69,11 @@ public class pnlEdit extends javax.swing.JPanel {
         this.manufacturerService = manufacturerService;
         this.billDetailService = billDetailService;
         this.productService = productService;
-        employee = frmMainWindow.rootFrame.getLoggedInEmployee();
+        this.billId = billId;
         
         initComponents();
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         tblProductList.getTableHeader().setReorderingAllowed(false);
-
-        lblTotal.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, totalQuantity, IOHandler.convertToDisplayPriceString(totalMoney)));
-        txtEmployeeAndDateCreated.setText(employee.getFullname() + " ("+ employee.getUsername() +") - " + IOHandler.convertToDisplayDate(new Date()));
 
         tblProductList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -92,6 +86,35 @@ public class pnlEdit extends javax.swing.JPanel {
                 }
             }
         });
+        lblHeading.setText(String.format(ConstantHelper.BILL_EDIT_HEADING, billId));
+        loadOldData();
+    }
+    
+    private void loadOldData() {
+        try {
+            Bill bill = billService.findById(billId);
+            int employeeId = bill.getEmployeeId(), customerId = bill.getCustomerId();
+            txtNote.setText(bill.getNote());
+            if (employeeId > 0) {
+                Employee employee = employeeService.findById(employeeId);
+                txtEmployeeAndDateCreated.setText((employee == null ? "" : employee.getFullname()
+                        + " (" + employee.getUsername() + ")") + " - " + IOHandler.convertToDisplayDateTime(bill.getCreateDate()));
+            }
+            if (customerId > 0) {
+                Customer customer = customerService.findById(customerId);
+                if (customer == null) {
+                } else {
+                    txtCustomer.setText(customer.getFullname() + " - ĐT: " + customer.getPhone() + " - ĐC: " + customer.getAddress());
+                }
+            }
+            lblTotal.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, billDetailService.findSumQuantityByBillId(billId),
+                    IOHandler.convertToDisplayPriceString(bill.getTotalMoney())));
+            //add all product
+            List<BillDetail> list = billDetailService.findAllByBillId(billId);
+            for (BillDetail b : list) addOldDataToTable(b);
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void resetOrEnableProductField(boolean isEnable) {
@@ -480,7 +503,7 @@ public class pnlEdit extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
-        frmMainWindow.rootFrame.loadInSection(new pnlList(employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
+        frmMainWindow.rootFrame.loadInSection(new pnlDetail(billId, employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -492,6 +515,7 @@ public class pnlEdit extends javax.swing.JPanel {
         ((DefaultTableModel) tblProductList.getModel()).setRowCount(0);
         listBillDetails.clear();
         resetOrEnableProductField(false);
+        loadOldData();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
@@ -501,22 +525,14 @@ public class pnlEdit extends javax.swing.JPanel {
         int numProduct = listBillDetails.size();
         if (numProduct > 0) {
             Bill bill = new Bill();
-            bill.setEmployeeId(employee.getId());
-            bill.setCreateDate(IOHandler.convertToStringSQLDateTime(new Date()));
-            bill.setCustomerId(customerId);
+            bill.setId(billId);
             bill.setNote(txtNote.getText());
             bill.setTotalMoney(totalMoney);
-            
             try {
-                int newBillId = billService.create(bill);
-                if (newBillId != 0) {
-                    for (BillDetail billDetail : listBillDetails) {
-                        billDetail.setBillId(newBillId);
-                    }
-                    billDetailService.createFromList(listBillDetails);
-                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.BILL_CREATE_DONE_MESSAGE);
-                    btnGoBackActionPerformed(null);
-            }
+                billService.update(bill);
+                billDetailService.updateFromList(listBillDetails);
+                JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.BILL_UPDATE_DONE_MESSAGE);
+                btnGoBackActionPerformed(null);
             } catch (SQLException ex) {
                 Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -614,18 +630,7 @@ public class pnlEdit extends javax.swing.JPanel {
     private javax.swing.JTextPane txtNote;
     private javax.swing.JTextField txtProduct;
     // End of variables declaration//GEN-END:variables
-
-    private void displayCustomerInfo() {
-        try {
-            Customer c = customerService.findById(customerId);
-            if (c != null) {
-                txtCustomer.setText(c.getFullname() + " - ĐT: " + c.getPhone() + " - ĐC: " +c.getAddress());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
+   
     private void addNewToTable(int productId) {
         try {
             Product p = productService.findById(productId);
@@ -633,15 +638,28 @@ public class pnlEdit extends javax.swing.JPanel {
             double money = price.getValue();
             DefaultTableModel model = (DefaultTableModel) tblProductList.getModel();
             model.addRow(new Object[]{listBillDetails.size()+1, p.getName() + " - id: " + p.getId(), IOHandler.convertToDisplayPriceString(money), 1, IOHandler.convertToDisplayPriceString(money)});
-            
             BillDetail billDetail = new BillDetail();
             billDetail.setProductId(productId);
             billDetail.setQuantity(1);
             billDetail.setSubTotal(money);
-
+            billDetail.setBillId(billId);
             listBillDetails.add(billDetail);
-            
             refreshTotal();
+        } catch (SQLException ex) {
+            Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void addOldDataToTable(BillDetail billDetail) {
+        try {
+            int productId = billDetail.getProductId();
+            Product p = productService.findById(productId);
+            DefaultTableModel model = (DefaultTableModel) tblProductList.getModel();
+            double subTotal = billDetail.getSubTotal();
+            int quantity = billDetail.getQuantity();
+            model.addRow(new Object[]{listBillDetails.size()+1, p.getName() + " - id: " + p.getId(), IOHandler.convertToDisplayPriceString(subTotal/quantity),
+                billDetail.getQuantity(), IOHandler.convertToDisplayPriceString(billDetail.getSubTotal())});
+            listBillDetails.add(billDetail);
         } catch (SQLException ex) {
             Logger.getLogger(pnlEdit.class.getName()).log(Level.SEVERE, null, ex);
         }

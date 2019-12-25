@@ -207,12 +207,14 @@ public class pnlForm extends javax.swing.JPanel {
         rdoMale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoMale.setSelected(true);
         rdoMale.setText(ConstantHelper.EMPLOYEE_GENDER_MALE);
+        rdoMale.setFocusPainted(false);
         rdoMale.setName(""); // NOI18N
 
         rdoFemale.setBackground(ConstantHelper.SECTION_PANEL_BG);
         groupGenderRadioBtn.add(rdoFemale);
         rdoFemale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoFemale.setText(ConstantHelper.EMPLOYEE_GENDER_FEMALE);
+        rdoFemale.setFocusPainted(false);
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);

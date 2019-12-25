@@ -177,7 +177,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                 else {
                     pnlTab.remove(pnlTab.getTabCount() - 1);
                     pnlTab.addTab(null, new pnlBlank());
-                    setTabHeaderWithCloseBtn("Tab mới", pnlTab.getTabCount() - 1);
+                    setTabHeaderWithCloseBtn(ConstantHelper.NEW_TAB_DEFAULT_TITLE, pnlTab.getTabCount() - 1);
                     pnlTab.setSelectedIndex(pnlTab.getTabCount() - 1);
                     createFakeTabWithAddSymbol();
                 }

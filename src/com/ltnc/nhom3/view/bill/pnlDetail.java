@@ -23,6 +23,7 @@ import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
 import com.ltnc.nhom3.view.template.TableHelper;
+import java.awt.Font;
 import java.awt.print.PrinterException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -551,11 +552,9 @@ public class pnlDetail extends javax.swing.JPanel {
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         try {
+            StringBuilder sb = new StringBuilder();
             JTextArea printArea = new JTextArea();
-            printArea.setText(printArea.getText() + "*****************************************\n");
-            printArea.setText(printArea.getText() + "       --------Team 03 BILLING SYSTEM--------\n");
-            printArea.setText(printArea.getText() + "*****************************************\n");
-            printArea.setText(printArea.getText() + "\n                        PHONE RECEIPT\n\n");
+            printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             Bill bill = billService.findById(billId);
             int employeeID = bill.getEmployeeId(), customerID = bill.getCustomerId();
             Customer customer = customerService.findById(customerID);
@@ -563,33 +562,35 @@ public class pnlDetail extends javax.swing.JPanel {
             Product product = null;
             Price price = null;
             List<BillDetail> billDetails = billDetailService.findAllByBillId(billId);
-            StringBuilder sb = new StringBuilder();
-            sb.append("-----------------------------------------------------------\n")
-                    .append("Employee Name: ").append(employee.getFullname()).append("\n")
-                    .append("Account: ").append(employee.getUsername()).append("\n")
-                    .append("-----------------------------------------------------------\n")
-                    .append("Bill Id  : ").append(bill.getId()).append("\n")
-                    .append("Created at: ").append(IOHandler.convertToDisplayDateTime(bill.getCreateDate())).append("\n")
-                    .append("Printed at : ").append(IOHandler.convertToDisplayDateTime(new Date())).append("\n")
-                    .append("-----------------------------------------------------------\n")
-                    .append("Customer Name  : ").append(customer.getFullname()).append("\n")
-                    .append("Customer Adress: ").append(customer.getAddress()).append("\n")
-                    .append("Customer Phone : ").append(customer.getPhone()).append("\n")
-                    .append("-----------------------------------------------------------\n")
-                    .append("PRODUCT :  \n");
+            sb.append("******************************************\n")
+                .append("  --------CỬA HÀNG ĐIỆN THOẠI--------\n")
+                .append("******************************************\n")
+                .append("\n               Hóa đơn bán\n\n")
+                .append("-----------------------------------------------------------\n")
+                .append("Nhân viên : ").append(employee.getFullname()).append("\n")
+                .append("Tài khoản : ").append(employee.getUsername()).append("\n")
+                .append("-----------------------------------------------------------\n")
+                .append("Mã hóa đơn : ").append(bill.getId()).append("\n")
+                .append("Ngày tạo : ").append(IOHandler.convertToDisplayDateTime(bill.getCreateDate())).append("\n")
+                .append("Ngày in : ").append(IOHandler.convertToDisplayDateTime(new Date())).append("\n")
+                .append("-----------------------------------------------------------\n")
+                .append("Tên khách hàng  : ").append(customer.getFullname()).append("\n")
+                .append("Địa chỉ KH : ").append(customer.getAddress()).append("\n")
+                .append("Số điện thoại : ").append(customer.getPhone()).append("\n")
+                .append("-----------------------------------------------------------\n")
+                .append("DS SẢN PHẨM :  \n");
             for (BillDetail billDetail : billDetails) {
                 product = productService.findById(billDetail.getProductId());
                 price = priceService.findPriceByProductId(billDetail.getProductId());
-                sb.append("> ").append(product.getName()).append(" - ").append(IOHandler.convertToDisplayPriceString(price.getValue()))
-                        .append(" - Quantity : ").append(billDetail.getQuantity()).append(" - Sub Total : ")
+                sb.append("> ").append(product.getName()+ "\n").append(" - Đơn giá : ").append(IOHandler.convertToDisplayPriceString(price.getValue()))
+                        .append(" - SL : ").append(billDetail.getQuantity()+"\n").append(" -> Thành tiền : ")
                         .append(IOHandler.convertToDisplayPriceString(billDetail.getSubTotal())).append("\n");
             }
             sb.append("-----------------------------------------------------------\n")
-                    .append("TOTAL MONEY :").append(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()))
+                    .append("TỔNG TIỀN : ").append(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()))
                     .append("\n-----------------------------------------------------------\n")
-                    .append("THANK YOU!");
+                    .append("CẢM ƠN QUÝ KHÁCH!");
             printArea.setText(sb.toString());
-            System.out.println(sb.toString());
             printArea.print();
         } catch (SQLException | PrinterException ex) {
             Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
@@ -598,7 +599,7 @@ public class pnlDetail extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPrintActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        
+        frmMainWindow.rootFrame.loadInSection(new pnlEdit(billId, employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextPageActionPerformed

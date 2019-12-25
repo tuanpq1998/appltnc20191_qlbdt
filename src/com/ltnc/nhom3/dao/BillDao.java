@@ -137,5 +137,29 @@ public class BillDao {
         }
         return newId;
     }
+
+    public boolean update(Bill bill) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.UPDATE_BILL);
+
+            preparedStatement.setDouble(1, bill.getTotalMoney());
+            preparedStatement.setString(2, bill.getNote());
+            preparedStatement.setInt(3, bill.getId());
+            
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count > 0;
+    }
     
 }
