@@ -34,7 +34,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlDetail extends javax.swing.JPanel {
 
-    private int billId, totalPage, pageNum;
+    private int billId, totalPage, pageNum, totalItems;
     
     private EmployeeService employeeService;
     private CustomerService customerService;
@@ -64,7 +64,7 @@ public class pnlDetail extends javax.swing.JPanel {
         initComponents();
         jScrollPane1.getViewport().setBackground(ConstantHelper.SECTION_PANEL_BG);
         tblProductList.getTableHeader().setReorderingAllowed(false);
-        lblHeading.setText(ConstantHelper.BILL_DETAIL_HEADING);
+        lblHeading.setText(String.format(ConstantHelper.BILL_DETAIL_HEADING, billId));
         
         displayBillInfo();
     }
@@ -76,8 +76,7 @@ public class pnlDetail extends javax.swing.JPanel {
 
             lblCreateDate.setText(IOHandler.convertToDisplayDateTime(bill.getCreateDate()));
             txtNote.setText(bill.getNote());
-            lblTotalMoney.setText(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()));
-            
+
             if (employeeId > 0) {
                 Employee employee = employeeService.findById(employeeId);
                 lblEmployeeCreated.setText(employee==null ? "" : employee.getFullname() 
@@ -95,6 +94,9 @@ public class pnlDetail extends javax.swing.JPanel {
             }
             getTotalPage();
             displayBillDetail(1);
+            
+            lblTotalMoneyAndQuantity.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, billDetailService.findSumQuantityByBillId(billId), 
+                    IOHandler.convertToDisplayPriceString(bill.getTotalMoney())));
         } catch (SQLException ex) {
             Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -118,7 +120,7 @@ public class pnlDetail extends javax.swing.JPanel {
                 for (int i = 0; i < billDetails.size(); i++) {
                     billDetail = billDetails.get(i);
                     
-                    row[0] = i+1;
+                    row[0] = i + (pageNum - 1) * ConstantHelper.ITEM_BILLDETAIL_PER_PAGE + 1;
                     row[3] = billDetail.getQuantity();
                     row[4] = IOHandler.convertToDisplayPriceString(billDetail.getSubTotal());
                     
@@ -158,7 +160,6 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
-        jLabel30 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
         lblCustomerName = new javax.swing.JLabel();
         lblCustomerAddress = new javax.swing.JLabel();
@@ -167,7 +168,6 @@ public class pnlDetail extends javax.swing.JPanel {
         lblCreateDate = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNote = new javax.swing.JTextPane();
-        lblTotalMoney = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductList = new TableHelper.CustomTable();
         jPanel4 = SectionTemplate.getStyledPanel();
@@ -178,12 +178,11 @@ public class pnlDetail extends javax.swing.JPanel {
         lblPaginationStatus = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
-        btnDisableOrEnable = SectionTemplate.getStyledButton();
+        btnPrint = SectionTemplate.getStyledButton();
         btnEdit = SectionTemplate.getStyledButton();
+        lblTotalMoneyAndQuantity = new javax.swing.JLabel();
 
         setBackground(ConstantHelper.SECTION_PANEL_BG);
-        setMinimumSize(new java.awt.Dimension(654, 596));
-        setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         lblHeading.setText(null);
@@ -231,26 +230,19 @@ public class pnlDetail extends javax.swing.JPanel {
         jLabel29.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel29.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel30.setText("Tổng tiền:");
-        jLabel30.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel30.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        jLabel30.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-
         javax.swing.GroupLayout pnlLeftLayout = new javax.swing.GroupLayout(pnlLeft);
         pnlLeft.setLayout(pnlLeftLayout);
         pnlLeftLayout.setHorizontalGroup(
             pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLeftLayout.createSequentialGroup()
-                .addContainerGap(99, Short.MAX_VALUE)
+                .addContainerGap(74, Short.MAX_VALUE)
                 .addGroup(pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel28, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(10, 10, 10))
         );
         pnlLeftLayout.setVerticalGroup(
@@ -266,8 +258,6 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addComponent(jLabel27)
                 .addGap(20, 20, 20)
                 .addComponent(jLabel28)
-                .addGap(20, 20, 20)
-                .addComponent(jLabel30)
                 .addGap(24, 24, 24)
                 .addComponent(jLabel29)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -295,9 +285,6 @@ public class pnlDetail extends javax.swing.JPanel {
         txtNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jScrollPane2.setViewportView(txtNote);
 
-        lblTotalMoney.setFont(new java.awt.Font("Segoe UI Semibold", 0, 14)); // NOI18N
-        lblTotalMoney.setText("Info");
-
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
         pnlRightLayout.setHorizontalGroup(
@@ -310,9 +297,8 @@ public class pnlDetail extends javax.swing.JPanel {
                     .addComponent(lblCustomerPhone)
                     .addComponent(lblEmployeeCreated)
                     .addComponent(lblCreateDate)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblTotalMoney))
-                .addContainerGap(77, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,8 +314,6 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(lblEmployeeCreated)
                 .addGap(20, 20, 20)
-                .addComponent(lblTotalMoney)
-                .addGap(20, 20, 20)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -340,9 +324,9 @@ public class pnlDetail extends javax.swing.JPanel {
             pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFormLayout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addComponent(pnlLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlFormLayout.setVerticalGroup(
@@ -352,7 +336,7 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(342, 342, 342))
+                .addGap(337, 337, 337))
         );
 
         jScrollPane1.setBackground(ConstantHelper.SECTION_PANEL_BG);
@@ -388,7 +372,9 @@ public class pnlDetail extends javax.swing.JPanel {
                                 .addComponent(btnGoBack))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(pnlForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGap(21, 21, 21))
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE))
                                 .addGap(10, 10, 10)))))
                 .addContainerGap())
@@ -396,7 +382,7 @@ public class pnlDetail extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -405,7 +391,7 @@ public class pnlDetail extends javax.swing.JPanel {
                         .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -480,10 +466,10 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(0, 0, 0))
         );
 
-        btnDisableOrEnable.setText("Khóa");
-        btnDisableOrEnable.addActionListener(new java.awt.event.ActionListener() {
+        btnPrint.setText("In");
+        btnPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDisableOrEnableActionPerformed(evt);
+                btnPrintActionPerformed(evt);
             }
         });
 
@@ -500,7 +486,7 @@ public class pnlDetail extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnDisableOrEnable)
+                .addComponent(btnPrint)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEdit)
                 .addGap(2, 2, 2))
@@ -511,9 +497,14 @@ public class pnlDetail extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
-                    .addComponent(btnDisableOrEnable))
+                    .addComponent(btnPrint))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        lblTotalMoneyAndQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTotalMoneyAndQuantity.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblTotalMoneyAndQuantity.setText("Tổng tiền");
+        lblTotalMoneyAndQuantity.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -529,12 +520,18 @@ public class pnlDetail extends javax.swing.JPanel {
                             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTotalMoneyAndQuantity)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTotalMoneyAndQuantity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -548,9 +545,9 @@ public class pnlDetail extends javax.swing.JPanel {
         frmMainWindow.rootFrame.loadInSection(new pnlList(employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
     }//GEN-LAST:event_btnGoBackActionPerformed
 
-    private void btnDisableOrEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisableOrEnableActionPerformed
+    private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         
-    }//GEN-LAST:event_btnDisableOrEnableActionPerformed
+    }//GEN-LAST:event_btnPrintActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         
@@ -576,20 +573,19 @@ public class pnlDetail extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDisableOrEnable;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnFirstPage;
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnLastPage;
     private javax.swing.JButton btnNextPage;
     private javax.swing.JButton btnPrevPage;
+    private javax.swing.JButton btnPrint;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel30;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -604,7 +600,7 @@ public class pnlDetail extends javax.swing.JPanel {
     private javax.swing.JLabel lblEmployeeCreated;
     private javax.swing.JLabel lblHeading;
     private javax.swing.JLabel lblPaginationStatus;
-    private javax.swing.JLabel lblTotalMoney;
+    private javax.swing.JLabel lblTotalMoneyAndQuantity;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
@@ -614,7 +610,6 @@ public class pnlDetail extends javax.swing.JPanel {
 
     private void getTotalPage() {
         try {
-            int totalItems = 0;
             totalItems = billDetailService.countAllByBillId(billId);
             totalPage = totalItems / ConstantHelper.ITEM_BILLDETAIL_PER_PAGE 
                     + (totalItems % ConstantHelper.ITEM_BILLDETAIL_PER_PAGE ==  0 ? 0 : 1);

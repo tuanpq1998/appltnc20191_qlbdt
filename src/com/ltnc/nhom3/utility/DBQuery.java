@@ -142,7 +142,17 @@ public class DBQuery {
     public static final String COUNT_ALL_BILLDETAILS_BY_BILL_ID = "SELECT COUNT(*) FROM " + BILLDETAIL_TABLE
             + " WHERE bill_id=?";
     public static final String CREATE_NEW_BILLDETAIL = "INSERT INTO " + BILLDETAIL_TABLE + " VALUES(NULL, ?,?,?,?)";
-
+    public static final String CREATE_MANY_NEW_BILLDETAILS = "INSERT INTO " + BILLDETAIL_TABLE + " VALUES";
+    public static final String COUNT_SUM_QUANTITY_BY_BILL_ID = "SELECT SUM(quantity) FROM " + BILLDETAIL_TABLE
+            + " WHERE bill_id=?";
+    public static String getQueryCreateManyBillDetails(int length) {
+        StringBuilder query = new StringBuilder(CREATE_MANY_NEW_BILLDETAILS);
+        for (int i = 1; i <= length; i++) {
+            query.append("(NULL, ?,?,?,?)");
+            if (i != length) query.append(",");
+        }
+        return query.toString();
+    }
     
     /* =============================== */
 }

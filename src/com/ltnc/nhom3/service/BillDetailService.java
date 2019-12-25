@@ -33,8 +33,16 @@ public class BillDetailService {
         return billDetailDao.countAllByBillId(billId);
     }
 
-    public void create(BillDetail billDetail) {
+    public void create(BillDetail billDetail) throws SQLException {
         billDetailDao.create(billDetail);
+    }
+
+    public void createFromList(List<BillDetail> listBillDetails) throws SQLException {
+        billDetailDao.createFromList(listBillDetails);
+    }
+
+    public int findSumQuantityByBillId(int billId) throws SQLException {
+        return billDetailDao.countSumQuantityByBillId(billId);
     }
     
 }

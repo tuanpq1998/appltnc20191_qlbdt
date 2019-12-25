@@ -8,6 +8,7 @@ package com.ltnc.nhom3.view.account;
 import com.ltnc.nhom3.entity.Employee;
 import com.ltnc.nhom3.service.EmployeeService;
 import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -36,6 +37,7 @@ public class dloLogin extends javax.swing.JDialog {
     public dloLogin(Frame parent, boolean modal, EmployeeService employeeService) {
         super((Dialog)null, true);
         initComponents();
+        setIconImages(IOHandler.getIconList());
         setLocationRelativeTo(parent);
         getRootPane().setDefaultButton(btnLogin);
         this.employeeService = employeeService;

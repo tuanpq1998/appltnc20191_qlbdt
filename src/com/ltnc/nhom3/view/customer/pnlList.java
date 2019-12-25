@@ -27,15 +27,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlList extends javax.swing.JPanel {
     
-    private boolean isChooseMode = false;
-    private boolean emptyTable = false;
-    private int returnedCustomerId;
+    private boolean isChooseMode = false, emptyTable = false;
+    private int returnedCustomerId = -1;
     private JDialog dialog;
     
     private CustomerService customerService;
     private String searchKey;
-    private int totalPage;
-    private int pageNum;
+    private int totalPage, pageNum;
 
     public int getReturnedCustomerId() {
         return returnedCustomerId;
@@ -91,6 +89,7 @@ public class pnlList extends javax.swing.JPanel {
         btnLastPage = SectionTemplate.getStyledButton();
         btnFirstPage = SectionTemplate.getStyledButton();
         lblPaginationStatus = new javax.swing.JLabel();
+        btnJumpPage = SectionTemplate.getStyledSecondaryButton();
         jPanel3 = SectionTemplate.getStyledPanel();
         btnEdit = SectionTemplate.getStyledButton();
         btnAdd = SectionTemplate.getStyledButton();
@@ -130,9 +129,10 @@ public class pnlList extends javax.swing.JPanel {
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         lblHeading.setText(ConstantHelper.CUSTOMER_LIST_HEADING);
 
+        txtSearch.setBackground(getBackground());
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSearch.setForeground(Color.GRAY);
-        txtSearch.setText("Tìm kiếm");
+        txtSearch.setText(ConstantHelper.SEARCH_TEXT);
         txtSearch.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtSearchFocusGained(evt);
@@ -174,7 +174,7 @@ public class pnlList extends javax.swing.JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -184,8 +184,8 @@ public class pnlList extends javax.swing.JPanel {
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblHeading))
                 .addGap(15, 15, 15)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnClearSearch, txtSearch});
@@ -226,22 +226,32 @@ public class pnlList extends javax.swing.JPanel {
         lblPaginationStatus.setText("1/2");
         lblPaginationStatus.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        btnJumpPage.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnJumpPage.setText("Tùy chọn...");
+        btnJumpPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJumpPageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(162, Short.MAX_VALUE)
                 .addComponent(btnFirstPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnPrevPage)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(lblPaginationStatus)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(btnNextPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLastPage)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnJumpPage)
+                .addContainerGap(116, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -255,7 +265,8 @@ public class pnlList extends javax.swing.JPanel {
                         .addComponent(btnNextPage)
                         .addComponent(btnPrevPage)
                         .addComponent(btnLastPage)
-                        .addComponent(btnFirstPage)))
+                        .addComponent(btnFirstPage)
+                        .addComponent(btnJumpPage)))
                 .addGap(8, 8, 8))
         );
 
@@ -357,14 +368,14 @@ public class pnlList extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(528, 528, 528)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(501, 501, 501)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, 0)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(53, Short.MAX_VALUE)))
+                    .addContainerGap(51, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -411,7 +422,7 @@ public class pnlList extends javax.swing.JPanel {
     }
     private void txtSearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusGained
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_FOCUS);
-        if("Tìm kiếm".equals(txtSearch.getText())){
+        if(ConstantHelper.SEARCH_TEXT.equals(txtSearch.getText())){
             txtSearch.setText("");
         }
     }//GEN-LAST:event_txtSearchFocusGained
@@ -419,7 +430,7 @@ public class pnlList extends javax.swing.JPanel {
     private void txtSearchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusLost
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_NON_FOCUS);
         if (txtSearch.getText()==null || txtSearch.getText().length()==0) {
-            txtSearch.setText("Tìm kiếm");
+            txtSearch.setText(ConstantHelper.SEARCH_TEXT);
         }
     }//GEN-LAST:event_txtSearchFocusLost
 
@@ -503,6 +514,13 @@ public class pnlList extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_tblListMousePressed
 
+    private void btnJumpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJumpPageActionPerformed
+        int input = SectionTemplate.askAndGetInputNumPage(frmMainWindow.rootFrame, pageNum, totalPage);
+        if (input != -1) {
+            loadTable(input);
+        }
+    }//GEN-LAST:event_btnJumpPageActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -511,6 +529,7 @@ public class pnlList extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnFirstPage;
+    private javax.swing.JButton btnJumpPage;
     private javax.swing.JButton btnLastPage;
     private javax.swing.JButton btnNextPage;
     private javax.swing.JButton btnPrevPage;

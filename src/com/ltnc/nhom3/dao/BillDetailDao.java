@@ -107,5 +107,56 @@ public class BillDetailDao {
         }
         return count;
     }
+
+    public int createFromList(List<BillDetail> listBillDetails) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.getQueryCreateManyBillDetails(listBillDetails.size()));            
+            
+            BillDetail billDetail = null;
+            for (int i = 0, j = 0; i < listBillDetails.size(); i++) {
+                billDetail = listBillDetails.get(i);
+                preparedStatement.setInt(i*4+1, billDetail.getBillId());
+                preparedStatement.setInt(i*4+2, billDetail.getProductId());
+                preparedStatement.setInt(i*4+3, billDetail.getQuantity());
+                preparedStatement.setDouble(i*4+4, billDetail.getSubTotal());
+            }
+            count = preparedStatement.executeUpdate();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
+    }
+
+    public int countSumQuantityByBillId(int billId) throws SQLException {
+        int count = 0;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.COUNT_SUM_QUANTITY_BY_BILL_ID);
+            preparedStatement.setInt(1, billId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return count;
+    }
     
 }

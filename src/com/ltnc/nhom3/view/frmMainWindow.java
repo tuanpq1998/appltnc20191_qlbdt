@@ -17,6 +17,7 @@ import com.ltnc.nhom3.service.ProductService;
 import com.ltnc.nhom3.view.template.MenuTemplate;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.utility.ConstantHelper;
+import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.account.pnlInfo;
 import com.ltnc.nhom3.view.product.pnlList;
 import java.awt.BorderLayout;
@@ -62,11 +63,13 @@ public class frmMainWindow extends javax.swing.JFrame {
     public frmMainWindow() {
         rootFrame = this;
         listTabMode.add(ConstantHelper.MAIN_FRAME_INIT_MODE);
+        setIconImages(IOHandler.getIconList());
         initComponents();
         
         updateTitleForHomeTab("Home");
         createFakeTabWithAddSymbol();
-
+        loadInSection(new pnlBlank());
+        
         employeeService = new EmployeeService();
         billDetailService = new BillDetailService();
         billService = new BillService();
@@ -133,7 +136,8 @@ public class frmMainWindow extends javax.swing.JFrame {
                 if (i != -1) {
                     listTabMode.remove(i);
                     pnlTab.remove(i);
-                    if (i == pnlTab.getTabCount()-1) pnlTab.setSelectedIndex(i-1);
+                    if (i == pnlTab.getTabCount()-1) 
+                        pnlTab.setSelectedIndex(i-1);
                     else reloadGroupButtonsInTab();
                 }
             }
@@ -172,7 +176,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.CREATE_TAB_NOT_ALLOWED_MESSAGE);
                 else {
                     pnlTab.remove(pnlTab.getTabCount() - 1);
-                    pnlTab.addTab(null, new JPanel());
+                    pnlTab.addTab(null, new pnlBlank());
                     setTabHeaderWithCloseBtn("Tab mới", pnlTab.getTabCount() - 1);
                     pnlTab.setSelectedIndex(pnlTab.getTabCount() - 1);
                     createFakeTabWithAddSymbol();
@@ -489,9 +493,9 @@ public class frmMainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBillActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (JOptionPane.showConfirmDialog(rootFrame, ConstantHelper.CONFIRM_LOGOUT_DIALOG_MESSAGE,
-                ConstantHelper.CONFIRM_LOGOUT_DIALOG_TITLE, JOptionPane.YES_NO_OPTION)
-                == JOptionPane.YES_OPTION) {
+        if (JOptionPane.showConfirmDialog(isActive() ? rootFrame : null, 
+                ConstantHelper.CONFIRM_LOGOUT_DIALOG_MESSAGE, ConstantHelper.CONFIRM_LOGOUT_DIALOG_TITLE, 
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             this.dispose();
             new frmMainWindow().setVisible(true);
         } else {
@@ -652,7 +656,7 @@ public class frmMainWindow extends javax.swing.JFrame {
                 loadInSection(new com.ltnc.nhom3.view.product.pnlList(priceService, productService, manufacturerService));
                 break;
             default:
-                loadInSection(new JPanel());
+                loadInSection(new pnlBlank());
         }
     }
     
@@ -679,4 +683,5 @@ public class frmMainWindow extends javax.swing.JFrame {
         }
         reloadGroupButtons();
     }
+    
 }

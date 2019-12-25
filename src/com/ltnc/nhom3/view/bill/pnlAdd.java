@@ -22,19 +22,19 @@ import com.ltnc.nhom3.utility.ConstantHelper;
 import com.ltnc.nhom3.utility.IOHandler;
 import com.ltnc.nhom3.view.template.SectionTemplate;
 import com.ltnc.nhom3.view.frmMainWindow;
-import com.ltnc.nhom3.view.template.TableCellListener;
 import com.ltnc.nhom3.view.template.TableHelper;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -43,12 +43,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class pnlAdd extends javax.swing.JPanel {
     
-    private int customerId, totalQuantity = 0, num = 1;
-    private List<Double> listSubTotals = new ArrayList<>();
-    private List<Integer> listQuantities = new ArrayList<>();
-    private List<Integer> listProductIds = new ArrayList<>();
-            
+    private int customerId, totalQuantity = 0;
     private double totalMoney = 0;
+    private List<BillDetail> listBillDetails = new ArrayList<>();
+
     private Employee employee;
     
     private EmployeeService employeeService;
@@ -81,23 +79,30 @@ public class pnlAdd extends javax.swing.JPanel {
         tblProductList.getTableHeader().setReorderingAllowed(false);
 
         lblTotal.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, totalQuantity, IOHandler.convertToDisplayPriceString(totalMoney)));
-        generateInfoToForm();
+        txtEmployeeAndDateCreated.setText(employee.getFullname() + " ("+ employee.getUsername() +") - " + IOHandler.convertToDisplayDate(new Date()));
 
-        new TableCellListener(tblProductList, new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-                TableCellListener tcl = (TableCellListener) e.getSource();
-                int row = tcl.getRow(), newQuantity = (int) tcl.getNewValue();
-                double price = listSubTotals.get(row)/listQuantities.get(row);
-                double newSubTotal = price*newQuantity;
-                DefaultTableModel model = (DefaultTableModel) tblProductList.getModel();
-                model.setValueAt(IOHandler.convertToDisplayPriceString(newSubTotal), row, tcl.getColumn()+1);
-                listQuantities.set(row, newQuantity);
-                listSubTotals.set(row, newSubTotal);
-                refreshTotal();
+        tblProductList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting() && tblProductList.getSelectedRowCount() > 0) {
+                    int selectedIndex = tblProductList.getSelectedRow();
+                    resetOrEnableProductField(true);
+                    txtProduct.setText(""+tblProductList.getValueAt(selectedIndex, 1));
+                    spnQuantity.setValue(listBillDetails.get(selectedIndex).getQuantity());
+                }
             }
         });
     }
-
+    
+    private void resetOrEnableProductField(boolean isEnable) {
+        btnUpdate.setEnabled(isEnable);
+        btnDelete.setEnabled(isEnable);
+        spnQuantity.setEnabled(isEnable);
+        if (!isEnable) {
+            spnQuantity.setValue(1);
+            txtProduct.setText("");
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -115,29 +120,31 @@ public class pnlAdd extends javax.swing.JPanel {
         pnlForm = SectionTemplate.getStyledPanel();
         pnlLeft = SectionTemplate.getStyledPanel();
         jLabel22 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
         pnlRight = SectionTemplate.getStyledPanel();
-        lblCreateDate = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNote = new javax.swing.JTextPane();
         txtCustomer = new javax.swing.JTextField();
         btnChooseCustomer = SectionTemplate.getStyledButton();
-        txtEmployee = new javax.swing.JTextField();
+        txtEmployeeAndDateCreated = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductList = new TableHelper.CustomTable();
+        btnDelete = SectionTemplate.getStyledButton();
+        btnAdd = SectionTemplate.getStyledButton();
+        lblTotal = new javax.swing.JLabel();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnReset = SectionTemplate.getStyledButton();
         btnSubmit = SectionTemplate.getStyledButton();
-        btnDeleteBillDetail = SectionTemplate.getStyledButton();
-        btnAddBillDetail = SectionTemplate.getStyledButton();
-        lblTotal = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        txtProduct = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        spnQuantity = new javax.swing.JSpinner();
+        btnUpdate = SectionTemplate.getStyledButton();
 
         setBackground(ConstantHelper.SECTION_PANEL_BG);
         setMinimumSize(new java.awt.Dimension(654, 596));
-        setPreferredSize(new java.awt.Dimension(654, 596));
 
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         lblHeading.setText("Tạo hóa đơn");
@@ -155,14 +162,8 @@ public class pnlAdd extends javax.swing.JPanel {
         jLabel22.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel22.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-        jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel27.setText("Ngày tạo hóa đơn:");
-        jLabel27.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel27.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        jLabel27.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-
         jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel28.setText("Nhân viên tạo:");
+        jLabel28.setText("Nhân viên & ngày tạo:");
         jLabel28.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         jLabel28.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         jLabel28.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
@@ -178,10 +179,9 @@ public class pnlAdd extends javax.swing.JPanel {
         pnlLeftLayout.setHorizontalGroup(
             pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlLeftLayout.createSequentialGroup()
-                .addContainerGap(99, Short.MAX_VALUE)
+                .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(pnlLeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel22, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel27, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel28, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel29, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(10, 10, 10))
@@ -191,17 +191,12 @@ public class pnlAdd extends javax.swing.JPanel {
             .addGroup(pnlLeftLayout.createSequentialGroup()
                 .addGap(3, 3, 3)
                 .addComponent(jLabel22)
-                .addGap(56, 56, 56)
-                .addComponent(jLabel27)
-                .addGap(20, 20, 20)
+                .addGap(25, 25, 25)
                 .addComponent(jLabel28)
-                .addGap(24, 24, 24)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel29)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        lblCreateDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblCreateDate.setText("[tự động]");
 
         jScrollPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setEnabled(false);
@@ -210,9 +205,15 @@ public class pnlAdd extends javax.swing.JPanel {
         jScrollPane2.setViewportView(txtNote);
 
         txtCustomer.setEditable(false);
+        txtCustomer.setBackground(ConstantHelper.SECTION_PANEL_BG);
         txtCustomer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtCustomer.setName(""); // NOI18N
         txtCustomer.setPreferredSize(new java.awt.Dimension(6, 25));
+        txtCustomer.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                txtCustomerMousePressed(evt);
+            }
+        });
 
         btnChooseCustomer.setText("Chọn KH");
         btnChooseCustomer.addActionListener(new java.awt.event.ActionListener() {
@@ -221,39 +222,39 @@ public class pnlAdd extends javax.swing.JPanel {
             }
         });
 
-        txtEmployee.setEditable(false);
-        txtEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtEmployee.setName(""); // NOI18N
-        txtEmployee.setPreferredSize(new java.awt.Dimension(6, 25));
+        txtEmployeeAndDateCreated.setEditable(false);
+        txtEmployeeAndDateCreated.setBackground(ConstantHelper.SECTION_PANEL_BG);
+        txtEmployeeAndDateCreated.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtEmployeeAndDateCreated.setName(""); // NOI18N
+        txtEmployeeAndDateCreated.setPreferredSize(new java.awt.Dimension(6, 25));
 
         javax.swing.GroupLayout pnlRightLayout = new javax.swing.GroupLayout(pnlRight);
         pnlRight.setLayout(pnlRightLayout);
         pnlRightLayout.setHorizontalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblCreateDate)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
-                    .addComponent(btnChooseCustomer)
+                    .addComponent(jScrollPane2)
                     .addComponent(txtCustomer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtEmployee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(txtEmployeeAndDateCreated, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnChooseCustomer)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         pnlRightLayout.setVerticalGroup(
             pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRightLayout.createSequentialGroup()
-                .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnChooseCustomer)
-                .addGap(13, 13, 13)
-                .addComponent(lblCreateDate)
-                .addGap(17, 17, 17)
-                .addComponent(txtEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGroup(pnlRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnChooseCustomer)
+                    .addComponent(txtCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(txtEmployeeAndDateCreated, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pnlRightLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnChooseCustomer, txtCustomer});
 
         javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
         pnlForm.setLayout(pnlFormLayout);
@@ -261,9 +262,9 @@ public class pnlAdd extends javax.swing.JPanel {
             pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlFormLayout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addComponent(pnlLeft, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(pnlRight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlFormLayout.setVerticalGroup(
@@ -275,38 +276,6 @@ public class pnlAdd extends javax.swing.JPanel {
                     .addComponent(pnlLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(333, 333, 333))
         );
-
-        jScrollPane1.setBackground(ConstantHelper.SECTION_PANEL_BG);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        tblProductList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "STT", "Sản phẩm", "Đơn giá", "Số lượng", "Thành tiền"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, true, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblProductList.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tblProductList);
-        if (tblProductList.getColumnModel().getColumnCount() > 0) {
-            tblProductList.getColumnModel().getColumn(0).setPreferredWidth(10);
-        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -323,16 +292,14 @@ public class pnlAdd extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnGoBack))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE))
+                                .addComponent(pnlForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(10, 10, 10)))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblHeading, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -341,11 +308,64 @@ public class pnlAdd extends javax.swing.JPanel {
                         .addComponent(btnGoBack, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        jScrollPane1.setBackground(ConstantHelper.SECTION_PANEL_BG);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        tblProductList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "Sản phẩm", "Đơn giá", "Số lượng", "Thành tiền"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblProductList.setMinimumSize(new java.awt.Dimension(500, 500));
+        tblProductList.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblProductList);
+
+        btnDelete.setText("Xóa");
+        btnDelete.setEnabled(false);
+        btnDelete.setMaximumSize(new java.awt.Dimension(41, 28));
+        btnDelete.setMinimumSize(new java.awt.Dimension(41, 28));
+        btnDelete.setPreferredSize(new java.awt.Dimension(41, 28));
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnAdd.setText("Thêm SP");
+        btnAdd.setMaximumSize(new java.awt.Dimension(63, 28));
+        btnAdd.setMinimumSize(new java.awt.Dimension(63, 28));
+        btnAdd.setPreferredSize(new java.awt.Dimension(63, 28));
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        lblTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblTotal.setText("Tổng:");
+        lblTotal.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         btnReset.setText("Đặt lại");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -379,25 +399,34 @@ public class pnlAdd extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit)
                     .addComponent(btnReset))
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btnDeleteBillDetail.setText("Xóa SP");
-        btnDeleteBillDetail.addActionListener(new java.awt.event.ActionListener() {
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Sản phẩm:");
+
+        txtProduct.setEditable(false);
+        txtProduct.setBackground(ConstantHelper.SECTION_PANEL_BG);
+        txtProduct.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Số lượng:");
+
+        spnQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        spnQuantity.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
+        spnQuantity.setEditor(new javax.swing.JSpinner.NumberEditor(spnQuantity, ""));
+        spnQuantity.setEnabled(false);
+
+        btnUpdate.setText("Cập nhật");
+        btnUpdate.setEnabled(false);
+        btnUpdate.setMaximumSize(new java.awt.Dimension(67, 28));
+        btnUpdate.setMinimumSize(new java.awt.Dimension(67, 28));
+        btnUpdate.setPreferredSize(new java.awt.Dimension(67, 28));
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteBillDetailActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
-
-        btnAddBillDetail.setText("Thêm SP");
-        btnAddBillDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddBillDetailActionPerformed(evt);
-            }
-        });
-
-        lblTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        lblTotal.setText("Tổng:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -410,31 +439,63 @@ public class pnlAdd extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(lblTotal)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnAddBillDetail)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnDeleteBillDetail)))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblTotal))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtProduct)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(14, 14, 14)
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1))))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDeleteBillDetail)
-                    .addComponent(btnAddBillDetail)
-                    .addComponent(lblTotal))
-                .addGap(11, 11, 11)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(txtProduct, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
+                        .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTotal)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {spnQuantity, txtProduct});
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btnAdd, btnDelete});
+
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGoBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoBackActionPerformed
@@ -448,16 +509,15 @@ public class pnlAdd extends javax.swing.JPanel {
         totalMoney = 0;
         lblTotal.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, totalQuantity, IOHandler.convertToDisplayPriceString(totalMoney)));
         ((DefaultTableModel) tblProductList.getModel()).setRowCount(0);
-        listQuantities.clear();
-        listSubTotals.clear();
-        listProductIds.clear();
+        listBillDetails.clear();
+        resetOrEnableProductField(false);
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         if ("".equals(txtCustomer.getText())) {
             return;
         }
-        int numProduct = tblProductList.getRowCount();
+        int numProduct = listBillDetails.size();
         if (numProduct > 0) {
             Bill bill = new Bill();
             bill.setEmployeeId(employee.getId());
@@ -469,18 +529,11 @@ public class pnlAdd extends javax.swing.JPanel {
             try {
                 int newBillId = billService.create(bill);
                 if (newBillId != 0) {
-                    BillDetail billDetail = null;
-                    for (int i = 0; i < numProduct; i++) {
-                        billDetail = new BillDetail();
-                        
+                    for (BillDetail billDetail : listBillDetails) {
                         billDetail.setBillId(newBillId);
-                        billDetail.setProductId(listProductIds.get(i));
-                        billDetail.setQuantity(listQuantities.get(i));
-                        billDetail.setSubTotal(listProductIds.get(i));
-                        
-                        billDetailService.create(billDetail);
                     }
-                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, "Tạo hóa đơn thành công");
+                    billDetailService.createFromList(listBillDetails);
+                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.BILL_CREATE_DONE_MESSAGE);
                     btnGoBackActionPerformed(null);
             }
             } catch (SQLException ex) {
@@ -489,60 +542,101 @@ public class pnlAdd extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnSubmitActionPerformed
 
-    private void btnDeleteBillDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteBillDetailActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (tblProductList.getSelectedRowCount() > 0) {
             int[] selectedIndexes = tblProductList.getSelectedRows();
             DefaultTableModel model = (DefaultTableModel) tblProductList.getModel();
-            for (int index : selectedIndexes) {
-                model.removeRow(index);
-                listQuantities.remove(index);
-                listSubTotals.remove(index);
-                listProductIds.remove(index);
+            for (int i = selectedIndexes.length -1; i >= 0; i--) {
+                model.removeRow(selectedIndexes[i]);
+                listBillDetails.remove(selectedIndexes[i]);
             }
             refreshTotal();
+            tblProductList.clearSelection();
+            resetOrEnableProductField(false);
         }
-    }//GEN-LAST:event_btnDeleteBillDetailActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
-    private void btnAddBillDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBillDetailActionPerformed
-        JDialog d = new JDialog(frmMainWindow.rootFrame, true);
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        JDialog d = new JDialog(frmMainWindow.rootFrame, ConstantHelper.PRODUCT_LIST_HEADING, true);
         com.ltnc.nhom3.view.product.pnlList list = new com.ltnc.nhom3.view.product.pnlList(priceService, 
                 productService, manufacturerService, true, d);
         d.add(list);
-        list.setVisible(true);
         Dimension dim = list.getPreferredSize();
         d.setMinimumSize(new Dimension(dim.width, dim.height+20));
         d.setResizable(false);
         d.setLocationRelativeTo(frmMainWindow.rootFrame);
-        d.setTitle("Chọn");
         d.setVisible(true);
+        int productId = list.getReturnedProductId();
         
-        addProductToTable(list.getReturnedProductId());
-    }//GEN-LAST:event_btnAddBillDetailActionPerformed
+        if (productId != -1) {
+            BillDetail billDetail = null;
+            for (int i = 0; i < listBillDetails.size(); i++) {
+                billDetail = listBillDetails.get(i);
+                if (billDetail.getProductId() == productId) {
+                    JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.BILL_DUPLICATE_PRODUCT_MESSAGE,
+                            ConstantHelper.WARNING_DIALOG_TITLE, JOptionPane.WARNING_MESSAGE);
+                    tblProductList.setRowSelectionInterval(i, i);
+                    return;
+                }
+            }
+            addNewToTable(productId);
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnChooseCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseCustomerActionPerformed
-        JDialog d = new JDialog(frmMainWindow.rootFrame, true);
-        com.ltnc.nhom3.view.customer.pnlList list = new com.ltnc.nhom3.view.customer.pnlList(customerService, true, d);
+        JDialog d = new JDialog(frmMainWindow.rootFrame, ConstantHelper.CUSTOMER_LIST_HEADING, true);
+        com.ltnc.nhom3.view.customer.pnlList list = new com.ltnc.nhom3.view.customer.pnlList(customerService, 
+                true, d);
         d.add(list);
-        list.setVisible(true);
         Dimension dim = list.getPreferredSize();
         d.setMinimumSize(new Dimension(dim.width, dim.height+20));
         d.setResizable(false);
         d.setLocationRelativeTo(frmMainWindow.rootFrame);
-        d.setTitle("Chọn");
         d.setVisible(true);
-        customerId = list.getReturnedCustomerId();
-        displayCustomerInfo();
+        int returnedCustomerId = list.getReturnedCustomerId();
+        if (returnedCustomerId != -1 && customerId != returnedCustomerId) {
+            customerId = returnedCustomerId;
+            displayCustomerInfo();
+        }
     }//GEN-LAST:event_btnChooseCustomerActionPerformed
 
+    private void txtCustomerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCustomerMousePressed
+        if ("".equals(txtCustomer.getText())) {
+            btnChooseCustomerActionPerformed(null);
+        }
+    }//GEN-LAST:event_txtCustomerMousePressed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        try {
+            spnQuantity.commitEdit();
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(frmMainWindow.rootFrame, ConstantHelper.NUMBER_INPUT_WRONG_MESSAGE);
+            Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
+        int newQuantity = (int) spnQuantity.getValue(), selectedIndex = tblProductList.getSelectedRow();
+        BillDetail billDetail = listBillDetails.get(selectedIndex);        
+        double newSubTotal = newQuantity * billDetail.getSubTotal() / billDetail.getQuantity();
+        billDetail.setSubTotal(newSubTotal);
+        billDetail.setQuantity(newQuantity);
+        tblProductList.setValueAt(newQuantity, selectedIndex, 3);
+        tblProductList.setValueAt(IOHandler.convertToDisplayPriceString(newSubTotal), selectedIndex, 4);
+        refreshTotal();
+        tblProductList.clearSelection();
+        resetOrEnableProductField(false);
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddBillDetail;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnChooseCustomer;
-    private javax.swing.JButton btnDeleteBillDetail;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnGoBack;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JPanel jPanel1;
@@ -551,21 +645,18 @@ public class pnlAdd extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JLabel lblCreateDate;
     private javax.swing.JLabel lblHeading;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JPanel pnlForm;
     private javax.swing.JPanel pnlLeft;
     private javax.swing.JPanel pnlRight;
+    private javax.swing.JSpinner spnQuantity;
     private javax.swing.JTable tblProductList;
     private javax.swing.JTextField txtCustomer;
-    private javax.swing.JTextField txtEmployee;
+    private javax.swing.JTextField txtEmployeeAndDateCreated;
     private javax.swing.JTextPane txtNote;
+    private javax.swing.JTextField txtProduct;
     // End of variables declaration//GEN-END:variables
-
-    private void generateInfoToForm() {
-        txtEmployee.setText(employee.getFullname() + " ("+ employee.getUsername() +")");
-    }
 
     private void displayCustomerInfo() {
         try {
@@ -578,16 +669,21 @@ public class pnlAdd extends javax.swing.JPanel {
         }
     }
     
-    private void addProductToTable(int productId) {
+    private void addNewToTable(int productId) {
         try {
             Product p = productService.findById(productId);
             Price price = priceService.findPriceByProductId(productId);
             double money = price.getValue();
             DefaultTableModel model = (DefaultTableModel) tblProductList.getModel();
-            model.addRow(new Object[]{num++, p.getName(), IOHandler.convertToDisplayPriceString(money), 1, IOHandler.convertToDisplayPriceString(money * 1)});
-            listSubTotals.add(money);
-            listQuantities.add(1);
-            listProductIds.add(productId);
+            model.addRow(new Object[]{listBillDetails.size()+1, p.getName() + " - id: " + p.getId(), IOHandler.convertToDisplayPriceString(money), 1, IOHandler.convertToDisplayPriceString(money)});
+            
+            BillDetail billDetail = new BillDetail();
+            billDetail.setProductId(productId);
+            billDetail.setQuantity(1);
+            billDetail.setSubTotal(money);
+
+            listBillDetails.add(billDetail);
+            
             refreshTotal();
         } catch (SQLException ex) {
             Logger.getLogger(pnlAdd.class.getName()).log(Level.SEVERE, null, ex);
@@ -597,8 +693,10 @@ public class pnlAdd extends javax.swing.JPanel {
     private void refreshTotal() {
         totalMoney = 0;
         totalQuantity = 0;
-        for (Double d : listSubTotals) totalMoney += d;
-        for (Integer i : listQuantities) totalQuantity += i;
+        for (BillDetail billDetail : listBillDetails) {
+            totalMoney += billDetail.getSubTotal();
+            totalQuantity += billDetail.getQuantity();
+        }
         lblTotal.setText(String.format(ConstantHelper.LBL_TOTAL_ADD_BILL, totalQuantity, IOHandler.convertToDisplayPriceString(totalMoney)));
     }
 }

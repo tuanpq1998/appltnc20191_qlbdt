@@ -38,6 +38,7 @@ public class ConstantHelper {
     
     public static final String CONFIRM_DIALOG_TITLE = "Xác nhận";
     public static final String CONFIRM_DIALOG_MESSAGE = "Bạn có chắc chắn?";
+    public static final String WARNING_DIALOG_TITLE = "Xác nhận";
     public static final String CONFIRM_LOGOUT_DIALOG_TITLE = CONFIRM_DIALOG_TITLE;
     public static final String CONFIRM_LOGOUT_DIALOG_MESSAGE = "Xác nhận đăng xuất?";
     public static final String ADD_DONE_DIALOG_MESSAGE = "Tạo thành công!";
@@ -47,8 +48,12 @@ public class ConstantHelper {
     public static final String EDIT_MANUFACTURER_DIALOG_TITLE = "Sửa hãng sản xuất";
     public static final String EDIT_PRODUCT_HEADING = "Sửa sản phẩm";
     public static final String CREATE_TAB_NOT_ALLOWED_MESSAGE = "Số tab mới đã đạt tối đa!";
+    public static final String NUMBER_INPUT_WRONG_MESSAGE = "Chỉ được nhập số!";
+    public static final String NUMBER_INPUT_DIALOG_TITLE = "Nhập số trang";
 
     public static final String LOGOUT_BTN_TEXT = "Đăng xuất (%s)";
+    
+    public static final String SEARCH_TEXT = "Tìm kiếm";
     
     public static final String PRODUCT_LIST_HEADING = "Danh sách sản phẩm";
     public static final String PRODUCT_LIST_SEARCH_HEADING = "Kết quả cho '%s'";    
@@ -75,8 +80,10 @@ public class ConstantHelper {
     public static final String EMPLOYEE_DISABLE_ACTIVE_STATUS_BTN_TEXT = "Khóa";
     
     public static final String BILL_LIST_HEADING = "Danh sách hóa đơn";
-    public static final String BILL_DETAIL_HEADING = "Chi tiết hóa đơn";
-    
+    public static final String BILL_DETAIL_HEADING = "Chi tiết hóa đơn id: %s";
+    public static final String BILL_CREATE_DONE_MESSAGE = "Tạo hóa đơn thành công";
+    public static final String BILL_DUPLICATE_PRODUCT_MESSAGE = "Sản phẩm đã có trong danh sách!";
+
     public static final String LOADING_TEXT ="Đang tải ...";
     public static final String EXPAND_MENU_TEXT = "Mở rộng";
     public static final String COLLAPSE_MENU_TEXT = "Thu gọn";
@@ -121,8 +128,8 @@ public class ConstantHelper {
     public static final int[] TBL_CUSTOMER_WIDTHS = {40, 280, 280, 115};
     
     public static final String[] TBL_BILLDETAIL_TITLES
-            = new String[]{"STT", "Sản phẩm", "Đơn giá", "Số lượng", "Thành tiền", "IMEI"};
-    public static final int[] TBL_BILLDETAIL_WIDTHS = {40, 220, 130, 80, 130, 160};
+            = new String[]{"STT", "Sản phẩm", "Đơn giá", "Số lượng", "Thành tiền"};
+    public static final int[] TBL_BILLDETAIL_WIDTHS = {40, 260, 150, 80, 150};
     
     public static final String[] TBL_EMPLOYEE_TITLES 
             = new String[]{"ID", "Tài khoản", "Điện thoại", "Giới tính", "CMND", "Trạng thái"};
@@ -136,7 +143,7 @@ public class ConstantHelper {
             = new String[]{"ID", "Khách hàng", "Ngày tạo", "TK tạo", "Tổng tiền"};
     public static final int[] TBL_BILL_WIDTHS = {40, 200, 160, 160, 200};
     
-    public static final String LBL_TOTAL_ADD_BILL = "Tổng số lượng: %s - Tổng tiền: %s";
+    public static final String LBL_TOTAL_ADD_BILL = "<html>Tổng số lượng: <b>%s</b> - Tổng tiền: <b>%s</b></html>";
     
     public static final int ITEM_PER_PAGE = 15;
     public static final int ITEM_BILLDETAIL_PER_PAGE = 5;
