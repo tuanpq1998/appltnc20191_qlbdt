@@ -62,6 +62,10 @@ public class IOHandler {
         }
         return datetimeFromSQL;
     }
+    
+    public static String convertToDisplayDateTime(Date date) {
+        return FORMAT_TO_DISPLAY_DATE_TIME.format(date);
+    }
 
     public static String convertToDisplayManufacturerString(Manufacturer manufacturer) {
         if (manufacturer != null) {

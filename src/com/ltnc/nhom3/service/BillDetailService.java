@@ -45,4 +45,8 @@ public class BillDetailService {
         return billDetailDao.countSumQuantityByBillId(billId);
     }
     
+    public List<BillDetail> findAllByBillId(int billId) throws SQLException {
+        return billDetailDao.findAllByBillId(billId);
+    }
+    
 }
