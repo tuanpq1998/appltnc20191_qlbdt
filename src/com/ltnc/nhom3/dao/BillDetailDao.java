@@ -158,5 +158,33 @@ public class BillDetailDao {
         }
         return count;
     }
+
+    public List<BillDetail> findAllByBillId(int billId) throws SQLException {
+        List<BillDetail> billDetails = null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DatabaseConnect.getInstance().getConnection();
+            preparedStatement = connection.prepareStatement(DBQuery.FIND_ALL_BILLDETAILS_BY_BILL_ID);
+            
+            preparedStatement.setInt(1, billId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            BillDetail billDetail = null;
+            billDetails = new ArrayList<>();
+            while (resultSet.next()) {
+                billDetail = extractFromResultSet(resultSet);
+                billDetails.add(billDetail);
+            }
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return billDetails;
+    }
     
 }
