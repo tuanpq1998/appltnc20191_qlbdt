@@ -35,14 +35,11 @@ public class pnlList extends javax.swing.JPanel {
     private PriceService priceService;
     private ManufacturerService manufacturerService;
 
-    private boolean isChooseMode = false;
-    private int returnedProductId;
     private JDialog dialog;
 
-    private int totalPage;
-    private int pageNum;
+    private int totalPage, pageNum, returnedProductId = -1;
     private String searchKey;
-    private boolean emptyTable = false;
+    private boolean emptyTable = false, isChooseMode = false;
 
     public int getReturnedProductId() {
         return returnedProductId;
@@ -151,6 +148,7 @@ public class pnlList extends javax.swing.JPanel {
         btnLastPage = SectionTemplate.getStyledButton();
         btnFirstPage = SectionTemplate.getStyledButton();
         lblPaginationStatus = new javax.swing.JLabel();
+        btnJumpPage = SectionTemplate.getStyledSecondaryButton();
         jSeparator1 = SectionTemplate.getStyledSeparator();
         jPanel2 = SectionTemplate.getStyledPanel();
         btnDetail = SectionTemplate.getStyledButton();
@@ -195,7 +193,7 @@ public class pnlList extends javax.swing.JPanel {
         txtSearch.setBackground(getBackground());
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSearch.setForeground(Color.GRAY);
-        txtSearch.setText("Tìm kiếm");
+        txtSearch.setText(ConstantHelper.SEARCH_TEXT);
         txtSearch.setToolTipText(txtSearch.getText());
         txtSearch.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -258,22 +256,32 @@ public class pnlList extends javax.swing.JPanel {
         lblPaginationStatus.setText("1/2");
         lblPaginationStatus.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        btnJumpPage.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        btnJumpPage.setText("Tùy chọn...");
+        btnJumpPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJumpPageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(162, Short.MAX_VALUE)
                 .addComponent(btnFirstPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnPrevPage)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(lblPaginationStatus)
-                .addGap(20, 20, 20)
+                .addGap(18, 18, 18)
                 .addComponent(btnNextPage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLastPage)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnJumpPage)
+                .addContainerGap(106, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,7 +295,8 @@ public class pnlList extends javax.swing.JPanel {
                         .addComponent(btnNextPage)
                         .addComponent(btnPrevPage)
                         .addComponent(btnLastPage)
-                        .addComponent(btnFirstPage)))
+                        .addComponent(btnFirstPage)
+                        .addComponent(btnJumpPage)))
                 .addGap(8, 8, 8))
         );
 
@@ -312,7 +321,7 @@ public class pnlList extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -422,7 +431,7 @@ public class pnlList extends javax.swing.JPanel {
 
     private void txtSearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusGained
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_FOCUS);
-        if ("Tìm kiếm".equals(txtSearch.getText())) {
+        if (ConstantHelper.SEARCH_TEXT.equals(txtSearch.getText())) {
             txtSearch.setText("");
         }
     }//GEN-LAST:event_txtSearchFocusGained
@@ -430,7 +439,7 @@ public class pnlList extends javax.swing.JPanel {
     private void txtSearchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSearchFocusLost
         txtSearch.setForeground(ConstantHelper.SEARCH_SECTION_TEXT_NON_FOCUS);
         if (txtSearch.getText() == null || txtSearch.getText().length() == 0) {
-            txtSearch.setText("Tìm kiếm");
+            txtSearch.setText(ConstantHelper.SEARCH_TEXT);
         }
     }//GEN-LAST:event_txtSearchFocusLost
 
@@ -525,8 +534,9 @@ public class pnlList extends javax.swing.JPanel {
 
     private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
         if (!emptyTable && tblList.getSelectedRowCount() == 1 && isChooseMode) {
-            if (tblList.getValueAt(tblList.getSelectedRow(), 2).equals(ConstantHelper.NO_INFORMATION_MESSAGE)
-                    || tblList.getValueAt(tblList.getSelectedRow(), 4).equals(ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE)) {
+            int selectedIndex = tblList.getSelectedRow();
+            if (tblList.getValueAt(selectedIndex, 2).equals(ConstantHelper.NO_INFORMATION_MESSAGE)
+                    || tblList.getValueAt(selectedIndex, 4).equals(ConstantHelper.PRODUCT_NOT_AVAILABEL_MESSAGE)) {
                 JOptionPane.showMessageDialog(frmMainWindow.rootFrame, "Sản phẩm này hết hàng hoặc chưa có giá!");
                 return;
             }
@@ -534,6 +544,13 @@ public class pnlList extends javax.swing.JPanel {
             dialog.dispose();
         }
     }//GEN-LAST:event_btnChooseActionPerformed
+
+    private void btnJumpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJumpPageActionPerformed
+        int input = SectionTemplate.askAndGetInputNumPage(frmMainWindow.rootFrame, pageNum, totalPage);
+        if (input != -1) {
+            loadTable(input);
+        }
+    }//GEN-LAST:event_btnJumpPageActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -544,6 +561,7 @@ public class pnlList extends javax.swing.JPanel {
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnFirstPage;
+    private javax.swing.JButton btnJumpPage;
     private javax.swing.JButton btnLastPage;
     private javax.swing.JButton btnNextPage;
     private javax.swing.JButton btnPrevPage;

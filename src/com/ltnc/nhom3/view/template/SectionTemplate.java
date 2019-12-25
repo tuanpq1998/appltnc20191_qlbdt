@@ -7,21 +7,24 @@ package com.ltnc.nhom3.view.template;
 
 import com.ltnc.nhom3.utility.ConstantHelper;
 import com.sun.java.swing.plaf.windows.WindowsComboBoxUI;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.font.TextAttribute;
+import java.text.ParseException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -127,4 +130,20 @@ public class SectionTemplate {
         return button;
     }
     
+    public static int askAndGetInputNumPage(JFrame root, int currentPage, int maxPage) {
+        JSpinner spinner = new JSpinner();
+        spinner.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        spinner.setModel(new javax.swing.SpinnerNumberModel(currentPage, 1, maxPage, 1));
+        spinner.setEditor(new javax.swing.JSpinner.NumberEditor(spinner, ""));
+        if (JOptionPane.showOptionDialog(root, spinner, ConstantHelper.NUMBER_INPUT_DIALOG_TITLE, 
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null) == JOptionPane.YES_OPTION){
+            try {
+                spinner.commitEdit();
+                return (int) spinner.getValue();
+            } catch (ParseException ex) {
+                Logger.getLogger(SectionTemplate.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } 
+        return -1;
+    }
 }
