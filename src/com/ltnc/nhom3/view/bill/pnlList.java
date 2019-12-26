@@ -95,8 +95,8 @@ public class pnlList extends javax.swing.JPanel {
                 for (Bill bill : bills) {
                     row[0] = bill.getId();
                     Customer customer = customerService.findById(bill.getCustomerId());
-                    row[1] = customer == null ? "" : customer.getFullname()+" (" + customer.getPhone() +")";
-                    row[2] = IOHandler.convertToDisplayDateTime(bill.getCreateDate());
+                    row[2] = customer == null ? "" : customer.getFullname()+" (" + customer.getPhone() +")";
+                    row[1] = IOHandler.convertToDisplayDateTime(bill.getCreateDate());
                     Employee employee = employeeService.findById(bill.getEmployeeId());
                     row[3] = employee == null ? ConstantHelper.NO_INFORMATION_MESSAGE : employee.getUsername();
                     row[4] = IOHandler.convertToDisplayPriceString(bill.getTotalMoney());
@@ -176,6 +176,7 @@ public class pnlList extends javax.swing.JPanel {
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         lblHeading.setText(ConstantHelper.BILL_LIST_HEADING);
 
+        txtSearch.setEditable(false);
         txtSearch.setBackground(getBackground());
         txtSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtSearch.setForeground(Color.GRAY);

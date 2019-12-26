@@ -19,6 +19,7 @@ public class DBQuery {
     public static final String COUNT_ALL_BILLS = "SELECT COUNT(*) FROM " + BILL_TABLE;
     public static final String FIND_BILL_BY_ID = FIND_ALL_BILLS + " WHERE bill_id = ?";
     public static final String CREATE_NEW_BILL = "INSERT INTO " + BILL_TABLE + " VALUES(NULL,?,?,?,?,?)";
+    public static final String UPDATE_BILL = "UPDATE "+ BILL_TABLE + " SET total=?, note=? WHERE bill_id=?"; 
 
     /* ============================ */
     
@@ -147,6 +148,7 @@ public class DBQuery {
             + " WHERE bill_id=?";
     public static final String FIND_ALL_BILLDETAILS_BY_BILL_ID = "SELECT * FROM " + BILLDETAIL_TABLE
             + " WHERE bill_id=?";
+    public static String DELETE_ALL_BILLDETAILS_BY_BILL_ID = "DELETE FROM " + BILLDETAIL_TABLE + " WHERE bill_id=?";
 
     public static String getQueryCreateManyBillDetails(int length) {
         StringBuilder query = new StringBuilder(CREATE_MANY_NEW_BILLDETAILS);

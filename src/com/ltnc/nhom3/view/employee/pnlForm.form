@@ -413,6 +413,7 @@
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="ConstantHelper.EMPLOYEE_GENDER_MALE" type="code"/>
                     </Property>
+                    <Property name="focusPainted" type="boolean" value="false"/>
                     <Property name="name" type="java.lang.String" value="" noResource="true"/>
                   </Properties>
                 </Component>
@@ -430,6 +431,7 @@
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="ConstantHelper.EMPLOYEE_GENDER_FEMALE" type="code"/>
                     </Property>
+                    <Property name="focusPainted" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>

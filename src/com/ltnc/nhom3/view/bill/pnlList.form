@@ -184,6 +184,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtSearch">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection component="Form" name="background" type="property"/>
             </Property>

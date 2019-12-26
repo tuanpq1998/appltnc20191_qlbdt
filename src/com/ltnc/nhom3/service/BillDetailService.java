@@ -48,5 +48,10 @@ public class BillDetailService {
     public List<BillDetail> findAllByBillId(int billId) throws SQLException {
         return billDetailDao.findAllByBillId(billId);
     }
+
+    public void updateFromList(List<BillDetail> listBillDetails) throws SQLException {
+        billDetailDao.deleteByBillId(listBillDetails.get(0).getBillId());
+        billDetailDao.createFromList(listBillDetails);
+    }
     
 }

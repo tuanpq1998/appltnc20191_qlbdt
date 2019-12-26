@@ -40,4 +40,8 @@ public class BillService {
         return billDao.create(bill);
     }
 
+    public void update(Bill bill) throws SQLException {
+        billDao.update(bill);
+    }
+
 }
