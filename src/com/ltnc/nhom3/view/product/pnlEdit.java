@@ -251,7 +251,9 @@ public class pnlEdit extends javax.swing.JPanel {
         txtName.setName(""); // NOI18N
         txtName.setPreferredSize(new java.awt.Dimension(6, 25));
 
-        txtPrice.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        javax.swing.text.NumberFormatter nf = new javax.swing.text.NumberFormatter();
+        nf.setMinimum(0);
+        txtPrice.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(nf));
         txtPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         cbbManufacturer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
