@@ -26,6 +26,8 @@ import com.ltnc.nhom3.view.template.TableHelper;
 import java.awt.Font;
 import java.awt.print.PrinterException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -552,52 +554,66 @@ public class pnlDetail extends javax.swing.JPanel {
 
     private void btnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintActionPerformed
         try {
-            StringBuilder sb = new StringBuilder();
-            JTextArea printArea = new JTextArea();
-            printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             Bill bill = billService.findById(billId);
             int employeeID = bill.getEmployeeId(), customerID = bill.getCustomerId();
             Customer customer = customerService.findById(customerID);
             Employee employee = employeeService.findById(employeeID);
             Product product = null;
             Price price = null;
+            StringBuilder sb = new StringBuilder();
+            String rule = "-------------+-----------+---+------------\n", cell = "%-12.12s| %-10.10s| %-2.2s| %-11.11s\n";
+            sb.append("  --------CỬA HÀNG ĐIỆN THOẠI--------\n")
+                    .append("\n               Hóa đơn bán\n")
+                    .append("                   ***                    \n")
+                    .append("Nhân viên : ").append(employee.getFullname()).append("\n")
+                    .append("Tài khoản : ").append(employee.getUsername()).append("\n")
+                    .append("                   ***                    \n")
+                    .append("Mã hóa đơn : ").append(bill.getId()).append("\n")
+                    .append("Ngày tạo : ").append(IOHandler.convertToDisplayDateTime(bill.getCreateDate())).append("\n")
+                    .append("Ngày in : ").append(IOHandler.convertToDisplayDateTime(new Date())).append("\n")
+                    .append("                   ***                    \n")
+                    .append("Tên khách hàng  : ").append(customer.getFullname()).append("\n")
+                    .append("Địa chỉ KH : ").append(customer.getAddress()).append("\n")
+                    .append("Số điện thoại : ").append(customer.getPhone()).append("\n")
+                    .append("                   ***                    \n")
+                    .append("DS SẢN PHẨM :  \n");
+            sb.append(rule).append(" SP          | Đ.giá     | SL| T.tiền      \n")
+                    .append(rule);
             List<BillDetail> billDetails = billDetailService.findAllByBillId(billId);
-            sb.append("******************************************\n")
-                .append("  --------CỬA HÀNG ĐIỆN THOẠI--------\n")
-                .append("******************************************\n")
-                .append("\n               Hóa đơn bán\n\n")
-                .append("-----------------------------------------------------------\n")
-                .append("Nhân viên : ").append(employee.getFullname()).append("\n")
-                .append("Tài khoản : ").append(employee.getUsername()).append("\n")
-                .append("-----------------------------------------------------------\n")
-                .append("Mã hóa đơn : ").append(bill.getId()).append("\n")
-                .append("Ngày tạo : ").append(IOHandler.convertToDisplayDateTime(bill.getCreateDate())).append("\n")
-                .append("Ngày in : ").append(IOHandler.convertToDisplayDateTime(new Date())).append("\n")
-                .append("-----------------------------------------------------------\n")
-                .append("Tên khách hàng  : ").append(customer.getFullname()).append("\n")
-                .append("Địa chỉ KH : ").append(customer.getAddress()).append("\n")
-                .append("Số điện thoại : ").append(customer.getPhone()).append("\n")
-                .append("-----------------------------------------------------------\n")
-                .append("DS SẢN PHẨM :  \n");
+            String productName = null, quantity = null, subTotal = null, priceStr = null;
             for (BillDetail billDetail : billDetails) {
                 product = productService.findById(billDetail.getProductId());
                 price = priceService.findPriceByProductId(billDetail.getProductId());
-                sb.append("> ").append(product.getName()+ "\n").append(" - Đơn giá : ").append(IOHandler.convertToDisplayPriceString(price.getValue()))
-                        .append(" - SL : ").append(billDetail.getQuantity()+"\n").append(" -> Thành tiền : ")
-                        .append(IOHandler.convertToDisplayPriceString(billDetail.getSubTotal())).append("\n");
+                productName = product.getName() + " [" + product.getId() + "]";
+                quantity = billDetail.getQuantity() + "";
+                subTotal = IOHandler.convertToDisplayPriceString(billDetail.getSubTotal());
+                priceStr = IOHandler.convertToDisplayPriceString(price.getValue());
+                int temp1 = (int) Math.ceil(productName.length() / 11.0f),
+                        temp2 = (int) Math.ceil(priceStr.length() / 10.0f),
+                        temp3 = (int) Math.ceil(quantity.length() / 2.0f),
+                        temp4 = (int) Math.ceil(subTotal.length() / 11.0f),
+                        largest = Collections.max(Arrays.asList(temp1, temp2, temp3, temp4));
+                for (int i = 0; i < largest; i++) {
+                    String tempStr1 = (i * 11 > productName.length() ? "" : productName.substring(i * 11)),
+                            tempStr2 = (i * 9 > priceStr.length() ? "" : priceStr.substring(i * 10)),
+                            tempStr3 = (i * 3 > quantity.length() ? "" : quantity.substring(i * 2)),
+                            tempStr4 = (i * 11 > subTotal.length() ? "" : subTotal.substring(i * 11));
+                    sb.append(" ").append(String.format(cell, tempStr1, tempStr2, tempStr3, tempStr4));
+                }
+                sb.append(rule);
             }
-            sb.append("-----------------------------------------------------------\n")
+            sb.append("                   ***                    \n")
                     .append("TỔNG TIỀN : ").append(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()))
-                    .append("\n-----------------------------------------------------------\n")
-                    .append("CẢM ƠN QUÝ KHÁCH!");
-            printArea.setText(sb.toString());
+                    .append("\n").append("CẢM ƠN QUÝ KHÁCH!")
+                    .append("\n-----------------------------------------------------------\n");
+            JTextArea printArea = new JTextArea(sb.toString());
+            printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             printArea.print();
         } catch (SQLException | PrinterException ex) {
             Logger.getLogger(pnlDetail.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }//GEN-LAST:event_btnPrintActionPerformed
-
+    
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         frmMainWindow.rootFrame.loadInSection(new pnlEdit(billId, employeeService, customerService, priceService, billService, billDetailService, productService, manufacturerService));
     }//GEN-LAST:event_btnEditActionPerformed
