@@ -576,8 +576,8 @@ public class pnlDetail extends javax.swing.JPanel {
                     .append("Địa chỉ KH : ").append(customer.getAddress()).append("\n")
                     .append("Số điện thoại : ").append(customer.getPhone()).append("\n")
                     .append("                   ***                    \n")
-                    .append("DS SẢN PHẨM :  \n");
-            sb.append(rule).append(" SP          | Đ.giá     | SL| T.tiền      \n")
+                    .append("DS SẢN PHẨM :  \n")
+                    .append(rule).append(" SP          | Đ.giá     | SL| T.tiền      \n")
                     .append(rule);
             List<BillDetail> billDetails = billDetailService.findAllByBillId(billId);
             String productName = null, quantity = null, subTotal = null, priceStr = null;
@@ -588,13 +588,13 @@ public class pnlDetail extends javax.swing.JPanel {
                 quantity = billDetail.getQuantity() + "";
                 subTotal = IOHandler.convertToDisplayPriceString(billDetail.getSubTotal());
                 priceStr = IOHandler.convertToDisplayPriceString(price.getValue());
-                int temp1 = (int) Math.ceil(productName.length() / 11.0f),
+                int temp1 = (int) Math.ceil(productName.length() / 12.0f),
                         temp2 = (int) Math.ceil(priceStr.length() / 10.0f),
                         temp3 = (int) Math.ceil(quantity.length() / 2.0f),
                         temp4 = (int) Math.ceil(subTotal.length() / 11.0f),
                         largest = Collections.max(Arrays.asList(temp1, temp2, temp3, temp4));
                 for (int i = 0; i < largest; i++) {
-                    String tempStr1 = (i * 11 > productName.length() ? "" : productName.substring(i * 11)),
+                    String tempStr1 = (i * 11 > productName.length() ? "" : productName.substring(i * 12)),
                             tempStr2 = (i * 9 > priceStr.length() ? "" : priceStr.substring(i * 10)),
                             tempStr3 = (i * 3 > quantity.length() ? "" : quantity.substring(i * 2)),
                             tempStr4 = (i * 11 > subTotal.length() ? "" : subTotal.substring(i * 11));
@@ -603,9 +603,9 @@ public class pnlDetail extends javax.swing.JPanel {
                 sb.append(rule);
             }
             sb.append("                   ***                    \n")
-                    .append("TỔNG TIỀN : ").append(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()))
-                    .append("\n").append("CẢM ƠN QUÝ KHÁCH!")
-                    .append("\n-----------------------------------------------------------\n");
+                .append("TỔNG TIỀN : ").append(IOHandler.convertToDisplayPriceString(bill.getTotalMoney()))
+                .append("\n").append("CẢM ƠN QUÝ KHÁCH!")
+                .append("\n-----------------------------------------------------------\n");
             JTextArea printArea = new JTextArea(sb.toString());
             printArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
             printArea.print();
